@@ -1,6 +1,7 @@
 extends Control
 ## 화면 전환 담당. 첫 화면 → (참가 →) 대기실 → 시작 신호. 방 연결은 Room(autoload)이 한다.
 ## 시험용 인자: --host --join=IP --name=닉 --face=N --port=N --try-start=초,초 --leave-after=초 --shot=title|join|lobby --result-pick=replay|lobby
+##   --leave-at-game=N --leave-delay=초 (N번째 판이 시작되고 초 뒤에 나간다)
 
 const THEME := preload("res://ui/theme.tres")
 const BG_TILE := preload("res://assets/ui/bg_tile.png")
@@ -13,6 +14,7 @@ const ResultScreen := preload("res://screens/result.tscn")
 var _current: Control
 var _notice := ""
 var _opts := {}
+var _games := 0
 
 
 func _ready() -> void:
@@ -64,6 +66,11 @@ func show_join() -> void:
 func _on_game_started(_seats: Array) -> void:
 	show_screen(TableNetScreen)
 	_current.finished.connect(_show_result)
+	_games += 1
+	if _opts.get("leave-at-game", "") == str(_games):
+		get_tree().create_timer(float(_opts.get("leave-delay", 0.1))).timeout.connect(func():
+			Room.leave()
+			get_tree().create_timer(0.5).timeout.connect(get_tree().quit))
 
 
 func _show_result() -> void:

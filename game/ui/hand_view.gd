@@ -20,14 +20,15 @@ func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
-func set_hand(cards: Array, playable_ids: Array, my_turn: bool) -> void:
+## active: 내 차례의 고르는 중. 아니면 패 전체가 어둡고 눌러도 반응하지 않는다.
+func set_hand(cards: Array, playable_ids: Array, active: bool) -> void:
 	for c in get_children():
 		remove_child(c)
 		c.queue_free()
 	views = {}
 	_playable = {}
 	_press = {}
-	interactive = my_turn
+	interactive = active
 	for id in playable_ids:
 		_playable[id] = true
 	var n := cards.size()
@@ -37,17 +38,28 @@ func set_hand(cards: Array, playable_ids: Array, my_turn: bool) -> void:
 		var cv = CardViewScript.new()
 		add_child(cv)
 		cv.show_card(CardMap.view_color(card), CardMap.view_value(card))
-		if my_turn:
-			if _playable.has(card.id):
-				cv.set_lift(CardViewScript.Lift.RAISED)
-			else:
-				cv.set_dimmed(true)
+		if active and _playable.has(card.id):
+			cv.set_lift(CardViewScript.Lift.RAISED)
+		else:
+			cv.set_dimmed(true)
 		var t := float(i) - (n - 1) / 2.0
 		cv.pivot_offset = CARD_SIZE / 2.0
 		cv.position = Vector2(size.x / 2.0 + t * spacing - CARD_SIZE.x / 2.0, 44.0 + t * t * 1.4)
 		cv.rotation = clampf(t * 0.045, -0.3, 0.3)
 		cv.gui_input.connect(_on_card_input.bind(card.id))
 		views[card.id] = cv
+
+
+## 내 차례가 시작될 때: 어두운 패에서 밝아지고, 낼 수 있는 카드는 살짝 튄다.
+func flash_in() -> void:
+	for id in views:
+		var cv = views[id]
+		cv.modulate = Color(0.5, 0.5, 0.6)
+		var tw := create_tween().set_parallel(true)
+		tw.tween_property(cv, "modulate", Color.WHITE, 0.4)
+		if _playable.has(id):
+			cv.scale = Vector2(1.1, 1.1)
+			tw.tween_property(cv, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _on_card_input(ev: InputEvent, card_id: int) -> void:

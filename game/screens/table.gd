@@ -75,6 +75,7 @@ var _dealing := false
 var _deal_wanted := false
 var _dealt: Array = []
 var _hj_key := ""
+var _was_my_turn := false
 
 
 func _ready() -> void:
@@ -310,6 +311,8 @@ func _redraw(s: Dictionary) -> void:
 	var me: int = s.seat
 	var my_turn: bool = s.turn == me and s.phase != "done" and not _dealing
 	var pick: bool = my_turn and s.phase == "pick"
+	var turn_began := my_turn and not _was_my_turn
+	_was_my_turn = my_turn
 
 	# 날아오는 중에는 이전 맨 위 카드와 색 테두리를 그대로 두고, 내려앉은 뒤 바꾼다.
 	if _flying == 0:
@@ -345,6 +348,9 @@ func _redraw(s: Dictionary) -> void:
 			_me_box.add_child(av)
 			av.position = ME_AVATAR_POS
 			av.setup(faces[seat], names[seat], st, seat == host_seat)
+			if turn_began:  ## 내 차례가 시작되는 순간 아바타가 한 번 빛난다
+				av.modulate = Color(1.9, 1.9, 1.4)
+				create_tween().tween_property(av, "modulate", Color.WHITE, 0.7)
 			continue
 		var slot: Dictionary = SLOT[slots[rel]]
 		_opps.add_child(av)
@@ -390,6 +396,8 @@ func _redraw(s: Dictionary) -> void:
 			if is_playable(card, s):
 				ids.append(card.id)
 	hand_view.set_hand(shown_hand, ids, pick)
+	if turn_began and pick:
+		hand_view.flash_in()
 
 	_bar.visible = my_turn and s.phase != "hanjang"
 	_time_label.visible = _bar.visible

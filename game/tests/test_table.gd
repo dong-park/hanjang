@@ -139,13 +139,20 @@ func _init() -> void:
 	rules.phase = "pick"
 	drv.push()
 	await process_frame
-	var flat := true
+	var all_dark := true
 	for id in hv.views:
 		var cv = hv.views[id]
-		if cv.lift != 0 or cv.dimmed:
-			flat = false
+		if cv.lift != 0 or not cv.dimmed:
+			all_dark = false
 	await create_timer(0.6).timeout  # 장면 만들기로 생긴 날기가 끝나길 기다린다
-	check(flat, "남의 차례에 내 카드는 평평하다")
+	check(all_dark, "남의 차례에 내 패 전체가 어둡고 솟은 카드가 없다")
+	var wait_card: Dictionary = rules.hands[0][0]
+	var wp: Vector2 = hv.views[wait_card.id].get_global_rect().get_center()
+	var sent_wait := []
+	table.action_requested.connect(func(a): sent_wait.append(a))
+	click(wp)
+	await process_frame
+	check(sent_wait.is_empty(), "남의 차례에 내 카드를 눌러도 행동이 없다")
 	drv.bot_step()
 	await create_timer(0.1).timeout
 	check(table._flying >= 1, "상대 카드가 날아온다")

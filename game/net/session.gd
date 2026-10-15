@@ -36,9 +36,12 @@ var _rid := 0
 var _last_req: Array = []
 var _seen := {}
 var _deadline := 0.0
+var _close_at := 0.0  ## 요청을 받는 마감. 한장! 창은 화면에 보이는 마감(_deadline)보다 HJ_GRACE 늦게 닫는다
+var _timing := false  ## 나눠 주기가 끝나 차례 시간을 재는 중인가
 var _deal_until := 0.0
 var _running := false
 var _serial := 0
+var _gen := 0  ## 판 번호. 다시 하기로 새 판이 열리면 올라가, 이전 판의 대기 중인 작업이 멈춘다
 var _end_reported := false
 var _rng := RandomNumberGenerator.new()
 
@@ -61,18 +64,24 @@ func _on_game_started(p_seats: Array) -> void:
 	_end_reported = false
 	last_snap = {}
 	my_seat = -1
+	_gen += 1  ## 이전 판 엔진은 새 엔진이 서기 전까지 아무 요청도 받지 않는다
+	engine = null
+	_running = false
+	_timing = false
 	for i in seats.size():
 		if seats[i].peer == multiplayer.get_unique_id():
 			my_seat = i
 	_rng.seed = (_seed if _seed >= 0 else 1) * 131 + my_seat
 	if Room.is_host():
-		_start_host.call_deferred()
+		_start_host.call_deferred(_gen)
 
 
 # ---------- 방장 ----------
 
-func _start_host() -> void:
+func _start_host(gen: int) -> void:
 	await get_tree().create_timer(0.3).timeout  ## 접속자가 시작 신호를 먼저 받도록 잠깐 둔다
+	if gen != _gen:
+		return
 	engine = Rules.new()
 	engine.setup(seats.size(), _seed)
 	_seen = {}
@@ -81,12 +90,12 @@ func _start_host() -> void:
 			engine.leave(i)
 	_running = true
 	print("SESSION_START n=", seats.size(), " seed=", _seed)
-	_deadline = INF  ## 나눠 주기 연출이 끝난 뒤부터 첫 차례 시간을 잰다
+	_timing = false  ## 나눠 주기 연출이 끝난 뒤부터 첫 차례 시간을 잰다
 	var deal := FxTiming.deal_total(seats.size(), engine.HAND_SIZE)
 	_deal_until = Time.get_ticks_msec() / 1000.0 + deal
 	_push()
 	await get_tree().create_timer(deal).timeout
-	if engine == null or not _running or engine.phase == "done":
+	if gen != _gen or engine == null or not _running or engine.phase == "done":
 		return
 	_mark_deadline()
 	_push()  ## 연출이 끝난 뒤 한 번 더 보내 시간 표시와 자동 플레이가 이때부터 시작한다
@@ -102,13 +111,19 @@ func seat_of(peer: int) -> int:
 func _process(_dt: float) -> void:
 	if not (_running and Room.is_host()) or engine == null or engine.phase == "done":
 		return
-	if Time.get_ticks_msec() / 1000.0 >= _deadline:
+	if _timing and Time.get_ticks_msec() / 1000.0 >= _close_at:
 		_on_timeout()
 
 
 func _mark_deadline() -> void:
 	var now := Time.get_ticks_msec() / 1000.0
-	_deadline = now + (hj_time + HJ_GRACE if engine.phase == "hanjang" else turn_time)
+	_timing = true
+	if engine.phase == "hanjang":
+		_deadline = now + hj_time
+		_close_at = _deadline + HJ_GRACE
+	else:
+		_deadline = now + turn_time
+		_close_at = _deadline
 
 
 func _on_timeout() -> void:
@@ -141,9 +156,7 @@ func _after_change() -> void:
 func _push() -> void:
 	if engine == null:
 		return
-	var left := 0.0 if _deadline == INF else maxf(0.0, _deadline - Time.get_ticks_msec() / 1000.0 - (HJ_GRACE if engine.phase == "hanjang" else 0.0))
-	if _deadline == INF:
-		left = turn_time
+	var left := maxf(0.0, _deadline - Time.get_ticks_msec() / 1000.0) if _timing else turn_time
 	for i in seats.size():
 		if not engine.alive[i]:
 			continue

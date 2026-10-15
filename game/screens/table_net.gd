@@ -13,9 +13,14 @@ var _left_at := 0.0
 var _total := 20.0
 var _timed := false
 var _kinds := {}  ## 보낸 요청 번호 -> 종류. 거절된 한장!·잡았다! 버튼을 내릴 때 쓴다
+var _cap_dir := ""  ## 시험용 --capture=폴더: 실제 창에서 상대 차례·내 차례 화면을 저장한다
+var _cap_done := {}
 
 
 func _ready() -> void:
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--capture="):
+			_cap_dir = arg.trim_prefix("--capture=")
 	_session = get_node("/root/Session")
 	table = TableScene.instantiate()
 	add_child(table)
@@ -53,6 +58,24 @@ func _on_state(snap: Dictionary) -> void:
 	_left_at = Time.get_ticks_msec() / 1000.0 + snap.get("time_left", _total)
 	_timed = true
 	table.apply_snapshot(snap)
+	if _timed and snap.get("phase", "") != "hanjang":
+		table.set_time(maxf(_left_at - Time.get_ticks_msec() / 1000.0, 0.0), _total)  ## 새 판 상태와 같은 프레임에 바를 맞춰 깜빡이지 않게
+	if _cap_dir != "" and snap.get("phase", "") == "pick":
+		_capture_later(snap)
+
+
+func _capture_later(snap: Dictionary) -> void:
+	var key := "mine" if snap.turn == snap.seat else "wait"
+	if _cap_done.has(key):
+		return
+	await get_tree().create_timer(1.0).timeout
+	if _cap_done.has(key) or table.is_dealing() or table.snap.get("turn", -1) != snap.turn or table.snap.get("phase", "") != "pick":
+		return
+	_cap_done[key] = true
+	await RenderingServer.frame_post_draw
+	var path := "%s/%s-seat%d.png" % [_cap_dir, key, snap.seat]
+	get_viewport().get_texture().get_image().save_png(path)
+	print("CAPTURED ", path)
 
 
 func _on_action(a: Dictionary) -> void:
@@ -94,4 +117,5 @@ func _on_player_left(seat: int, who: String) -> void:
 
 func _on_ended(_ranks: Array) -> void:
 	await get_tree().create_timer(RESULT_DELAY).timeout
-	finished.emit()
+	if is_inside_tree():
+		finished.emit()
