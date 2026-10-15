@@ -1,0 +1,93 @@
+1792074048.060 +0.82 OPENED #1
+1792074048.335 +1.10 log Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+1792074048.362 +1.13 warning WebGL: non-portable extension enabled: WEBGL_polygon_mode
+1792074048.549 +1.31 log OpenGL API OpenGL ES 3.0 (WebGL 2.0) - Compatibility - Using Device: WebKit - WebKit WebGL
+1792074048.650 +1.42 log Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+1792074048.917 +1.68 log SCREEN title
+1792074048.918 +1.68 log SCREEN join
+1792074049.119 +1.88 log JOINED 127.0.0.1
+1792074049.126 +1.89 log SCREEN lobby
+1792074072.555 +25.32 log GAME_STARTED 4
+1792074072.569 +25.33 log SCREEN table_net
+1792074072.873 +25.64 log MYHAND seat=2 num3:8 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074075.258 +28.02 log MYHAND seat=2 num3:8 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074075.337 +28.10 log MYHAND seat=2 num3:8 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074077.356 +30.12 log MYHAND seat=2 num3:8 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074077.402 +30.17 log MYHAND seat=2 num3:8 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074077.488 +30.25 log MYHAND seat=2 num3:8 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074077.603 +30.37 log MYHAND seat=2 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074077.739 +30.50 log MYHAND seat=2 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074079.727 +32.49 log MYHAND seat=2 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074079.805 +32.57 log MYHAND seat=2 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074079.878 +32.64 log MYHAND seat=2 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074080.014 +32.78 log MYHAND seat=2 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074080.090 +32.85 log MYHAND seat=2 num2:8 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074080.204 +32.97 log MYHAND seat=2 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074082.209 +34.97 log MYHAND seat=2 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074082.325 +35.09 log MYHAND seat=2 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074082.413 +35.18 log MYHAND seat=2 num3:2 num2:1 wild4-1 num0:8 draw21
+1792074084.407 +37.17 log MYHAND seat=2 num3:2 num2:1 wild4-1 num0:8 draw21 num2:2
+1792074084.492 +37.26 log MYHAND seat=2 num3:2 num2:1 wild4-1 num0:8 draw21 num2:2
+1792074084.635 +37.40 log MYHAND seat=2 num3:2 num2:1 wild4-1 num0:8 draw21 num2:2
+1792074084.727 +37.49 log MYHAND seat=2 num3:2 num2:1 num0:8 draw21 num2:2
+1792074084.831 +37.60 log MYHAND seat=2 num3:2 num2:1 num0:8 draw21 num2:2
+1792074084.908 +37.67 log MYHAND seat=2 num3:2 num2:1 num0:8 draw21 num2:2
+1792074085.025 +37.79 log MYHAND seat=2 num3:2 num2:1 num0:8 draw21 num2:2
+1792074085.164 +37.93 log MYHAND seat=2 num3:2 num2:1 num0:8 draw21 num2:2 num2:3 draw23
+1792074085.259 +38.02 log MYHAND seat=2 num3:2 num2:1 num0:8 draw21 num2:2 num2:3 draw23
+1792074085.348 +38.11 log MYHAND seat=2 num3:2 num2:1 num0:8 draw21 num2:2 num2:3 draw23
+1792074085.476 +38.24 log MYHAND seat=2 num3:2 num2:1 num0:8 draw21 num2:2 num2:3 draw23
+1792074085.580 +38.34 log MYHAND seat=2 num3:2 num2:1 num0:8 num2:2 num2:3 draw23
+1792074085.644 +38.41 log MYHAND seat=2 num3:2 num2:1 num0:8 num2:2 num2:3 draw23
+1792074085.691 +38.46 log MYHAND seat=2 num3:2 num2:1 num0:8 num2:2 num2:3 draw23
+1792074085.844 +38.61 log MYHAND seat=2 num3:2 num0:8 num2:2 num2:3 draw23
+1792074086.000 +38.77 log MYHAND seat=2 num3:2 num0:8 num2:2 num2:3 draw23
+1792074086.076 +38.84 log MYHAND seat=2 num3:2 num0:8 num2:2 num2:3 draw23
+1792074086.209 +38.97 log MYHAND seat=2 num3:2 num0:8 num2:2 num2:3 draw23
+1792074088.203 +40.97 log MYHAND seat=2 num3:2 num0:8 num2:2 num2:3 draw23
+1792074088.289 +41.05 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23
+1792074088.385 +41.15 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23
+1792074088.536 +41.30 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23
+1792074088.605 +41.37 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23
+1792074090.591 +43.36 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5
+1792074090.679 +43.44 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5
+1792074090.771 +43.54 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5
+1792074092.776 +45.54 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5 skip0
+1792074092.874 +45.64 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5 skip0
+1792074092.922 +45.69 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5 skip0
+1792074094.923 +47.69 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5 skip0
+1792074094.990 +47.76 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5 skip0 draw22
+1792074095.141 +47.91 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5 skip0 draw22
+1792074095.290 +48.05 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5 skip0 draw22
+1792074097.302 +50.07 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2
+1792074097.397 +50.16 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2
+1792074099.395 +52.16 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2
+1792074099.521 +52.29 log MYHAND seat=2 num3:2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2
+1792074099.599 +52.36 log MYHAND seat=2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2
+1792074101.605 +54.37 log MYHAND seat=2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2
+1792074101.650 +54.41 log MYHAND seat=2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2
+1792074101.789 +54.55 log MYHAND seat=2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2
+1792074103.810 +56.58 log MYHAND seat=2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2 num0:7
+1792074103.890 +56.66 log MYHAND seat=2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2 num0:7
+1792074103.968 +56.73 log MYHAND seat=2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2 num0:7
+1792074104.099 +56.86 log MYHAND seat=2 num2:2 num2:3 draw23 num0:5 skip0 draw22 num0:2 num0:7
+1792074104.181 +56.95 log MYHAND seat=2 num2:2 num2:3 num0:5 skip0 draw22 num0:2 num0:7
+1792074104.266 +57.03 log MYHAND seat=2 num2:2 num2:3 num0:5 skip0 draw22 num0:2 num0:7
+1792074104.416 +57.18 log MYHAND seat=2 num2:2 num2:3 num0:5 skip0 draw22 num0:2 num0:7
+1792074104.516 +57.28 log MYHAND seat=2 num2:2 num2:3 skip0 draw22 num0:2 num0:7
+1792074104.632 +57.40 log MYHAND seat=2 num2:2 num2:3 skip0 draw22 num0:2 num0:7
+1792074104.745 +57.51 log MYHAND seat=2 num2:2 num2:3 skip0 draw22 num0:2 num0:7
+1792074104.781 +57.55 log MYHAND seat=2 num2:2 num2:3 skip0 draw22 num0:2 num0:7
+1792074106.783 +59.55 log MYHAND seat=2 num2:2 num2:3 skip0 draw22 num0:2 num0:7
+1792074106.939 +59.70 log MYHAND seat=2 num2:2 num2:3 draw22 num0:2 num0:7
+1792074107.055 +59.82 log MYHAND seat=2 num2:2 num2:3 draw22 num0:2 num0:7
+1792074107.135 +59.90 log MYHAND seat=2 num2:2 num2:3 draw22 num0:2 num0:7
+1792074107.258 +60.02 log MYHAND seat=2 num2:2 num2:3 draw22 num0:2 num0:7
+1792074107.324 +60.09 log MYHAND seat=2 num2:2 num2:3 draw22 num0:2 num0:7 num1:4
+1792074107.417 +60.18 log MYHAND seat=2 num2:2 num2:3 draw22 num0:2 num0:7
+1792074107.503 +60.27 log MYHAND seat=2 num2:2 num2:3 draw22 num0:2 num0:7
+1792074107.552 +60.32 log MYHAND seat=2 num2:2 num2:3 draw22 num0:2 num0:7
+1792074107.560 +60.33 log RESULT winner=0 ranks=[1, 2, 3, 4]
+1792074109.087 +61.85 error WebSocket connection to 'ws://127.0.0.1:7811/' failed: The network connection was lost.
+1792074109.088 +61.85 log LEFT_TO_TITLE 방장이 나갔어요
+1792074109.091 +61.86 log SCREEN title

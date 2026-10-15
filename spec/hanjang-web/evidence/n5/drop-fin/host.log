@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCREEN title
+HOST_READY 10.133.58.112
+SCREEN lobby
+SEATED 2 나
+SEATED 3 폰2
+START_OK seats=3
+GAME_STARTED 3
+SCREEN table_net
+SESSION_START n=3 seed=7
+MYHAND seat=0 skip3 rev2 num2:8 num3:0 num3:5 num3:4 wild4-1
+IGNORED seat=0 rid=1 kind=play reason=나눠 주는 중
+MYHAND seat=0 skip3 rev2 num2:8 num3:0 num3:5 num3:4 wild4-1
+ACCEPT seat=0 rid=2 kind=play
+MYHAND seat=0 skip3 rev2 num2:8 num3:0 num3:4 wild4-1
+AUTO_DRAW seat=1
+MYHAND seat=0 skip3 rev2 num2:8 num3:0 num3:4 wild4-1
+PEER_LEFT_IN_GAME 168440220
+PLAYER_LEFT seat=2 폰2
+DISCONNECT_FX seat=2 cards=7
+MYHAND seat=0 skip3 rev2 num2:8 num3:0 num3:4 wild4-1
+REJOINED 1327189591 seat=2 폰2
+PLAYER_REJOINED seat=2
+MYHAND seat=0 skip3 rev2 num2:8 num3:0 num3:4 wild4-1
+ACCEPT seat=0 rid=3 kind=play
+MYHAND seat=0 rev2 num2:8 num3:0 num3:4 wild4-1
+PEER_LEFT_IN_GAME 1327189591
+PLAYER_LEFT seat=2 폰2
+DISCONNECT_FX seat=2 cards=7
+MYHAND seat=0 rev2 num2:8 num3:0 num3:4 wild4-1

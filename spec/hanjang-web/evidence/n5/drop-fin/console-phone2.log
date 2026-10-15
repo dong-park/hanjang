@@ -1,0 +1,17 @@
+1792074117.855 +0.83 OPENED #1
+1792074118.130 +1.10 log Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+1792074118.151 +1.12 warning WebGL: non-portable extension enabled: WEBGL_polygon_mode
+1792074118.320 +1.29 log OpenGL API OpenGL ES 3.0 (WebGL 2.0) - Compatibility - Using Device: WebKit - WebKit WebGL
+1792074118.405 +1.38 log Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+1792074118.595 +1.57 log SCREEN title
+1792074118.601 +1.57 log SCREEN join
+1792074118.712 +1.69 log JOINED 127.0.0.1
+1792074118.714 +1.69 log SCREEN lobby
+1792074138.638 +21.61 log GAME_STARTED 3
+1792074138.641 +21.61 log SCREEN table_net
+1792074138.910 +21.88 log MYHAND seat=2 num3:8 num1:3 skip1 num3:8 num2:1 num0:8 wild-1
+1792074140.829 +23.80 log MYHAND seat=2 num3:8 num1:3 skip1 num3:8 num2:1 num0:8 wild-1
+1792074141.963 +24.94 log MYHAND seat=2 num3:8 num1:3 skip1 num3:8 num2:1 num0:8 wild-1
+1792074147.985 +30.96 log MYHAND seat=2 num3:8 num1:3 skip1 num3:8 num2:1 num0:8 wild-1
+1792074148.474 +31.45 TAB_CLOSE_CMD
+1792074148.487 +31.46 TAB_CLOSED

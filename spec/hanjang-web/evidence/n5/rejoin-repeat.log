@@ -1,0 +1,6 @@
+run1 exit=0 sec=35 REJOIN_TEST_PASS 
+run2 exit=1 sec=68 FAIL: host 에 '^RESULT ' 없음 FAIL: y2 에 '^RESULT ' 없음 REJOIN_TEST_FAIL (logs: /var/folders/6j/hjr0mn011d90srbxmdwv_4h40000gn/T/tmp.kqJlG3007k) 
+run3 exit=1 sec=67 FAIL: host 에 '^RESULT ' 없음 FAIL: y2 에 '^RESULT ' 없음 REJOIN_TEST_FAIL (logs: /var/folders/6j/hjr0mn011d90srbxmdwv_4h40000gn/T/tmp.rX6MZbYZXv) 
+run4 exit=0 sec=35 REJOIN_TEST_PASS 
+run5 exit=0 sec=36 REJOIN_TEST_PASS 
+run6 exit=0 sec=35 REJOIN_TEST_PASS 

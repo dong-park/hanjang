@@ -1,0 +1,33 @@
+{
+ "scenario": "full-headless",
+ "seated4_after": "2.8초",
+ "start_ok": "25.8초",
+ "result_count_host": 2,
+ "replay_seen": 1,
+ "leaks_host": 0,
+ "host_lines": {
+  "^SEATED": 3,
+  "^START_OK": 1,
+  "^REPLAY": 2,
+  "^RESULT ": 2,
+  "^PEER_LEFT": 2,
+  "^LEAK": 0,
+  "ERROR": 0
+ },
+ "guest_leaks": 0,
+ "guest_results": 2,
+ "phone1": {
+  "RESULT": 2,
+  "LEAK": 0,
+  "SCREEN_table_net": 3,
+  "error": 0,
+  "PAGEERROR": 0
+ },
+ "phone2": {
+  "RESULT": 2,
+  "LEAK": 0,
+  "SCREEN_table_net": 3,
+  "error": 0,
+  "PAGEERROR": 0
+ }
+}

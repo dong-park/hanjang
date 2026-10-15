@@ -1,0 +1,32 @@
+lock wait 0.0s
+{
+ "scenario": "full-windowed",
+ "seated4_after": "3.2초",
+ "start_ok": "25.8초",
+ "result_count_host": 1,
+ "host_lines": {
+  "^SEATED": 3,
+  "^START_OK": 1,
+  "^REPLAY": 0,
+  "^RESULT ": 1,
+  "^PEER_LEFT": 0,
+  "^LEAK": 0,
+  "ERROR": 0
+ },
+ "guest_leaks": 0,
+ "guest_results": 1,
+ "phone1": {
+  "RESULT": 1,
+  "LEAK": 0,
+  "SCREEN_table_net": 1,
+  "error": 1,
+  "PAGEERROR": 0
+ },
+ "phone2": {
+  "RESULT": 1,
+  "LEAK": 0,
+  "SCREEN_table_net": 1,
+  "error": 1,
+  "PAGEERROR": 0
+ }
+}

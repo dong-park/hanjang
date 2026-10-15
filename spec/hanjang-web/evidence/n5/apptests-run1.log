@@ -1,0 +1,8 @@
+test_rules exit=0
+test_session_edge exit=0
+test_table exit=0
+test_touch exit=0
+test_fx exit=0
+test_lobby exit=0
+test_net_game exit=0
+test_rejoin exit=1

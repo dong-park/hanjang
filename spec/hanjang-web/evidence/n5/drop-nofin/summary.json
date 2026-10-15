@@ -1,0 +1,141 @@
+{
+ "scenario": "drop-nofin",
+ "started": true,
+ "drop_cmd": "중계가 폰2 연결의 바이트를 버리고 소켓은 열어 둠(FIN/RST 없음)",
+ "T0_to_PEER_LEFT_IN_GAME": "미관찰",
+ "probes": [
+  {
+   "at_s": 0.0,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 7.8,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 18.8,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 26.7,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 34.5,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 42.4,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 50.4,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 58.3,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 66.2,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 74.1,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 82.0,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 89.8,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 97.7,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 105.6,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 113.4,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 121.4,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 129.3,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 137.2,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 145.1,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 152.9,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 160.8,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 168.7,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 176.7,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 184.5,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 192.4,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 200.3,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 208.1,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 215.9,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 223.8,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 231.8,
+   "verdict": "거절:게임 중"
+  },
+  {
+   "at_s": 239.6,
+   "verdict": "거절:게임 중"
+  }
+ ],
+ "host_saw_REJOINED_by_probe": 0,
+ "host_lines": {
+  "^PEER_LEFT_IN_GAME": 0,
+  "^REJOINED ": 0,
+  "^PLAYER_REJOINED": 0,
+  "^REJECT": 32,
+  "^RESULT ": 0,
+  "ERROR": 32
+ }
+}

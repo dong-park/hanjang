@@ -1,0 +1,22 @@
+lock wait 0.0s
+{
+ "scenario": "drop-fin",
+ "started": true,
+ "drop_cmd": "탭 강제 닫기(브라우저가 소켓 FIN을 보냄)",
+ "T0_to_PEER_LEFT_IN_GAME": "0.2초",
+ "probes": [
+  {
+   "at_s": 0.0,
+   "verdict": "재접속 성공"
+  }
+ ],
+ "host_saw_REJOINED_by_probe": 1,
+ "host_lines": {
+  "^PEER_LEFT_IN_GAME": 2,
+  "^REJOINED ": 1,
+  "^PLAYER_REJOINED": 1,
+  "^REJECT": 0,
+  "^RESULT ": 0,
+  "ERROR": 0
+ }
+}

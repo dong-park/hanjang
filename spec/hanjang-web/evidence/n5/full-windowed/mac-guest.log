@@ -1,0 +1,104 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 91.7 - Compatibility - Using Device: Apple - Apple M1 Pro
+
+SCREEN title
+SCREEN join
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/02-join-나.png
+JOINED 127.0.0.1
+SCREEN lobby
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/01-title-나.png
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/03-lobby-나.png
+GAME_STARTED 4
+SCREEN table_net
+MYHAND seat=1 rev3 num1:3 num3:0 draw22 num0:8 num1:5 num0:0
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/04-deal-나.png
+MYHAND seat=1 rev3 num1:3 num3:0 draw22 num0:8 num1:5 num0:0
+MYHAND seat=1 rev3 num1:3 num3:0 draw22 num0:8 num1:5 num0:0
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/05b-wait-나.png
+MYHAND seat=1 rev3 num1:3 num3:0 draw22 num0:8 num1:5 num0:0
+MYHAND seat=1 num1:3 num3:0 draw22 num0:8 num1:5 num0:0
+MYHAND seat=1 num1:3 num3:0 draw22 num0:8 num1:5 num0:0
+MYHAND seat=1 num1:3 num3:0 draw22 num0:8 num1:5 num0:0
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/05-my-turn-나.png
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/07-opponent-play-나.png
+MYHAND seat=1 num1:3 draw22 num0:8 num1:5 num0:0
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/10b-reverse-나.png
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/06-play-fly-나.png
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/10a-skip-나.png
+MYHAND seat=1 num1:3 draw22 num0:8 num1:5 num0:0
+MYHAND seat=1 num1:3 draw22 num0:8 num1:5 num0:0
+MYHAND seat=1 num1:3 draw22 num0:8 num1:5 num0:0 num0:1
+MYHAND seat=1 num1:3 draw22 num0:8 num1:5 num0:0 num0:1
+MYHAND seat=1 num1:3 draw22 num0:8 num1:5 num0:0 num0:1
+MYHAND seat=1 num1:3 draw22 num0:8 num1:5 num0:0 num0:1
+MYHAND seat=1 num1:3 draw22 num0:8 num1:5 num0:0 num0:1 wild-1
+MYHAND seat=1 num1:3 draw22 num0:8 num1:5 num0:0 num0:1 wild-1
+MYHAND seat=1 num1:3 draw22 num0:8 num1:5 num0:0 num0:1 wild-1
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/09-attack-나.png
+MYHAND seat=1 num1:3 draw22 num0:8 num1:5 num0:0 num0:1 wild-1
+MYHAND seat=1 draw22 num0:8 num1:5 num0:0 num0:1 wild-1
+MYHAND seat=1 draw22 num0:8 num1:5 num0:0 num0:1 wild-1
+MYHAND seat=1 draw22 num0:8 num1:5 num0:0 num0:1 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 draw22 num0:8 num1:5 num0:0 num0:1 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 draw22 num0:8 num1:5 num0:0 num0:1 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 draw22 num0:8 num1:5 num0:0 num0:1 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num1:5 num0:0 num0:1 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num1:5 num0:0 num0:1 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num1:5 num0:0 num0:1 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num0:0 num0:1 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num0:0 num0:1 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num0:0 num0:1 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num0:0 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num0:0 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num0:0 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num0:0 wild-1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num0:0 num3:7 num1:7 num3:4 num2:7
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/08-wild-picker-나.png
+MYHAND seat=1 num0:8 num0:0 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num0:0 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num0:0 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:8 num0:0 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:0 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:0 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num0:0 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num3:7 num1:7 num3:4 num2:7
+MYHAND seat=1 num3:7 num1:7 num3:4 num2:7 num1:6
+MYHAND seat=1 num3:7 num1:7 num3:4 num2:7 num1:6
+MYHAND seat=1 num3:7 num1:7 num3:4 num2:7 num1:6
+MYHAND seat=1 num3:7 num3:4 num2:7 num1:6
+MYHAND seat=1 num3:7 num3:4 num2:7 num1:6
+MYHAND seat=1 num3:7 num3:4 num2:7 num1:6
+MYHAND seat=1 num3:7 num3:4 num2:7 num1:6
+MYHAND seat=1 num3:4 num2:7 num1:6
+MYHAND seat=1 num3:4 num2:7 num1:6
+MYHAND seat=1 num3:4 num2:7 num1:6
+MYHAND seat=1 num3:4 num2:7 num1:6
+MYHAND seat=1 num2:7 num1:6
+MYHAND seat=1 num2:7 num1:6
+MYHAND seat=1 num2:7 num1:6
+MYHAND seat=1 num2:7 num1:6
+MYHAND seat=1 num2:7 num1:6 rev0
+MYHAND seat=1 num2:7 num1:6 rev0
+MYHAND seat=1 num2:7 num1:6 rev0 rev0 num0:4
+MYHAND seat=1 num2:7 num1:6 rev0 rev0 num0:4
+MYHAND seat=1 num2:7 num1:6 rev0 rev0 num0:4
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/12c-catch-button-나.png
+MYHAND seat=1 num2:7 num1:6 rev0 rev0 num0:4
+SHOT /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/godot-multi/spec/hanjang-web/evidence/n5/full-windowed/mac-guest/12b-called-나.png
+MYHAND seat=1 num2:7 num1:6 rev0 num0:4
+MYHAND seat=1 num2:7 num1:6 rev0 num0:4
+MYHAND seat=1 num2:7 num1:6 rev0 num0:4
+MYHAND seat=1 num2:7 num1:6 rev0 num0:4
+MYHAND seat=1 num2:7 num1:6 rev0 num0:4
+MYHAND seat=1 num2:7 num1:6 rev0 num0:4
+MYHAND seat=1 num2:7 num1:6 rev0 num0:4
+MYHAND seat=1 num2:7 num1:6 rev0 num0:4
+MYHAND seat=1 num2:7 num1:6 rev0 num0:4
+MYHAND seat=1 num2:7 rev0 num0:4
+MYHAND seat=1 num2:7 rev0 num0:4
+RESULT winner=0 ranks=[1, 2, 3, 4]
+LEFT_TO_TITLE 방장이 나갔어요
+SCREEN title

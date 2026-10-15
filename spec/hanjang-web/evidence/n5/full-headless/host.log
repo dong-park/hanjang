@@ -1,0 +1,357 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCREEN title
+HOST_READY 10.133.58.112
+SCREEN lobby
+SEATED 2 나
+SEATED 3 폰1
+SEATED 4 폰2
+START_OK seats=4
+GAME_STARTED 4
+SCREEN table_net
+SESSION_START n=4 seed=7
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 wild-1 num3:9
+IGNORED seat=0 rid=1 kind=play reason=나눠 주는 중
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 wild-1 num3:9
+ACCEPT seat=0 rid=2 kind=play
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 num3:9
+AUTO_COLOR seat=0 color=3
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 num3:9
+ACCEPT seat=1 rid=1 kind=play
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 num3:9
+ACCEPT seat=0 rid=3 kind=play
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9
+ACCEPT seat=2 rid=1 kind=play
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9
+ACCEPT seat=1 rid=2 kind=play
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9
+AUTO_DRAW seat=0
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=3 rid=1 kind=play
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=1 rid=3 kind=draw
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=0 rid=4 kind=play
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=3 rid=2 kind=play
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=2 rid=2 kind=play
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+AUTO_DRAW seat=1
+AUTO_KEEP seat=1
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=0 rid=5 kind=draw
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1 wild4-1
+ACCEPT seat=0 rid=6 kind=play
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+AUTO_DRAW seat=2
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=1 rid=4 kind=play
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=0 rid=7 kind=play
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=2 rid=3 kind=play
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=0 rid=8 kind=draw
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1 num0:7
+ACCEPT seat=3 rid=3 kind=play
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1 num0:7
+ACCEPT seat=0 rid=9 kind=draw
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=1 rid=5 kind=play
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=3 rid=4 kind=play
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=0 rid=10 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=1 rid=6 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=2 rid=4 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=0 rid=11 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8
+ACCEPT seat=1 rid=7 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8
+ACCEPT seat=2 rid=5 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8
+ACCEPT seat=3 rid=5 kind=draw
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8
+ACCEPT seat=0 rid=12 kind=draw
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8 draw20
+ACCEPT seat=1 rid=8 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8 draw20
+AUTO_COLOR seat=1 color=0
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8 draw20
+ACCEPT seat=2 rid=6 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8 draw20
+ACCEPT seat=3 rid=6 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8 draw20
+ACCEPT seat=0 rid=13 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+ACCEPT seat=1 rid=9 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+AUTO_DRAW seat=2
+AUTO_KEEP seat=2
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+ACCEPT seat=3 rid=7 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+ACCEPT seat=1 rid=10 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+AUTO_DRAW seat=2
+AUTO_KEEP seat=2
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+ACCEPT seat=3 rid=8 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+ACCEPT seat=0 rid=14 kind=play
+MYHAND seat=0 num3:5 num3:9 draw20
+AUTO_DRAW seat=1
+AUTO_KEEP seat=1
+MYHAND seat=0 num3:5 num3:9 draw20
+ACCEPT seat=2 rid=7 kind=draw
+MYHAND seat=0 num3:5 num3:9 draw20
+ACCEPT seat=3 rid=9 kind=play
+MYHAND seat=0 num3:5 num3:9 draw20
+ACCEPT seat=1 rid=11 kind=play
+MYHAND seat=0 num3:5 num3:9 draw20
+AUTO_DRAW seat=2
+MYHAND seat=0 num3:5 num3:9 draw20
+ACCEPT seat=3 rid=10 kind=draw
+MYHAND seat=0 num3:5 num3:9 draw20
+AUTO_DRAW seat=0
+AUTO_KEEP seat=0
+MYHAND seat=0 num3:5 num3:9 draw20 num1:7
+ACCEPT seat=1 rid=12 kind=play
+MYHAND seat=0 num3:5 num3:9 draw20 num1:7
+ACCEPT seat=2 rid=8 kind=play
+MYHAND seat=0 num3:5 num3:9 draw20 num1:7
+AUTO_DRAW seat=3
+MYHAND seat=0 num3:5 num3:9 draw20 num1:7
+ACCEPT seat=0 rid=15 kind=play
+MYHAND seat=0 num3:9 draw20 num1:7
+ACCEPT seat=1 rid=13 kind=play
+MYHAND seat=0 num3:9 draw20 num1:7
+AUTO_DRAW seat=2
+MYHAND seat=0 num3:9 draw20 num1:7
+ACCEPT seat=3 rid=11 kind=play
+MYHAND seat=0 num3:9 draw20 num1:7
+ACCEPT seat=0 rid=16 kind=play
+MYHAND seat=0 draw20 num1:7
+ACCEPT seat=1 rid=14 kind=draw
+MYHAND seat=0 draw20 num1:7
+ACCEPT seat=2 rid=9 kind=play
+MYHAND seat=0 draw20 num1:7
+ACCEPT seat=0 rid=17 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=0 rid=18 kind=hanjang
+MYHAND seat=0 num1:7
+ACCEPT seat=2 rid=10 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=3 rid=12 kind=play
+MYHAND seat=0 num1:7 num0:9 wild-1
+ACCEPT seat=1 rid=15 kind=play
+MYHAND seat=0 num1:7 num0:9 wild-1
+ACCEPT seat=0 rid=19 kind=play
+MYHAND seat=0 num1:7 wild-1
+AUTO_DRAW seat=3
+MYHAND seat=0 num1:7 wild-1
+ACCEPT seat=2 rid=11 kind=play
+MYHAND seat=0 num1:7 wild-1
+ACCEPT seat=0 rid=20 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=0 rid=21 kind=hanjang
+MYHAND seat=0 num1:7
+ACCEPT seat=3 rid=13 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=2 rid=12 kind=draw
+MYHAND seat=0 num1:7
+ACCEPT seat=2 rid=13 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=1 rid=16 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=0 rid=22 kind=play
+MYHAND seat=0 
+RESULT winner=0 ranks=[1, 2, 3, 4]
+RESULT_SHOWN ["0:1", "1:2", "2:3", "3:4"]
+SCREEN result
+REPLAY seats=4
+GAME_STARTED 4
+SCREEN table_net
+SESSION_START n=4 seed=7
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 wild-1 num3:9
+IGNORED seat=0 rid=23 kind=play reason=나눠 주는 중
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 wild-1 num3:9
+ACCEPT seat=0 rid=24 kind=play
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 num3:9
+AUTO_COLOR seat=0 color=3
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 num3:9
+ACCEPT seat=1 rid=17 kind=play
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 num3:9
+ACCEPT seat=0 rid=25 kind=play
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9
+ACCEPT seat=2 rid=14 kind=play
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9
+ACCEPT seat=1 rid=18 kind=play
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9
+AUTO_DRAW seat=0
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=3 rid=14 kind=play
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=1 rid=19 kind=draw
+MYHAND seat=0 num3:6 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=0 rid=26 kind=play
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=3 rid=15 kind=play
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=2 rid=15 kind=play
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+AUTO_DRAW seat=1
+AUTO_KEEP seat=1
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=0 rid=27 kind=draw
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1 wild4-1
+ACCEPT seat=0 rid=28 kind=play
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+AUTO_DRAW seat=2
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=1 rid=20 kind=play
+MYHAND seat=0 skip1 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=0 rid=29 kind=play
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=2 rid=16 kind=play
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1
+ACCEPT seat=0 rid=30 kind=draw
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1 num0:7
+ACCEPT seat=3 rid=16 kind=play
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1 num0:7
+ACCEPT seat=0 rid=31 kind=draw
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=1 rid=21 kind=play
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=3 rid=17 kind=play
+MYHAND seat=0 num3:5 num1:4 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=0 rid=32 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=1 rid=22 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=2 rid=17 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:1 num0:7 num1:8
+ACCEPT seat=0 rid=33 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8
+ACCEPT seat=1 rid=23 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8
+ACCEPT seat=2 rid=18 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8
+ACCEPT seat=3 rid=18 kind=draw
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8
+ACCEPT seat=0 rid=34 kind=draw
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8 draw20
+ACCEPT seat=1 rid=24 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8 draw20
+AUTO_COLOR seat=1 color=0
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8 draw20
+ACCEPT seat=2 rid=19 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8 draw20
+ACCEPT seat=3 rid=19 kind=play
+MYHAND seat=0 num3:5 num3:9 num0:7 num1:8 draw20
+ACCEPT seat=0 rid=35 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+ACCEPT seat=1 rid=25 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+AUTO_DRAW seat=2
+AUTO_KEEP seat=2
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+ACCEPT seat=3 rid=20 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+ACCEPT seat=1 rid=26 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+AUTO_DRAW seat=2
+AUTO_KEEP seat=2
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+ACCEPT seat=3 rid=21 kind=play
+MYHAND seat=0 num3:5 num3:9 num1:8 draw20
+ACCEPT seat=0 rid=36 kind=play
+MYHAND seat=0 num3:5 num3:9 draw20
+AUTO_DRAW seat=1
+AUTO_KEEP seat=1
+MYHAND seat=0 num3:5 num3:9 draw20
+ACCEPT seat=2 rid=20 kind=draw
+MYHAND seat=0 num3:5 num3:9 draw20
+ACCEPT seat=3 rid=22 kind=play
+MYHAND seat=0 num3:5 num3:9 draw20
+ACCEPT seat=1 rid=27 kind=play
+MYHAND seat=0 num3:5 num3:9 draw20
+AUTO_DRAW seat=2
+MYHAND seat=0 num3:5 num3:9 draw20
+ACCEPT seat=3 rid=23 kind=draw
+MYHAND seat=0 num3:5 num3:9 draw20
+AUTO_DRAW seat=0
+AUTO_KEEP seat=0
+MYHAND seat=0 num3:5 num3:9 draw20 num1:7
+ACCEPT seat=1 rid=28 kind=play
+MYHAND seat=0 num3:5 num3:9 draw20 num1:7
+ACCEPT seat=2 rid=21 kind=play
+MYHAND seat=0 num3:5 num3:9 draw20 num1:7
+AUTO_DRAW seat=3
+MYHAND seat=0 num3:5 num3:9 draw20 num1:7
+ACCEPT seat=0 rid=37 kind=play
+MYHAND seat=0 num3:9 draw20 num1:7
+ACCEPT seat=1 rid=29 kind=play
+MYHAND seat=0 num3:9 draw20 num1:7
+AUTO_DRAW seat=2
+MYHAND seat=0 num3:9 draw20 num1:7
+ACCEPT seat=3 rid=24 kind=play
+MYHAND seat=0 num3:9 draw20 num1:7
+ACCEPT seat=0 rid=38 kind=play
+MYHAND seat=0 draw20 num1:7
+ACCEPT seat=1 rid=30 kind=draw
+MYHAND seat=0 draw20 num1:7
+ACCEPT seat=2 rid=22 kind=play
+MYHAND seat=0 draw20 num1:7
+ACCEPT seat=0 rid=39 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=0 rid=40 kind=hanjang
+MYHAND seat=0 num1:7
+ACCEPT seat=2 rid=23 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=3 rid=25 kind=play
+MYHAND seat=0 num1:7 num0:9 wild-1
+ACCEPT seat=1 rid=31 kind=play
+MYHAND seat=0 num1:7 num0:9 wild-1
+ACCEPT seat=0 rid=41 kind=play
+MYHAND seat=0 num1:7 wild-1
+AUTO_DRAW seat=3
+MYHAND seat=0 num1:7 wild-1
+ACCEPT seat=2 rid=24 kind=play
+MYHAND seat=0 num1:7 wild-1
+ACCEPT seat=0 rid=42 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=0 rid=43 kind=hanjang
+MYHAND seat=0 num1:7
+ACCEPT seat=3 rid=26 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=2 rid=25 kind=draw
+MYHAND seat=0 num1:7
+ACCEPT seat=2 rid=26 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=1 rid=32 kind=play
+MYHAND seat=0 num1:7
+ACCEPT seat=0 rid=44 kind=play
+MYHAND seat=0 
+RESULT winner=0 ranks=[1, 2, 3, 4]
+RESULT_SHOWN ["0:1", "1:2", "2:3", "3:4"]
+SCREEN result
+REPLAY seats=4
+GAME_STARTED 4
+SCREEN table_net
+SESSION_START n=4 seed=7
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 wild-1 num3:9
+IGNORED seat=0 rid=45 kind=play reason=나눠 주는 중
+PEER_LEFT_IN_GAME 1746980298
+PLAYER_LEFT seat=2 폰1
+DISCONNECT_FX seat=2 cards=7
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 wild-1 num3:9
+PEER_LEFT_IN_GAME 78410026
+PLAYER_LEFT seat=3 폰2
+DISCONNECT_FX seat=3 cards=7
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 wild-1 num3:9
+MYHAND seat=0 skip3 num3:6 skip1 num3:5 num1:4 wild-1 num3:9

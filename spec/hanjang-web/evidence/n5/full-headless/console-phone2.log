@@ -1,0 +1,181 @@
+1792073777.605 +1.75 OPENED #1
+1792073777.880 +2.03 log Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+1792073777.900 +2.05 warning WebGL: non-portable extension enabled: WEBGL_polygon_mode
+1792073778.052 +2.20 log OpenGL API OpenGL ES 3.0 (WebGL 2.0) - Compatibility - Using Device: WebKit - WebKit WebGL
+1792073778.143 +2.29 log Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+1792073778.346 +2.50 log SCREEN title
+1792073778.352 +2.50 log SCREEN join
+1792073778.469 +2.62 log JOINED 127.0.0.1
+1792073778.472 +2.62 log SCREEN lobby
+1792073801.436 +25.59 log GAME_STARTED 4
+1792073801.449 +25.60 log SCREEN table_net
+1792073801.753 +25.90 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073804.140 +28.29 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073804.224 +28.37 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073806.226 +30.38 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073806.274 +30.42 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073806.374 +30.52 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073806.609 +30.76 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073806.749 +30.90 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073808.742 +32.89 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073808.827 +32.98 log MYHAND seat=3 rev2 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073808.898 +33.05 log MYHAND seat=3 rev2 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073809.027 +33.18 log MYHAND seat=3 rev2 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073809.109 +33.26 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2
+1792073809.228 +33.38 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2
+1792073811.233 +35.38 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2
+1792073811.328 +35.48 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2
+1792073811.446 +35.59 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073813.433 +37.58 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073813.496 +37.65 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073813.614 +37.76 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073813.718 +37.87 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073813.826 +37.98 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073813.917 +38.07 log MYHAND seat=3 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073814.013 +38.16 log MYHAND seat=3 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073814.153 +38.30 log MYHAND seat=3 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073814.247 +38.40 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073814.313 +38.46 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073814.447 +38.60 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073814.549 +38.70 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3
+1792073814.641 +38.79 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3
+1792073814.692 +38.84 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3
+1792073814.846 +38.99 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3
+1792073814.969 +39.12 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073815.081 +39.23 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073815.198 +39.35 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073817.184 +41.33 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073817.324 +41.47 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073817.420 +41.57 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073817.551 +41.70 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073817.616 +41.77 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073819.624 +43.77 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073819.702 +43.85 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073819.818 +43.97 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073821.803 +45.95 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073821.911 +46.06 log MYHAND seat=3 num3:4 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073821.976 +46.13 log MYHAND seat=3 num3:4 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073823.977 +48.13 log MYHAND seat=3 num3:4 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073824.039 +48.19 log MYHAND seat=3 num3:4 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073824.189 +48.34 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2
+1792073824.312 +48.46 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2
+1792073826.313 +50.46 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2
+1792073826.423 +50.57 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2
+1792073828.411 +52.56 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2
+1792073828.580 +52.73 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2
+1792073828.682 +52.83 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2
+1792073830.666 +54.81 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073830.729 +54.88 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073830.864 +55.01 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073832.864 +57.01 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073832.970 +57.12 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073833.049 +57.20 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073833.163 +57.31 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073833.246 +57.40 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073833.346 +57.49 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073833.498 +57.65 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073833.580 +57.73 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073833.699 +57.85 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073833.780 +57.93 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073833.847 +58.00 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073835.833 +59.98 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1 num3:3
+1792073835.981 +60.13 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1 num3:3
+1792073836.116 +60.27 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1 num3:3
+1792073836.186 +60.34 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1 num3:3
+1792073836.300 +60.45 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num0:9 rev1 num3:3
+1792073836.383 +60.53 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num0:9 rev1 num3:3
+1792073836.466 +60.62 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num0:9 rev1 num3:3
+1792073836.549 +60.70 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num0:9 rev1 num3:3
+1792073836.616 +60.77 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num0:9 rev1 num3:3
+1792073836.618 +60.77 log RESULT winner=0 ranks=[1, 2, 3, 4]
+1792073838.822 +62.97 log RESULT_SHOWN ["0:1", "1:2", "2:3", "3:4"]
+1792073838.822 +62.97 log SCREEN result
+1792073839.821 +63.97 log GAME_STARTED 4
+1792073839.827 +63.98 log SCREEN table_net
+1792073840.118 +64.27 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073842.554 +66.70 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073842.621 +66.77 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073844.626 +68.78 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073844.690 +68.84 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073844.779 +68.93 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073844.894 +69.04 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073845.011 +69.16 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073847.027 +71.18 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073847.112 +71.26 log MYHAND seat=3 rev2 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073847.174 +71.32 log MYHAND seat=3 rev2 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073847.308 +71.46 log MYHAND seat=3 rev2 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073847.410 +71.56 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2
+1792073847.512 +71.66 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2
+1792073849.514 +73.66 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2
+1792073849.627 +73.78 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2
+1792073849.714 +73.86 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073851.713 +75.86 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073851.778 +75.93 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073851.929 +76.08 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073852.029 +76.18 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073852.129 +76.28 log MYHAND seat=3 rev2 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073852.212 +76.36 log MYHAND seat=3 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073852.329 +76.48 log MYHAND seat=3 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073852.462 +76.61 log MYHAND seat=3 num3:4 num2:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073852.567 +76.72 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073852.648 +76.80 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073852.780 +76.93 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0
+1792073852.879 +77.03 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3
+1792073852.947 +77.10 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3
+1792073853.013 +77.16 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3
+1792073853.166 +77.31 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3
+1792073853.298 +77.45 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073853.398 +77.55 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073853.513 +77.66 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073855.566 +79.72 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073855.648 +79.80 log MYHAND seat=3 num3:4 num1:0 num0:2 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073855.770 +79.92 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073855.887 +80.04 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073855.970 +80.12 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073857.986 +82.14 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 skip0 draw20 rev3 num3:2
+1792073858.088 +82.24 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073858.187 +82.34 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073860.174 +84.32 log MYHAND seat=3 num3:4 num1:0 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073860.270 +84.42 log MYHAND seat=3 num3:4 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073860.335 +84.48 log MYHAND seat=3 num3:4 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073862.337 +86.49 log MYHAND seat=3 num3:4 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073862.404 +86.55 log MYHAND seat=3 num3:4 num3:6 skip1 draw23 draw20 rev3 num3:2
+1792073862.559 +86.71 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2
+1792073862.689 +86.84 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2
+1792073864.694 +88.84 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2
+1792073864.792 +88.94 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2
+1792073866.793 +90.94 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2
+1792073866.907 +91.06 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2
+1792073866.993 +91.14 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2
+1792073868.993 +93.14 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073869.082 +93.23 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073869.164 +93.31 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073871.182 +95.33 log MYHAND seat=3 num3:4 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073871.261 +95.41 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073871.345 +95.49 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073871.461 +95.61 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8
+1792073871.546 +95.69 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073871.647 +95.80 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073871.780 +95.93 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073871.881 +96.03 log MYHAND seat=3 num3:6 draw23 draw20 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073871.981 +96.13 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073872.063 +96.21 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073872.111 +96.26 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1
+1792073874.131 +98.28 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1 num3:3
+1792073874.265 +98.41 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1 num3:3
+1792073874.382 +98.53 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1 num3:3
+1792073874.451 +98.60 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num1:8 num0:9 rev1 num3:3
+1792073874.564 +98.71 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num0:9 rev1 num3:3
+1792073874.631 +98.78 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num0:9 rev1 num3:3
+1792073874.715 +98.86 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num0:9 rev1 num3:3
+1792073874.816 +98.97 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num0:9 rev1 num3:3
+1792073874.882 +99.03 log MYHAND seat=3 num3:6 draw23 rev3 num3:2 skip2 num0:9 rev1 num3:3
+1792073874.884 +99.03 log RESULT winner=0 ranks=[1, 2, 3, 4]
+1792073877.089 +101.24 log RESULT_SHOWN ["0:1", "1:2", "2:3", "3:4"]
+1792073877.090 +101.24 log SCREEN result
+1792073878.084 +102.23 log GAME_STARTED 4
+1792073878.090 +102.24 log SCREEN table_net
+1792073878.386 +102.53 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
+1792073879.273 +103.42 log PLAYER_LEFT seat=2 폰1
+1792073879.273 +103.42 log DISCONNECT_FX seat=2 cards=7
+1792073879.285 +103.43 log MYHAND seat=3 rev2 skip3 num3:8 num3:4 num2:4 num1:0 num0:2
