@@ -207,6 +207,11 @@ func edge_cases() -> void:
 	r.play(0, 0)
 	r.leave(0)
 	check(r.turn == 1 and r.phase == "pick", "경계 색 고르는 중에 나가면 다음 사람 차례")
+	check(r.cur_color == 1, "경계 색 고르다 나가면 남은 패 최빈색")
+	r = fresh(3)
+	stage(r, r.make_card(0, "num", 5), 0, [[r.make_card(-1, "wild"), r.make_card(1, "num", 1)]])
+	var bad: Dictionary = r.play(0, 0, 7)
+	check(not bad.ok and r.hands[0].size() == 2 and r.phase == "pick", "경계 잘못된 색 요청은 상태를 바꾸지 않음")
 
 func collect_ids(v, out: Array) -> void:
 	if v is Dictionary:

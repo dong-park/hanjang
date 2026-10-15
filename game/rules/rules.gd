@@ -37,9 +37,12 @@ var winner := -1
 var rng := RandomNumberGenerator.new()
 var _next_id := 0
 
-func setup(count: int, seed_value: int = 0) -> void:
+func setup(count: int, seed_value: int = -1) -> void:
 	n = count
-	rng.seed = seed_value
+	if seed_value < 0:
+		rng.randomize()
+	else:
+		rng.seed = seed_value
 	hands = []
 	alive = []
 	for i in n:
@@ -179,6 +182,8 @@ func play(seat: int, idx: int, color: int = -1) -> Dictionary:
 	var card: Dictionary = hands[seat][idx]
 	if not can_play(card):
 		return _fail("낼 수 없는 카드예요")
+	if (card.kind == "wild" or card.kind == "wild4") and color != -1 and (color < 0 or color > 3):
+		return _fail("색이 아니에요")
 	hands[seat].remove_at(idx)
 	discard.append(card)
 	drawn_idx = -1
@@ -307,6 +312,9 @@ func _finish(win_seat: int) -> void:
 func leave(seat: int) -> Dictionary:
 	if seat < 0 or seat >= n or not alive[seat]:
 		return _fail("이미 없는 자리예요")
+	if turn == seat and phase == "color":
+		cur_color = auto_color(seat) # 색 고르던 사람이 나가면 시간 초과와 같은 색. 와일드+4 벌칙은 적용하지 않는다
+		pending_wild = {}
 	alive[seat] = false
 	deck.append_array(hands[seat])
 	hands[seat] = []
@@ -323,9 +331,6 @@ func leave(seat: int) -> Dictionary:
 		if phase == "hanjang":
 			phase = "pick"
 	if turn == seat:
-		if phase == "color":
-			pending_wild = {}
-			cur_color = 0
 		turn = _step(seat, 1)
 		phase = "hanjang" if hj_seat >= 0 else "pick"
 		drawn_idx = -1
