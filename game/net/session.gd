@@ -72,6 +72,9 @@ func _start_host() -> void:
 	engine = Rules.new()
 	engine.setup(seats.size(), _seed)
 	_seen = {}
+	for i in seats.size():  ## 0.3초 사이에 나간 자리는 판이 시작될 때 바로 나간 처리
+		if seats[i].get("gone", false):
+			engine.leave(i)
 	_running = true
 	print("SESSION_START n=", seats.size(), " seed=", _seed)
 	_mark_deadline()
@@ -145,11 +148,10 @@ func _handle(peer: int, rid: int, kind: String, a: int, b: int) -> void:
 	if engine == null or seat < 0:
 		print("IGNORED seat=", seat, " rid=", rid, " kind=", kind, " reason=세션 밖")
 		return
-	var key := "%d:%d" % [seat, rid]
-	if _seen.has(key):
+	if rid <= int(_seen.get(seat, 0)):
 		print("IGNORED seat=", seat, " rid=", rid, " kind=", kind, " reason=같은 요청 두 번")
 		return
-	_seen[key] = true
+	_seen[seat] = rid
 	var r: Dictionary
 	match kind:
 		"play": r = engine.play(seat, a, b)
@@ -179,13 +181,17 @@ func _on_peer_left(peer: int) -> void:
 	if engine == null or seat < 0 or not engine.alive[seat]:
 		return
 	var who: String = seats[seat].name
+	var before := [engine.turn, engine.phase]
 	engine.leave(seat)
 	print("PLAYER_LEFT seat=", seat, " ", who)
 	for i in seats.size():
 		if engine.alive[i] and seats[i].peer != multiplayer.get_unique_id():
 			_left.rpc_id(seats[i].peer, seat, who)
 	player_left.emit(seat, who)
-	_after_change()
+	if before == [engine.turn, engine.phase]:
+		_push()  ## 차례가 그대로면 남은 시간을 새로 재지 않는다
+	else:
+		_after_change()
 
 
 # ---------- 요청 보내기 (방장·접속자 공통) ----------

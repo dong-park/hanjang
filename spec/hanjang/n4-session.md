@@ -6,7 +6,7 @@
 **id**: HJ-4
 **상위**: spec/hanjang/spec.md
 **deps**: n1-rules, n3-lobby
-**상태**: 진행
+**상태**: 끝남
 **담당 행**: T7, T8, T9, T26
 **사람 확인**: 불필요
 
