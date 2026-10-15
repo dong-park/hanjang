@@ -2,6 +2,7 @@ extends Control
 ## 화면 전환 담당. 첫 화면 → (참가 →) 대기실 → 시작 신호. 방 연결은 Room(autoload)이 한다.
 ## 시험용 인자: --host --join=IP --name=닉 --face=N --port=N --try-start=초,초 --leave-after=초 --shot=title|join|lobby --result-pick=replay|lobby
 ##   --leave-at-game=N --leave-delay=초 (N번째 판이 시작되고 초 뒤에 나간다)
+## 장면 캡처: --shots=폴더 (tests/scene_shots.gd)
 
 const THEME := preload("res://ui/theme.tres")
 const BG_TILE := preload("res://assets/ui/bg_tile.png")
@@ -15,6 +16,7 @@ var _current: Control
 var _notice := ""
 var _opts := {}
 var _games := 0
+var _shots
 
 
 func _ready() -> void:
@@ -39,6 +41,10 @@ func _ready() -> void:
 		_opts[kv[0]] = kv[1] if kv.size() > 1 else "1"
 	if _opts.has("port"):
 		Room.port = int(_opts.port)
+	if _opts.has("shots"):
+		_shots = load("res://tests/scene_shots.gd").new()
+		add_child(_shots)
+		_shots.setup(self, _opts.shots)
 	show_screen(TitleScreen)
 	_run_cmdline()
 
@@ -53,6 +59,8 @@ func show_screen(scene: PackedScene) -> void:
 		_current.set_notice(_notice)
 	_notice = ""
 	print("SCREEN ", _current.scene_file_path.get_file().get_basename())
+	if _shots:
+		_shots.on_screen(_current.scene_file_path.get_file().get_basename())
 
 
 func show_title() -> void:

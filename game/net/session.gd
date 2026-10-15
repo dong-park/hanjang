@@ -7,7 +7,8 @@ extends Node
 ##   request_refused(rid, reason)       방장이 요청을 거절했을 때 — 화면은 입력 잠금을 풀 수 있다
 ##   player_left(seat, name)            판 중 누가 나갔을 때
 ##   ended(ranks: Array)                판이 끝났을 때
-## 시험 인자: --autoplay  --seed=N  --cheat  --turn-time=초(기본 20)  --hj-time=초(기본 3)
+## 시험 인자: --autoplay  --seed=N  --cheat  --turn-time=초(기본 20)  --hj-time=초(기본 3)  --auto-delay=초(자동 플레이 반응을 늦춰 눈으로 본다)
+##   --hj-deaf (자동 플레이가 한장!·잡았다!를 절대 누르지 않는다: 한장! 창이 시간 초과로 닫히는 경로를 시험한다)
 
 signal state_changed(snap: Dictionary)
 signal request_refused(rid: int, reason: String)
@@ -377,9 +378,11 @@ func _best_color(hand: Array) -> int:
 func _autoplay_decide(snap: Dictionary) -> void:
 	var me: int = snap.seat
 	var serial := _serial
-	var delay := 0.05 + _rng.randf() * 0.1
+	var delay := 0.05 + _rng.randf() * 0.1 + float(_opts.get("auto-delay", 0))
 	var act := Callable()
 	if snap.phase == "hanjang":
+		if _opts.has("hj-deaf"):
+			return
 		if snap.hanjang_seat == me:
 			if _rng.randf() < 0.7:  ## 가끔 한장!을 잊는다
 				act = func(): request("hanjang")
