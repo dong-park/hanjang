@@ -14,6 +14,9 @@ var _opts := {}
 
 
 func _ready() -> void:
+	if "--local" in OS.get_cmdline_user_args():
+		get_tree().change_scene_to_file.call_deferred("res://screens/table_local.tscn")
+		return
 	theme = THEME
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	var bg := TextureRect.new()
