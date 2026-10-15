@@ -1,0 +1,22 @@
+{
+  "id": "T12",
+  "kind": "task",
+  "title": "방 주소로 참가하면 대기실 다음 자리에 앉는다",
+  "given": "다른 컴퓨터에서 방이 열려 있고 1명이 앉아 있다.",
+  "when": "참가 화면에 방 주소를 쓰고 참가한다.",
+  "then": "두 화면 모두 둘째 자리에 내 닉네임과 아바타가 보인다. 참가 화면의 최근 방에 그 방이 남는다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [
+    "T13",
+    "T14"
+  ],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

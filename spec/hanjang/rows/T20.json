@@ -1,0 +1,19 @@
+{
+  "id": "T20",
+  "kind": "task",
+  "title": "상대가 낸 카드는 그 사람 자리에서 가운데로 날아온다",
+  "given": "하늘의 차례이고 나는 기다린다.",
+  "when": "하늘이 카드를 낸다.",
+  "then": "하늘 아바타가 빛난다. 하늘 자리에서 더미로 카드가 날아온다. 기다리는 동안 내 카드는 모두 평평하다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

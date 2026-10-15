@@ -1,0 +1,19 @@
+{
+  "id": "T29",
+  "kind": "task",
+  "title": "판이 끝나면 등수가 뜨고 다시 하기로 같은 사람끼리 바로 한다",
+  "given": "누가 마지막 카드를 냈다.",
+  "when": "결과 화면이 뜨고 다시 하기를 고른다.",
+  "then": "모든 화면에 1등과 남은 장수 순 등수가 보인다. 다시 하기를 고르면 같은 사람끼리 카드 나눠 주기가 바로 시작된다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

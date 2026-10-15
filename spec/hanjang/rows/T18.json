@@ -1,0 +1,19 @@
+{
+  "id": "T18",
+  "kind": "task",
+  "title": "솟은 카드를 누르거나 위로 끌면 더미로 날아간다",
+  "given": "내 차례이고 솟은 카드가 있다.",
+  "when": "솟은 카드를 누른다. 다른 판에서는 위로 끈다.",
+  "then": "카드가 더미로 날아가 살짝 튕기며 놓인다. 모든 화면에서 더미 맨 위가 그 카드로 바뀐다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

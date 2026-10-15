@@ -1,0 +1,21 @@
+{
+  "id": "T10",
+  "kind": "task",
+  "title": "첫 화면에서 방을 만들면 대기실 첫 자리에 왕관과 함께 앉는다",
+  "given": "첫 화면에서 닉네임 하늘을 쓰고 아바타 하나를 골랐다.",
+  "when": "방 만들기를 누른다.",
+  "then": "대기실 첫 자리에 하늘과 고른 아바타, 왕관이 보인다. 위에 방 주소가 크게 보인다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [
+    "T12"
+  ],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

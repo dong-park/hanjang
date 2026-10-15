@@ -1,0 +1,19 @@
+{
+  "id": "T34",
+  "kind": "task",
+  "title": "카드와 이름이 우노와 겹치지 않는다",
+  "given": "게임 폴더의 모든 파일과 뽑은 화면 PNG가 있다.",
+  "when": "글자를 찾고 카드 그림을 본다.",
+  "then": "창 제목과 로고는 한장! 이다. 게임 폴더에서 대소문자 무시하고 uno를 찾으면 0건이다. 카드에 기울어진 흰 타원이 없고 흰 테두리, 가운데 큰 숫자, 모서리 별이 있다. 확인: rg -i uno game, 사람이 카드 그림 확인",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

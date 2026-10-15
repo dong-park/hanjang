@@ -1,0 +1,21 @@
+{
+  "id": "T17",
+  "kind": "task",
+  "title": "내 차례에는 낼 수 있는 카드만 솟고 시간 바가 준다",
+  "given": "더미 맨 위가 빨강 7이고 내 차례다.",
+  "when": "내 패를 본다.",
+  "then": "빨강 카드와 7과 와일드만 위로 솟는다. 나머지는 어두워진다. 내 아바타가 빛나고 위의 시간 바가 줄어든다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [
+    "T18"
+  ],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

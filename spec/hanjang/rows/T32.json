@@ -1,0 +1,19 @@
+{
+  "id": "T32",
+  "kind": "task",
+  "title": "방장이 나가면 모두 첫 화면으로 간다",
+  "given": "대기실이나 판 중에 방장이 창을 닫는다.",
+  "when": "접속자들이 화면을 본다.",
+  "then": "모든 접속자 화면에 방장이 나갔어요가 뜬다. 그 뒤 첫 화면이 보인다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

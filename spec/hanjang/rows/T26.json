@@ -1,0 +1,19 @@
+{
+  "id": "T26",
+  "kind": "task",
+  "title": "차례 시간이 다 되면 저절로 한 장 뽑고 넘어간다",
+  "given": "내 차례이고 아무것도 누르지 않는다.",
+  "when": "시간 바가 끝까지 줄어든다.",
+  "then": "내 패가 한 장 늘어난다. 다음 사람 아바타가 빛난다. 색 고르기 중이었으면 내 패에 가장 많은 색이 정해진다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

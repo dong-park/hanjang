@@ -1,0 +1,19 @@
+{
+  "id": "T19",
+  "kind": "task",
+  "title": "어두운 카드를 누르거나 끌어도 아무 일도 없다",
+  "given": "내 차례이고 어두운 카드가 있다.",
+  "when": "어두운 카드를 누르거나 위로 끈다.",
+  "then": "카드는 제자리로 돌아온다. 더미와 차례가 그대로다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

@@ -1,0 +1,19 @@
+{
+  "id": "T22",
+  "kind": "task",
+  "title": "+2나 +4를 맞으면 숫자가 쾅 찍히고 카드가 날아온다",
+  "given": "앞사람 체리가 +2를 냈다.",
+  "when": "내 화면을 본다.",
+  "then": "큰 +2가 찍히고 체리의 공격! 2장 받아요가 뜬다. 더미에서 2장이 내 손으로 날아온다. 내 아바타가 빨갛게 흔들리고 차례가 넘어간다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

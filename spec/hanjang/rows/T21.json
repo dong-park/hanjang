@@ -1,0 +1,19 @@
+{
+  "id": "T21",
+  "kind": "task",
+  "title": "와일드를 내면 색 4개 중 하나를 고르고 모두가 그 색을 본다",
+  "given": "내 차례에 와일드를 냈다.",
+  "when": "뜬 색 4개 중 파랑을 누른다.",
+  "then": "모든 화면에서 더미 카드 테두리가 파랑이 된다. 다음 사람 패에서는 파랑과 와일드만 솟는다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

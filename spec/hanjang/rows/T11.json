@@ -1,0 +1,19 @@
+{
+  "id": "T11",
+  "kind": "task",
+  "title": "닉네임이 비면 첫 화면에서 넘어가지 않는다",
+  "given": "첫 화면의 닉네임 칸이 비어 있다.",
+  "when": "방 만들기나 참가하기를 누른다.",
+  "then": "화면이 그대로다. 닉네임 칸 옆에 닉네임을 써 주세요 문구가 뜬다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

@@ -1,0 +1,19 @@
+{
+  "id": "T27",
+  "kind": "task",
+  "title": "2장에서 1장을 내고 3초 안에 한장! 을 누르면 안전하다",
+  "given": "내 패가 2장이고 1장을 냈다.",
+  "when": "뜬 한장! 버튼을 3초 안에 누른다.",
+  "then": "모든 화면에 내 이름과 1장 남음! 이 뜬다. 다른 사람 화면에 잡았다! 버튼은 뜨지 않는다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

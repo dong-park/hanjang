@@ -1,0 +1,19 @@
+{
+  "id": "T13",
+  "kind": "task",
+  "title": "최근 방을 누르면 주소 없이 다시 들어간다",
+  "given": "참가 화면 최근 방에 하늘의 방이 있고 그 방이 열려 있다.",
+  "when": "최근 방의 하늘의 방을 누른다.",
+  "then": "주소를 쓰지 않고 그 방 대기실에 들어간다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "high",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}
