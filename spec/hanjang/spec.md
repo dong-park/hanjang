@@ -5,7 +5,7 @@
 | 문제 | 친구 4명이 같은 와이파이에서 설명 없이 바로 같이 할 수 있는 게임이 없다 |
 | 상위 | 없음 |
 | 상위문제 | 없음 |
-| 상태 | 아직 안 함 |
+| 상태 | 끝남 |
 | 시작 | 2026-10-15 |
 | ID 머리 | HJ |
 | 시안 | /Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/pixel-onecard-storyboard/index.html |
