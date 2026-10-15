@@ -20,7 +20,7 @@
   "recommend": "A",
   "confidence": "high",
   "reversible": true,
-  "status": "아직 안 함",
+  "status": "끝남",
   "blocks": [
     "T1"
   ],
@@ -28,5 +28,8 @@
     "answer": "",
     "fix": ""
   },
-  "log": []
+  "log": [
+    "2026-10-15 D2 → A (사용자, 시트에서)",
+    "2026-10-15 user.answer 반영: A"
+  ]
 }
