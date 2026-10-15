@@ -1,5 +1,5 @@
 Galmuri font family (Galmuri11, Galmuri11-Bold)
-Copyright (c) The Galmuri Project Authors, https://galmuri.quiple.dev/
+Copyright (c) 2019-2025 Lee Minseo (quiple@quiple.dev), https://github.com/quiple/galmuri
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

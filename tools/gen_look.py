@@ -3,7 +3,7 @@
 작은 격자(1칸 = 1 그림 픽셀)로 그린 뒤 정수 배율 S배로 키워 PNG로 저장한다.
 카드·화면 부품·아바타 PNG와 game/ui/theme.tres를 다시 만든다."""
 import math, os, shutil
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 
 S = 4  # 모든 그림 공통 배율
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,10 +23,11 @@ COLORS = {"red": hexc("e8333a"), "yellow": hexc("e3a82b"),
           "green": hexc("2f9e5a"), "blue": hexc("2d62c8")}
 BLACK = hexc("16161f")
 
-def save(img, *parts):
+def save(img, *parts, scale=None):
+    scale = scale or S
     path = os.path.join(G, "assets", *parts)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    img.resize((img.width * S, img.height * S), Image.NEAREST).save(path)
+    img.resize((img.width * scale, img.height * scale), Image.NEAREST).save(path)
 
 def bitmap(img, rows, x, y, color, scale=1):
     for j, row in enumerate(rows):
@@ -49,7 +50,7 @@ def parse(s):
     return s.split(",")
 
 D5 = {
-    "0": "01110,10001,10011,10101,11001,10001,01110", "1": "00100,01100,00100,00100,00100,00100,01110",
+    "0": "01110,10001,10001,10001,10001,10001,01110", "1": "00100,01100,00100,00100,00100,00100,01110",
     "2": "01110,10001,00001,00010,00100,01000,11111", "3": "11110,00001,00001,01110,00001,00001,11110",
     "4": "00010,00110,01010,10010,11111,00010,00010", "5": "11111,10000,11110,00001,00001,10001,01110",
     "6": "00110,01000,10000,11110,10001,10001,01110", "7": "11111,00001,00010,00100,01000,01000,01000",
@@ -85,113 +86,185 @@ def skip_big():
     return rows
 SKIP_BIG = skip_big()
 
-W, H = 20, 28       # 카드 그림 격자 (몸통 19x26 + 그림자)
-BW, BH = 19, 26
+CS = 2   # 카드 그림 배율 (격자 40x56 -> 80x112)
+W, H = 40, 56       # 카드 그림 격자 (몸통 39x52 + 두께 3)
+BW, BH = 39, 52
+OUTL = hexc("0d1020")
+
+def mask_from_rows(rows):
+    m = Image.new("L", (len(rows[0]), len(rows)), 0)
+    for j, r in enumerate(rows):
+        for i, ch in enumerate(r):
+            if ch == "#":
+                m.putpixel((i, j), 255)
+    return m
+
+def scaled_mask(rows, k):
+    m = mask_from_rows(rows)
+    return m.resize((m.width * k, m.height * k), Image.NEAREST)
+
+def stamp(img, mask, x, y, color=None, outline=OUTL, shadow=True, shadow_dy=2):
+    """mask(L)를 굵은 글자로 찍는다: 아래 그림자 + 1픽셀 어두운 테두리 + 꽉 찬 색."""
+    color = color or WHITE
+    pad = 2
+    big = Image.new("L", (mask.width + 2 * pad, mask.height + 2 * pad), 0)
+    big.paste(mask, (pad, pad))
+    edge = big.filter(ImageFilter.MaxFilter(3)).point(lambda v: 255 if v else 0)
+    ox, oy = x - pad, y - pad
+    if shadow:
+        sh = Image.new("RGBA", big.size, outline)
+        img.paste(sh, (ox, oy + shadow_dy), edge)
+    img.paste(Image.new("RGBA", big.size, outline), (ox, oy), edge)
+    img.paste(Image.new("RGBA", big.size, color), (ox, oy), big)
+
+def centered(img, mask, dy=0, color=None):
+    x = (BW - mask.width) // 2
+    y = (BH - mask.height) // 2 + dy
+    stamp(img, mask, x, y, color)
 
 def card_base(fill, border=WHITE):
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    d.rectangle([1, 2, 1 + BW - 1, 2 + BH - 1], fill=(0, 0, 0, 110))   # 두께 그림자
-    d.rectangle([0, 0, BW - 1, BH - 1], fill=border)
-    d.rectangle([1, 1, BW - 2, BH - 2], fill=fill)
-    # 모서리 둥글림
+    d.rectangle([1, 3, BW, BH + 2], fill=(0, 0, 0, 110))                 # 바닥 그림자
+    d.rectangle([1, 2, BW - 2, BH + 1], fill=shade(border, 0.6))        # 카드 두께(아래 3픽셀 어두운 면)
+    d.rectangle([0, 0, BW - 1, BH - 1], fill=border)                     # 흰 테두리
+    d.rectangle([2, 2, BW - 3, BH - 3], fill=fill)                       # 바탕색
+    d.rectangle([2, 2, BW - 3, BH - 3], outline=shade(fill, 1.28) if fill[0] + fill[1] + fill[2] > 120 else shade(fill, 2.2))  # 안쪽 밝은 선
     for (x, y) in [(0, 0), (BW - 1, 0), (0, BH - 1), (BW - 1, BH - 1)]:
         img.putpixel((x, y), (0, 0, 0, 0))
-    # 가장자리 아래 두께 줄
-    d.line([2, BH, BW - 2, BH], fill=shade(border, 0.62))
+    for (x, y) in [(1, 0), (0, 1), (BW - 2, 0), (BW - 1, 1), (1, BH - 1), (0, BH - 2), (BW - 2, BH - 1), (BW - 1, BH - 2)]:
+        img.putpixel((x, y), shade(border, 0.9))
     return img
 
-def corner_layer(sym, sym_rows, color):
-    layer = Image.new("RGBA", (BW, BH), (0, 0, 0, 0))
-    if sym_rows:
-        bitmap(layer, sym_rows, 2, 2, color)
-    bitmap(layer, STAR5, BW - 2 - 5 - 0, 2, color) if False else None
-    bitmap(layer, STAR_SM, BW - 7, 2, color)
-    return layer
+def corner_stars(img, x_off=0):
+    star = Image.new("RGBA", (5, 5), (0, 0, 0, 0))
+    bitmap(star, STAR_SM, 0, 0, WHITE)
+    img.alpha_composite(star, (BW - 9, 4))
+    img.alpha_composite(star.rotate(180), (4, BH - 9))
 
-def put_corners(img, small_rows, color):
-    layer = corner_layer(None, small_rows, color)
+def put_corner_glyph(img, rows, color=None):
+    """왼쪽 위 + 오른쪽 아래 (180도 돌린 그림) 두 곳에만 찍는다."""
+    layer = Image.new("RGBA", (BW, BH), (0, 0, 0, 0))
+    stamp(layer, mask_from_rows(rows), 4, 4, color, shadow=False)
     img.alpha_composite(layer, (0, 0))
     img.alpha_composite(layer.rotate(180), (0, 0))
 
-def glyph_center(img, rows, color, outline, scale=2, dy=0, w=None):
-    gw = len(rows[0]) * scale
-    gh = len(rows) * scale
-    x = 1 + (BW - 2 - gw) // 2
-    y = 1 + (BH - 2 - gh) // 2 + dy
-    outlined(img, rows, x, y, color, outline, scale)
+def circle_mask(size, r_out, r_in=None):
+    m = Image.new("L", (size, size), 0)
+    c = (size - 1) / 2
+    for y in range(size):
+        for x in range(size):
+            d = math.hypot(x - c, y - c)
+            if d <= r_out and (r_in is None or d >= r_in):
+                m.putpixel((x, y), 255)
+    return m
 
-def plus_value(digit, y_dy=0):
-    # +N : 3x3 plus(배율2) + 틈 + 숫자(배율2)
-    rows = []
-    for j in range(7):
-        r = ""
-        if 2 <= j < 5 or True:
-            pass
-        rows.append(r)
-    return None
+def skip_mask():
+    size = 30
+    m = circle_mask(size, 14.8, 10.8)         # 굵기 4픽셀 원
+    d = ImageDraw.Draw(m)
+    c = (size - 1) / 2
+    for t in range(-14, 15):                     # 원을 꽉 가로지르는 대각 막대(두께 4)
+        for w in range(-2, 2):
+            x, y = int(round(c + t * 0.7071 + w * 0.7071)), int(round(c + t * 0.7071 - w * 0.7071))
+            if math.hypot(x - c, y - c) <= 14.8 and 0 <= x < size and 0 <= y < size:
+                m.putpixel((x, y), 255)
+    for t in range(-14, 15):
+        for w in range(-2, 2):
+            x, y = int(round(c + t * 0.7071 + w * 0.7071 + 1)), int(round(c + t * 0.7071 - w * 0.7071))
+            if math.hypot(x - c, y - c) <= 14.8 and 0 <= x < size and 0 <= y < size:
+                m.putpixel((x, y), 255)
+    return m
+
+def reverse_mask():
+    m = Image.new("L", (30, 30), 0)
+    d = ImageDraw.Draw(m)
+    d.rectangle([1, 6, 20, 9], fill=255)
+    d.polygon([(19, 1), (29, 7.5), (19, 14)], fill=255)
+    return Image.composite(Image.new("L", m.size, 255), m, m.rotate(180))
+
+def plus_mask(digit):
+    k = 3
+    plus = scaled_mask(PLUS3, k)
+    dig = scaled_mask(D5[digit], k)
+    m = Image.new("L", (plus.width + 2 + dig.width, dig.height), 0)
+    m.paste(plus, (0, (dig.height - plus.height) // 2))
+    m.paste(dig, (plus.width + 2, 0))
+    return m
+
+def color_circle(img, cx, cy, r, ring=True):
+    d = ImageDraw.Draw(img)
+    cs = {(-1, -1): "red", (1, -1): "yellow", (-1, 1): "blue", (1, 1): "green"}
+    if ring:
+        for y in range(cy - r - 2, cy + r + 3):
+            for x in range(cx - r - 2, cx + r + 3):
+                dd = math.hypot(x - cx + 0.0, y - cy + 0.0)
+                if dd <= r + 2:
+                    img.putpixel((x, y), OUTL if dd > r + 1 else WHITE)
+    for y in range(cy - r, cy + r + 1):
+        for x in range(cx - r, cx + r + 1):
+            if math.hypot(x - cx, y - cy) <= r:
+                if x == cx or y == cy:
+                    img.putpixel((x, y), WHITE)
+                else:
+                    img.putpixel((x, y), COLORS[cs[(1 if x > cx else -1, 1 if y > cy else -1)]])
 
 def make_card(color_name, value):
     base = COLORS.get(color_name, BLACK)
     img = card_base(base)
-    outline = shade(base, 0.55) if color_name in COLORS else (0, 0, 0, 255)
     if value.isdigit():
-        glyph_center(img, D5[value], WHITE, outline)
-        put_corners(img, D3[value], WHITE)
+        centered(img, scaled_mask(D5[value], 4))
+        put_corner_glyph(img, D5[value])
+        corner_stars(img)
     elif value == "skip":
-        glyph_center(img, SKIP_BIG, WHITE, outline)
-        put_corners(img, SKIP_SMALL, WHITE)
+        centered(img, skip_mask())
+        put_corner_glyph(img, SKIP_SMALL)
+        corner_stars(img)
     elif value == "reverse":
-        glyph_center(img, REVERSE, WHITE, outline)
-        put_corners(img, REV_SMALL, WHITE)
+        centered(img, reverse_mask())
+        put_corner_glyph(img, REV_SMALL)
+        corner_stars(img)
     elif value == "plus2":
-        draw_plus(img, "2", WHITE, outline, 0)
-        put_corners(img, D3["2"], WHITE)
+        centered(img, plus_mask("2"))
+        put_corner_glyph(img, D5["2"])
+        corner_stars(img)
     elif value == "wild":
-        quad(img, 9, 0)
-        put_corners(img, None, WHITE)
+        stamp(img, circle_mask(31, 15.5), (BW - 31) // 2, (BH - 31) // 2, WHITE)
+        color_circle(img, BW // 2, BH // 2, 12)
+        corner_stars(img)
+        c = Image.new("RGBA", (9, 9), (0, 0, 0, 0)); color_circle(c, 4, 4, 2, ring=False)
+        img.alpha_composite(c, (4, 4)); img.alpha_composite(c.rotate(180), (BW - 13, BH - 13))
     elif value == "wild4":
-        draw_plus(img, "4", WHITE, outline, -5)
-        quad(img, 7, 7)
-        put_corners(img, D3["4"], WHITE)
+        m = plus_mask("4")
+        stamp(img, m, (BW - m.width) // 2, 6, WHITE)
+        color_circle(img, BW // 2, 38, 6)
+        put_corner_glyph(img, D5["4"])
+        corner_stars(img)
     return img
-
-def draw_plus(img, digit, color, outline, dy):
-    gw, gh = 6 + 1 + 10, 14
-    x = 1 + (BW - 2 - gw) // 2
-    y = 1 + (BH - 2 - gh) // 2 + dy
-    outlined(img, PLUS3, x, y + 4, color, outline, 2)
-    outlined(img, D5[digit], x + 7, y, color, outline, 2)
-
-def quad(img, size, dy):
-    x = 1 + (BW - 2 - size) // 2
-    y = 1 + (BH - 2 - size) // 2 + dy
-    h = size // 2
-    d = ImageDraw.Draw(img)
-    d.rectangle([x - 1, y - 1, x + size, y + size], fill=WHITE)
-    cs = ["red", "yellow", "blue", "green"]
-    for i, n in enumerate(cs):
-        qx, qy = x + (i % 2) * (h + 1), y + (i // 2) * (h + 1)
-        d.rectangle([qx, qy, qx + h - (0 if i % 2 else 1) - (0), qy + h - (0 if i // 2 else 1)], fill=COLORS[n])
 
 def make_back():
     fill = hexc("27346b")
     img = card_base(fill, hexc("c9d0ff"))
-    for y in range(3, BH - 3, 3):
-        for x in range(3 + (y // 3 % 2) * 1, BW - 3, 3):
+    for y in range(5, BH - 4, 4):
+        for x in range(5 + (y // 4 % 2) * 2, BW - 4, 4):
             img.putpixel((x, y), hexc("33427f"))
-    big = STAR5
-    bitmap(img, big, 2 + 2, 7 + 2, hexc("141a3d"), 2)
-    bitmap(img, big, 2, 7, hexc("b9c6ff"), 2)
+    stamp(img, scaled_mask(STAR5, 3), (BW - 21) // 2, (BH - 21) // 2, hexc("b9c6ff"), outline=hexc("141a3d"))
+    deco = Image.new("RGBA", (7, 7), (0, 0, 0, 0))
+    bitmap(deco, ["#####..", "#......", "#..#...", "#.###..", "#..#...", "#......", "......."], 0, 0, hexc("7f93e8"))
+    img.alpha_composite(deco, (4, 4))
+    img.alpha_composite(deco.transpose(Image.FLIP_LEFT_RIGHT), (BW - 11, 4))
+    img.alpha_composite(deco.transpose(Image.FLIP_TOP_BOTTOM), (4, BH - 11))
+    img.alpha_composite(deco.rotate(180), (BW - 11, BH - 11))
     return img
 
 def gen_cards():
     for c in COLORS:
         for v in [str(i) for i in range(10)] + ["skip", "reverse", "plus2"]:
-            save(make_card(c, v), "cards", f"{c}_{v}.png")
-    save(make_card("wild", "wild"), "cards", "wild.png")
-    save(make_card("wild", "wild4"), "cards", "wild4.png")
-    save(make_back(), "cards", "back.png")
+            save(make_card(c, v), "cards", f"{c}_{v}.png", scale=CS)
+    save(make_card("wild", "wild"), "cards", "wild.png", scale=CS)
+    save(make_card("wild", "wild4"), "cards", "wild4.png", scale=CS)
+    save(make_back(), "cards", "back.png", scale=CS)
+
 
 # ---------- 화면 부품 ----------
 def box(w, h, fill, border, hi=None, lo=None):
@@ -297,7 +370,7 @@ def gen_avatars():
 
 # ---------- 폰트 ----------
 OFL_NOTE = """Galmuri font family (Galmuri11, Galmuri11-Bold)
-Copyright (c) The Galmuri Project Authors, https://galmuri.quiple.dev/
+Copyright (c) 2019-2025 Lee Minseo (quiple@quiple.dev), https://github.com/quiple/galmuri
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
