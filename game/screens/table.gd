@@ -11,6 +11,7 @@ extends Control
 
 const CardViewScript := preload("res://ui/card_view.gd")
 const AvatarViewScript := preload("res://ui/avatar_view.gd")
+const DirRingScript := preload("res://ui/dir_ring.gd")
 const HandViewScript := preload("res://ui/hand_view.gd")
 const CardMap := preload("res://ui/card_map.gd")
 const WildPickerScene := preload("res://ui/wild_picker.tscn")
@@ -30,6 +31,8 @@ const SLOT := {
 }
 const LAYOUT := {2: {1: "top"}, 3: {1: "left", 2: "right"}, 4: {1: "left", 2: "top", 3: "right"}}
 const FLY_TIME := 0.32
+const BACK_STEP := 28  # 상대 뒷면 겹침 간격. 작은 카드 폭 40에서 별이 보이는 최소치
+const BACK_MAX := 8
 
 var names: Array = ["나", "하늘", "민트", "체리"]
 var faces: Array = [3, 0, 1, 2]
@@ -46,15 +49,17 @@ var _me_box: Control
 var _fx: Control
 var _discard_cv
 var _discard_border: Panel
-var _ring: TextureRect
+var _ring
 var _bar: ProgressBar
 var _time_label: Label
 var _bubble: PanelContainer
 var _bubble_label: Label
 var _end_label: Label
 var _opp_center := {}
+var _opp_from := {}
 var _flying := 0
 var _locked := false
+var _shown_color := 0
 var _last_from := Vector2.ZERO
 var _has_from := false
 
@@ -69,14 +74,7 @@ func _ready() -> void:
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
 
-	_ring = TextureRect.new()
-	_ring.texture = load("res://assets/ui/ring.png")
-	_ring.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_ring.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_ring.stretch_mode = TextureRect.STRETCH_SCALE
-	_ring.position = Vector2(447, 170)
-	_ring.size = Vector2(256, 256)
-	_ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_ring = DirRingScript.new()
 	add_child(_ring)
 
 	# 뽑을 더미(두께 표현으로 뒷면 셋을 겹친다)와 버린 더미
@@ -223,15 +221,17 @@ func _redraw(s: Dictionary) -> void:
 	var my_turn: bool = s.turn == me and s.phase != "done"
 	var pick: bool = my_turn and s.phase == "pick"
 
-	_discard_cv.show_card(CardMap.view_color(s.top), CardMap.view_value(s.top))
-	_discard_cv.visible = _flying == 0
+	# 날아오는 중에는 이전 맨 위 카드와 색 테두리를 그대로 두고, 내려앉은 뒤 바꾼다.
+	if _flying == 0:
+		_show_discard(s.top, s.color)
+	_discard_cv.visible = true
 	var bsb := StyleBoxFlat.new()
 	bsb.bg_color = Color(0, 0, 0, 0)
 	bsb.set_border_width_all(5)
-	bsb.border_color = COLOR_RGB[s.color]
+	bsb.border_color = COLOR_RGB[_shown_color]
 	bsb.set_corner_radius_all(3)
 	_discard_border.add_theme_stylebox_override("panel", bsb)
-	_ring.flip_h = s.dir < 0
+	_ring.clockwise = s.dir > 0
 
 	for c in _opps.get_children():
 		_opps.remove_child(c)
@@ -240,6 +240,7 @@ func _redraw(s: Dictionary) -> void:
 		_me_box.remove_child(c)
 		c.queue_free()
 	_opp_center = {}
+	_opp_from = {}
 	var slots: Dictionary = LAYOUT.get(s.n, {})
 	for seat in s.n:
 		var rel := posmod(seat - me, s.n)
@@ -259,13 +260,13 @@ func _redraw(s: Dictionary) -> void:
 		av.position = slot.avatar
 		av.setup(faces[seat], names[seat], st, seat == host_seat)
 		var cnt: int = s.counts[seat]
-		var shown := mini(cnt, 12)
+		var shown := mini(cnt, BACK_MAX)
 		for i in shown:
 			var cv = CardViewScript.new()
 			_opps.add_child(cv)
 			cv.show_back()
 			cv.set_card_size(CardViewScript.CardSize.SMALL)
-			cv.position = slot.cards + Vector2(20 * i, 0)
+			cv.position = slot.cards + Vector2(BACK_STEP * i, 0)
 		var badge := PanelContainer.new()
 		var bs := StyleBoxFlat.new()
 		bs.bg_color = Color("1c2340")
@@ -282,8 +283,9 @@ func _redraw(s: Dictionary) -> void:
 		bl.add_theme_font_size_override("font_size", 20)
 		badge.add_child(bl)
 		_opps.add_child(badge)
-		badge.position = slot.cards + Vector2(20 * maxi(shown - 1, 0) + 52, 8)
-		_opp_center[seat] = slot.cards + Vector2(20 * maxi(shown - 1, 0) / 2.0 + 20, 28)
+		badge.position = slot.cards + Vector2(BACK_STEP * maxi(shown - 1, 0) + 52, 8)
+		_opp_center[seat] = slot.cards + Vector2(BACK_STEP * maxi(shown - 1, 0) / 2.0 + 20, 28)
+		_opp_from[seat] = slot.avatar + Vector2(36, 36)
 
 	# 내 패: 내 차례의 고르는 중에만 솟거나 어두워진다. 그 밖에는 평평하다.
 	var ids: Array = []
@@ -330,6 +332,11 @@ func _redraw(s: Dictionary) -> void:
 		_end_label.text = "%s 승리!" % names[s.winner]
 
 
+func _show_discard(top: Dictionary, color: int) -> void:
+	_shown_color = color
+	_discard_cv.show_card(CardMap.view_color(top), CardMap.view_value(top))
+
+
 func _fly_top(prev: Dictionary, s: Dictionary) -> void:
 	var player: int = prev.turn
 	var from := Vector2(575, 560)
@@ -337,27 +344,47 @@ func _fly_top(prev: Dictionary, s: Dictionary) -> void:
 	if player == s.seat:
 		if _has_from:
 			from = _last_from
-	elif _opp_center.has(player):
-		from = _opp_center[player]
+	elif _opp_from.has(player):
+		from = _opp_from[player]
 		start_scale = 0.5
 	_has_from = false
 	var cv = CardViewScript.new()
 	_fx.add_child(cv)
 	cv.show_card(CardMap.view_color(s.top), CardMap.view_value(s.top))
-	cv.pivot_offset = cv.card_pixel_size() / 2.0
-	cv.position = from - cv.card_pixel_size() / 2.0
+	cv.pivot_offset = Vector2.ZERO
+	var start := from - cv.card_pixel_size() * start_scale / 2.0
+	cv.position = start
 	cv.scale = Vector2(start_scale, start_scale)
+	# 버린 더미 자리는 날아오는 동안 이전 맨 위 카드를 그대로 보인다.
+	if _flying == 0:
+		_show_discard(prev.top, prev.color)
 	_flying += 1
-	_discard_cv.visible = false
+	_redraw_discard_border()
+	# 위에서 내려오는 곡선: 뽑을 더미 위를 가로지르지 않는다.
+	var ctrl := Vector2(DISCARD_POS.x, 20.0)
 	var tw := create_tween()
-	tw.tween_property(cv, "position", DISCARD_POS, FLY_TIME).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tw.parallel().tween_property(cv, "scale", Vector2.ONE, FLY_TIME)
-	tw.tween_property(cv, "scale", Vector2(1.12, 1.12), 0.07)
-	tw.tween_property(cv, "scale", Vector2.ONE, 0.1).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_method(func(t: float):
+		var u := 1.0 - t
+		cv.position = u * u * start + 2.0 * u * t * ctrl + t * t * DISCARD_POS
+		var k := lerpf(start_scale, 1.0, t)
+		cv.scale = Vector2(k, k), 0.0, 1.0, FLY_TIME).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tw.tween_callback(func():
 		_flying -= 1
-		_discard_cv.visible = _flying == 0
-		cv.queue_free())
+		if _flying == 0:
+			_show_discard(snap.top, snap.color)
+			_redraw_discard_border())
+	tw.tween_property(cv, "scale", Vector2(1.12, 1.12), 0.07)
+	tw.tween_property(cv, "scale", Vector2.ONE, 0.1).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_callback(cv.queue_free)
+
+
+func _redraw_discard_border() -> void:
+	var bsb := StyleBoxFlat.new()
+	bsb.bg_color = Color(0, 0, 0, 0)
+	bsb.set_border_width_all(5)
+	bsb.border_color = COLOR_RGB[_shown_color]
+	bsb.set_corner_radius_all(3)
+	_discard_border.add_theme_stylebox_override("panel", bsb)
 
 
 func _on_card_chosen(card_id: int, from_pos: Vector2) -> void:
@@ -377,3 +404,4 @@ func _emit(a: Dictionary) -> void:
 		return
 	_locked = true
 	action_requested.emit(a)
+

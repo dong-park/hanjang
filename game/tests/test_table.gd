@@ -144,11 +144,15 @@ func _init() -> void:
 		var cv = hv.views[id]
 		if cv.lift != 0 or cv.dimmed:
 			flat = false
+	await create_timer(0.6).timeout  # 장면 만들기로 생긴 날기가 끝나길 기다린다
 	check(flat, "남의 차례에 내 카드는 평평하다")
 	drv.bot_step()
 	await create_timer(0.1).timeout
 	check(table._flying >= 1, "상대 카드가 날아온다")
+	check(table._discard_cv.visible and table._discard_cv.value == "7" and table._discard_cv.color == "red", "날아오는 동안 버린 더미는 이전 맨 위 카드(빨강 7)")
+	check(table._fx.get_child_count() >= 1 and table._fx.get_child(0).position.x < 584.0 - 5.0 or table._fx.get_child(0).position.y < 248.0, "날아오는 카드는 뽑을 더미 쪽이 아닌 낸 사람 자리에서 출발")
 	await create_timer(0.6).timeout
+	check(table._flying == 0 and table._discard_cv.value == str(rules.top().num), "내려앉은 뒤 버린 더미가 새 카드로 바뀐다")
 
 	# 와일드: 내면 팝업, 파랑을 누르면 모두가 파랑을 본다
 	rules.discard = [rules.make_card(0, "num", 7)]
@@ -253,3 +257,4 @@ func _init() -> void:
 
 	print("TABLE_TEST ", "PASS" if fails == 0 else "FAIL %d" % fails)
 	quit(1 if fails else 0)
+

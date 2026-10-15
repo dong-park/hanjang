@@ -52,11 +52,12 @@ func _init() -> void:
 	stage(r, r.make_card(0, "num", 7), 0, [r.make_card(0, "num", 3), r.make_card(1, "num", 8), r.make_card(2, "skip"), r.make_card(3, "num", 5), r.make_card(1, "draw2")], 1)
 	r.hands[1] = [r.make_card(0, "num", 9), r.make_card(1, "num", 1), r.make_card(1, "num", 2), r.make_card(2, "num", 2), r.make_card(3, "num", 2), r.make_card(3, "num", 4)]
 	drv.push()
-	await process_frame
+	await create_timer(0.7).timeout
 	drv.bot_step()
-	await create_timer(0.12).timeout
-	await shot("07-opponent-fly")
-	await create_timer(0.5).timeout
+	await create_timer(0.1).timeout
+	await shot("07a-opponent-flying")
+	await create_timer(0.7).timeout
+	await shot("07b-opponent-landed")
 
 	# 08: 와일드 색 고르기
 	stage(r, r.make_card(0, "num", 7), 0, [r.make_card(0, "num", 3), r.make_card(1, "num", 8), r.make_card(2, "skip"), r.make_card(3, "num", 5), r.make_card(1, "draw2")], 0, "color")
