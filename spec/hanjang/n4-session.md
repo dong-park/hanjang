@@ -53,3 +53,5 @@
 - 웨이브 1 리뷰에서 넘어온 일 (wave-20261015-1606.md): 같은 요청 두 번은 첫 번째만 받도록 방장이 (자리, 요청 번호)로 중복을 거른다. 자리는 접속자가 보낸 값이 아니라 보낸 peer id로만 정한다. 한장! 창은 3초 뒤 세션이 `close_hanjang()`을 부른다 — 엔진은 시간을 재지 않는다.
 - 엔진 API는 `game/rules/rules.gd` 머리 주석(1~40줄)에 있다: setup, play, choose_color, draw, keep_drawn, call_hanjang, catch_hanjang, close_hanjang, auto_color, leave, ranking, snapshot_for.
 - 시험에 아직 없는 경우(P2): 한장! 창이 열린 채 나감, 2인 와일드+4 중복 요청, setup 전 snapshot_for. 세션 시험에서 덮는다.
+- 웨이브 3 리뷰 넘김 (wave-20261015-1630.md): 판 화면 `table.gd`의 입력 잠금(_locked)은 판 상태를 새로 받을 때만 풀린다. 방장이 요청을 거절하면 그 접속자에게 거절 알림을 보내 잠금을 풀 수 있게 한다(화면 쪽 연결은 n7).
+- 차례 시간은 D1 답대로 20초다. n5 로컬 드라이버의 시간 바는 15초로 만들어져 있으니, 세션이 보내는 남은 시간을 기준으로 삼는다.
