@@ -49,4 +49,7 @@
 
 ## 구현 메모
 
-- 관련 결정: D1, D8. 답이 없으면 추천대로 간다. 막는 결정은 답이 올 때까지 시작하지 않는다.
+- 관련 결정: D1 → 20초, D8 → 판정 중 다음 차례 멈춤 (2026-10-15 사용자 답).
+- 웨이브 1 리뷰에서 넘어온 일 (wave-20261015-1606.md): 같은 요청 두 번은 첫 번째만 받도록 방장이 (자리, 요청 번호)로 중복을 거른다. 자리는 접속자가 보낸 값이 아니라 보낸 peer id로만 정한다. 한장! 창은 3초 뒤 세션이 `close_hanjang()`을 부른다 — 엔진은 시간을 재지 않는다.
+- 엔진 API는 `game/rules/rules.gd` 머리 주석(1~40줄)에 있다: setup, play, choose_color, draw, keep_drawn, call_hanjang, catch_hanjang, close_hanjang, auto_color, leave, ranking, snapshot_for.
+- 시험에 아직 없는 경우(P2): 한장! 창이 열린 채 나감, 2인 와일드+4 중복 요청, setup 전 snapshot_for. 세션 시험에서 덮는다.
