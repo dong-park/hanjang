@@ -59,9 +59,9 @@ func host_room(p_name: String, p_face: int) -> bool:
 		return false
 	my_name = p_name.strip_edges()
 	my_face = p_face
-	var peer := ENetMultiplayerPeer.new()
-	# 다섯째 사람에게 이유를 알려 주려고 접속 칸은 넉넉히 열고 자리에서 거절한다.
-	if peer.create_server(port, MAX_PLAYERS + 3) != OK:
+	var peer := WebSocketMultiplayerPeer.new()
+	# 웹소켓 서버(D1=A). 다섯째 사람에게 이유를 알려 주려고 접속은 받고 자리에서 거절한다.
+	if peer.create_server(port) != OK:
 		return false
 	multiplayer.multiplayer_peer = peer
 	state = State.LOBBY
@@ -80,13 +80,21 @@ func join_room(p_name: String, p_face: int, p_addr: String) -> bool:
 	my_name = p_name.strip_edges()
 	my_face = p_face
 	addr = p_addr.strip_edges()
-	var peer := ENetMultiplayerPeer.new()
-	if peer.create_client(addr, port) != OK:
+	var peer := WebSocketMultiplayerPeer.new()
+	if peer.create_client(ws_url(addr, port)) != OK:
 		join_failed.emit("접속을 시작하지 못했어요")
 		return false
 	multiplayer.multiplayer_peer = peer
 	_joining = true
 	return true
+
+
+func ws_url(p_addr: String, p_port: int) -> String:
+	## 방 주소 규칙: 입력은 "192.168.0.5"(포트 7777 기본) 또는 "192.168.0.5:7778". ws:// 로 붙는다.
+	var a := p_addr.strip_edges().trim_prefix("ws://")
+	if a.contains(":"):
+		return "ws://" + a
+	return "ws://%s:%d" % [a, p_port]
 
 
 func leave() -> void:
