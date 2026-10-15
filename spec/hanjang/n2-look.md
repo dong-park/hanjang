@@ -6,7 +6,7 @@
 **id**: HJ-2
 **상위**: spec/hanjang/spec.md
 **deps**: 없음
-**상태**: 아직 안 함
+**상태**: 확인 대기
 **담당 행**: T34
 **사람 확인**: 필요
 
@@ -31,11 +31,11 @@
 
 ## 완료 기준
 
-- [ ] spec 공통 완료 기준 전부
-- [ ] 미리보기 캡처가 evidence/n2/에 있고 카드 15종·뒷면·아바타 4종·버튼·입력칸이 보인다
-- [ ] 카드 앞면에 기울어진 흰 타원이 없고 UNO 글자가 없다
-- [ ] 폰트 라이선스 파일이 폰트 옆에 있다
-- [ ] `engine/Godot.app/Contents/MacOS/Godot --headless --path game --quit`가 오류 없이 끝난다
+- [x] spec 공통 완료 기준 전부
+- [x] 미리보기 캡처가 evidence/n2/에 있고 카드 15종·뒷면·아바타 4종·버튼·입력칸이 보인다
+- [x] 카드 앞면에 기울어진 흰 타원이 없고 UNO 글자가 없다
+- [x] 폰트 라이선스 파일이 폰트 옆에 있다
+- [x] `engine/Godot.app/Contents/MacOS/Godot --headless --path game --quit`가 오류 없이 끝난다
 - [ ] 실경로: 관통이 프로덕션 경로를 탐 (우회 green이면 갭 기록)
 
 ## 파일 포인터
@@ -56,3 +56,19 @@
 ## 구현 메모
 
 - 관련 결정: D4 → B (2026-10-15, 사용자가 보드에서). 카드와 화면을 모두 픽셀 그림 파일로 만든다. 추천은 C였다.
+
+- 만든 방법: 스크립트 생성. 원본은 `tools/gen_look.py`(Pillow). 5x7·3x5 픽셀 글자 격자와 도형으로 작은 격자에 그린 뒤 정수 4배로 키워 PNG 저장. 테마(`theme.tres`)와 아바타·폰트 복사도 같은 스크립트가 다시 만든다. 카드는 카드별 파일 `game/assets/cards/<색>_<값>.png`(색 red/yellow/green/blue, 값 0`9·skip·reverse·plus2), `wild.png`, `wild4.png`, `back.png`.
+- 필터 끄기: `project.godot`의 기본 텍스처 필터를 Nearest(0)로 둔다. CardView·AvatarView는 노드에도 Nearest를 둔다. 폰트는 antialiasing·hinting 끔(.import).
+- 카드 값 표기(가정): CardView는 색 문자열과 값 문자열을 받는다. n1의 카드 표현과 다르면 n5에서 변환한다. 크기는 작게 0.5, 보통 1.0(80x112), 크게 1.5 배.
+- 폰트: Galmuri11.ttf와 굵은 글씨. 굵은 글씨는 원본이 woff2뿐인데 Godot 4.7.2가 woff2를 못 읽어(FreeType 오류) fontTools로 TTF로 바꿔 `Galmuri11-Bold.ttf`로 두었다. 라이선스 `OFL.txt`는 폰트 옆에 있다. 저작권 줄은 원본 파일에 없어 일반 문구로 썼으니 원본 라이선스로 바꿔 넣을 것.
+- 시험: `game/tests/look_test.gd`(--script)로 카드 55종 그림, 크기, 상태, 테마 로드를 확인한다. n1의 `test_rules.gd`도 다시 돌려 통과.
+- 갭: 미리보기 장면만 있고 프로덕션 화면(n3, n5)에는 아직 안 물렸다. 스킵 카드 그림은 작은 격자라 ⊘ 모양이 도넛처럼 보인다. 사람 눈 확인 후 다듬을지 정한다.
+
+## 확인할 것
+
+미리보기 한 장(`spec/hanjang/evidence/n2/preview-cards-ui.png`)을 보고 카드 그림이 우노 카드와 닮지 않았는지, 숫자와 기호가 읽히는지 본다.
+
+- [ ] 카드 15종(숫자 0`9, 스킵, 리버스, +2, 와일드, 와일드+4)과 뒷면이 구분된다
+- [ ] 카드 앞면에 기울어진 흰 타원과 UNO 글자가 없다
+- [ ] 스킵 카드 그림(⊘)이 읽힌다. 안 읽히면 고쳐 달라고 답한다
+- [ ] 아바타 4종, 버튼, 입력칸, 시간 바가 남색 밤 톤으로 어울린다

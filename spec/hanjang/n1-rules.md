@@ -6,7 +6,7 @@
 **id**: HJ-1
 **상위**: spec/hanjang/spec.md
 **deps**: 없음
-**상태**: 아직 안 함
+**상태**: 끝남
 **담당 행**: T1, T2, T3, T4, T5, T6
 **사람 확인**: 불필요
 
@@ -30,10 +30,10 @@
 
 ## 완료 기준
 
-- [ ] spec 공통 완료 기준 전부
-- [ ] `engine/Godot.app/Contents/MacOS/Godot --headless --path game --script res://tests/test_rules.gd`가 종료 코드 0
-- [ ] 시험이 T1~T6 행마다 이름 붙은 경우를 하나 이상 갖는다
-- [ ] `snapshot_for` 결과에 다른 자리의 패 카드 값이 없음을 시험이 확인한다
+- [x] spec 공통 완료 기준 전부 (화면 변경 없음 → 캡처 해당 없음)
+- [x] `engine/Godot.app/Contents/MacOS/Godot --headless --path game --script res://tests/test_rules.gd`가 종료 코드 0
+- [x] 시험이 T1~T6 행마다 이름 붙은 경우를 하나 이상 갖는다
+- [x] `snapshot_for` 결과에 다른 자리의 패 카드 값이 없음을 시험이 확인한다
 - [ ] 실경로: 관통이 프로덕션 경로를 탐 (우회 green이면 갭 기록)
 
 ## 파일 포인터
@@ -46,3 +46,5 @@
 ## 구현 메모
 
 - 관련 결정: D2, D3, D6. 답이 없으면 추천대로 간다. 막는 결정은 답이 올 때까지 시작하지 않는다.
+- 구현: 시험 50개 통과(종료 코드 0). 실경로 갭: 엔진은 아직 어떤 화면·네트워크에도 안 붙었다(n4·n5가 붙인다), 시험은 엔진을 직접 호출한다.
+- 가정: 한장! 창이 열린 동안(phase hanjang) 다음 사람의 내기·뽑기는 거절한다. 창은 엔진이 재지 않고 n4가 close_hanjang()으로 닫는다. 카드에 유일 id를 둔다. 와일드 낸 뒤 손패 0이면 색 고르기 없이 판이 끝난다.
