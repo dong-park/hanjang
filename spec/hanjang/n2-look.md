@@ -21,12 +21,13 @@
 
 ## 작업
 
-1. D4 답대로 만든다. 추천 C면 카드와 판은 코드로, 아바타 4종과 아이콘은 픽셀 PNG로 둔다.
-2. 갈무리 폰트(일반·굵게)와 OFL 라이선스를 `game/assets/fonts/`에 두고 `game/ui/theme.tres`를 만든다. 버튼·입력칸·패널 모양을 스토리보드 E 스타일로 맞춘다.
-3. `game/ui/card_view.gd`가 색 4개와 검정, 숫자 0~9, 스킵·리버스·+2·와일드·와일드+4, 뒷면, 작은 크기·큰 크기, 솟음·어둡게·고름 상태를 그린다. 흰 테두리, 가운데 큰 숫자, 모서리 별이고 기울어진 흰 타원은 없다.
-4. `game/ui/avatar_view.gd`가 네모 칸, 이름, 차례 빛남, 회색(끊김), 왕관을 그린다.
-5. 배경 점무늬를 그린다.
-6. `game/ui/preview.tscn`에 전 종류를 늘어놓고 `--write-movie`로 캡처해 `spec/hanjang/evidence/n2/`에 둔다.
+1. D4 답은 B다. 카드와 화면 부품을 모두 픽셀 그림 파일(PNG)로 만든다. 모든 그림은 같은 픽셀 크기 배율로 그리고, Godot 가져오기는 필터 끄기(Nearest)로 둔다.
+2. 카드 그림: 색 4개 × 숫자 0~9·스킵·리버스·+2, 검정 와일드·와일드+4, 뒷면을 `game/assets/cards/`의 시트 한 장(또는 카드별 파일)으로 만든다. 흰 테두리, 가운데 큰 숫자, 모서리 별, 두께 그림자를 그림에 넣는다. 기울어진 흰 타원과 UNO 글자는 없다.
+3. 화면 부품 그림: 패널·버튼·입력칸(9칸 늘림용), 네모 아바타 칸(보통·차례 빛남·회색), 왕관, 방향 고리 화살표, 시간 바, 배경 점무늬 타일을 `game/assets/ui/`에 만든다. 아바타 얼굴 4종은 `game/assets/avatars/`에 둔다.
+4. 갈무리 폰트(일반·굵게)와 OFL 라이선스를 `game/assets/fonts/`에 두고, 위 그림으로 `game/ui/theme.tres`를 만든다.
+5. `game/ui/card_view.gd`는 카드 값에 맞는 그림을 골라 보여 주고, 솟음·어둡게·고름·작은 크기·큰 크기 상태만 바꾼다. `game/ui/avatar_view.gd`는 아바타 그림과 이름, 상태를 보여 준다.
+6. 그림을 만든 방법(직접 찍기, 스크립트 생성, 이미지 생성 후 다듬기)을 구현 메모에 적는다. 다시 만들 수 있게 원본도 레포에 둔다.
+7. `game/ui/preview.tscn`에 전 종류를 늘어놓고 `--write-movie`로 캡처해 `spec/hanjang/evidence/n2/`에 둔다.
 
 ## 완료 기준
 
@@ -45,10 +46,13 @@
 | `game/ui/avatar_view.gd` | 새로 만든다 |
 | `game/ui/theme.tres` | 새로 만든다 |
 | `game/ui/preview.tscn` | 새로 만든다 |
-| `game/assets/` | 새로 만든다 — 폰트·아바타·아이콘 |
+| `game/assets/cards/` | 새로 만든다 — 카드 그림 |
+| `game/assets/ui/` | 새로 만든다 — 패널·버튼·아바타 칸·고리·배경 그림 |
+| `game/assets/avatars/` | 새로 만든다 — 아바타 얼굴 4종 |
+| `game/assets/fonts/` | 새로 만든다 — 갈무리 폰트와 라이선스 |
 | `/Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/pixel-onecard-storyboard/fonts/` | 폰트 원본 (있음) |
 | `/Users/donghwan/Documents/Codex/2026-10-15/new-chat/outputs/pixel-onecard-storyboard/frames/` | 장면 시안 PNG (있음) |
 
 ## 구현 메모
 
-- 관련 결정: D4 (막는 결정). 답이 없으면 추천대로 간다. 막는 결정은 답이 올 때까지 시작하지 않는다.
+- 관련 결정: D4 → B (2026-10-15, 사용자가 보드에서). 카드와 화면을 모두 픽셀 그림 파일로 만든다. 추천은 C였다.

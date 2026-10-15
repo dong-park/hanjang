@@ -22,10 +22,10 @@
       "why": "가짓수 많은 카드는 코드가 싸고, 4종 아바타는 그림 파일이 싸다. 두 방식을 같이 관리한다"
     }
   ],
-  "recommend": "C",
-  "confidence": "mid",
+  "recommend": "B",
+  "confidence": "high",
   "reversible": false,
-  "status": "아직 안 함",
+  "status": "끝남",
   "blocks": [
     "T10",
     "T11",
@@ -57,5 +57,8 @@
     "answer": "",
     "fix": ""
   },
-  "log": []
+  "log": [
+    "2026-10-15 D4 → B (사용자, 시트에서)",
+    "2026-10-15 user.answer 반영: B"
+  ]
 }
