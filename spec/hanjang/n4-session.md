@@ -6,7 +6,7 @@
 **id**: HJ-4
 **상위**: spec/hanjang/spec.md
 **deps**: n1-rules, n3-lobby
-**상태**: 아직 안 함
+**상태**: 진행
 **담당 행**: T7, T8, T9, T26
 **사람 확인**: 불필요
 
@@ -55,3 +55,12 @@
 - 시험에 아직 없는 경우(P2): 한장! 창이 열린 채 나감, 2인 와일드+4 중복 요청, setup 전 snapshot_for. 세션 시험에서 덮는다.
 - 웨이브 3 리뷰 넘김 (wave-20261015-1630.md): 판 화면 `table.gd`의 입력 잠금(_locked)은 판 상태를 새로 받을 때만 풀린다. 방장이 요청을 거절하면 그 접속자에게 거절 알림을 보내 잠금을 풀 수 있게 한다(화면 쪽 연결은 n7).
 - 차례 시간은 D1 답대로 20초다. n5 로컬 드라이버의 시간 바는 15초로 만들어져 있으니, 세션이 보내는 남은 시간을 기준으로 삼는다.
+
+## 진행 메모 (runner)
+
+- `game/net/session.gd`를 autoload `Session`으로 등록했다(project.godot). `Room.game_started`에서 방장이 0.3초 뒤 엔진을 만들고 자리별 `snapshot_for`(+ `time_left`, `turn_time`)를 `rpc_id`로 보낸다.
+- 화면 쪽 면: `Session.request(kind,a,b)`, 시그널 `state_changed` `request_refused(rid,reason)` `player_left` `ended`. 거절 알림으로 table.gd 입력 잠금을 풀 수 있다(연결은 n7).
+- 중복 거름: (자리, 요청 번호). 자리는 `get_remote_sender_id`로만 정한다. 중복·차례 아님·패에 없음·낼 수 없음은 방장 로그에 `IGNORED seat= rid= kind= reason=`.
+- 시간: 기본 20초(`--turn-time`), 한장! 창 3초(`--hj-time`). 끝나면 뽑기(+뽑은 카드 가지기) / 색은 auto_color / 한장! 창은 close_hanjang. 판정 중에는 엔진이 내기·뽑기를 거절해 차례가 멈춘다.
+- 시험: `sh game/tests/test_net_game.sh` 종료 코드 0(판1 4인 등수 일치·LEAK 0·cheat 93건 전부 무시 기록·AUTO_DRAW 20건, 판2 3인 중 1명 판 중 나감 후 완주). `test_session_edge.gd`로 P2 3건(한장! 창 연 채 나감, 2인 와일드+4 중복, setup 전 엔진) 확인.
+- 갭: (1) `--seed=7`은 덱만 고정한다. autoplay가 시간(타이머) 기반이라 우승자는 실행마다 다를 수 있다 — 기준은 "네 로그 등수 일치". (2) 접속자 비공개는 받은 상태에 hand·top 밖의 카드가 있으면 `LEAK`로 찍는 방식으로 확인했다(패킷 캡처 아님). (3) 실제 판 화면 연결(table.gd↔Session)은 n7 몫이라 지금 경로는 autoplay 드라이버다. (4) rules.gd `snapshot_for`는 setup 전에 부르면 깨진다 — 세션은 엔진 생성 뒤에만 부른다. (5) 판 종료 뒤 다시 하기/대기실로는 n7.
