@@ -110,3 +110,16 @@ n1-proto ──┬──► n2-dedicated ──┬──► n4-trust ──┬�
 - 코드는 한 줄도 바꾸지 않았다. 이 spec 작성 중 만든 것은 spec/hanjang-relay/ 안의 파일뿐이다.
 - 노드 브리프(n1~n8 .md)는 아직 쓰지 않았다. 호출자가 DAG 동의 뒤에 쓴다.
 
+
+## 노드 인덱스
+
+| ID | 브리프 | deps | 상태 |
+|---|---|---|---|
+| n1 | [n1-proto.md](n1-proto.md) | — | 아직 안 함 |
+| n2 | [n2-dedicated.md](n2-dedicated.md) | n1 | 아직 안 함 |
+| n3 | [n3-manager.md](n3-manager.md) | n1 | 아직 안 함 |
+| n4 | [n4-trust.md](n4-trust.md) | n2, n3 | 아직 안 함 |
+| n5 | [n5-drops.md](n5-drops.md) | n2 | 아직 안 함 |
+| n6 | [n6-lobby-ui.md](n6-lobby-ui.md) | n3, n4 | 아직 안 함 |
+| n7 | [n7-deploy.md](n7-deploy.md) | n3 | 아직 안 함 |
+| n8 | [n8-verify.md](n8-verify.md) | n5, n6, n7 | 아직 안 함 |
