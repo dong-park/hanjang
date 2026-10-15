@@ -1,0 +1,21 @@
+{
+  "id": "T11",
+  "kind": "task",
+  "title": "기존 앱 시험과 두 창 시험이 그대로 통과한다",
+  "given": "웹 지원 변경이 들어갔다.",
+  "when": "헤드리스 시험 전체와 두창·네창 시험을 돌린다.",
+  "then": "전부 종료 코드 0이다. 확인: 시험 로그",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [
+    "T12"
+  ],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

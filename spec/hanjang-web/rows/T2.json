@@ -1,0 +1,21 @@
+{
+  "id": "T2",
+  "kind": "task",
+  "title": "맥 앱끼리 새 전송으로 한 판을 끝낸다",
+  "given": "전송을 D1 답으로 바꿨다.",
+  "when": "맥 창 2개에서 방을 열고 참가해 한 판을 끝낸다.",
+  "then": "대기실, 판, 결과가 지금과 똑같이 돈다. 확인: 기존 헤드리스 시험 전부 종료 코드 0, 두창으로_테스트 실행",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [
+    "T3"
+  ],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

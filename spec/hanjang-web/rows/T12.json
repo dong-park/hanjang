@@ -1,0 +1,19 @@
+{
+  "id": "T12",
+  "kind": "task",
+  "title": "맥 2대와 휴대폰 2대가 한 판을 끝낸다",
+  "given": "방장 맥, 맥 1, 휴대폰 2대.",
+  "when": "4명이 한 판을 끝내고 다시 하기를 고른다.",
+  "then": "2판째가 시작하고 모든 화면이 같은 차례를 보인다. 확인: 4개 화면 캡처",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

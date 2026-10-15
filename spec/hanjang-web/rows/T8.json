@@ -1,0 +1,19 @@
+{
+  "id": "T8",
+  "kind": "task",
+  "title": "화면을 문질러도 판이 흐트러지지 않는다",
+  "given": "판 중이다.",
+  "when": "손가락으로 화면을 끌거나 두 손가락으로 벌린다.",
+  "then": "페이지가 스크롤, 확대, 새로고침되지 않고 접속이 유지된다. 확인: 실제 휴대폰에서 1판",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

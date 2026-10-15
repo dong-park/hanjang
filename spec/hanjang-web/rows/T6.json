@@ -1,0 +1,19 @@
+{
+  "id": "T6",
+  "kind": "task",
+  "title": "세로로 들면 돌려 달라는 안내가 뜬다",
+  "given": "휴대폰이 세로 방향이다.",
+  "when": "페이지를 연다.",
+  "then": "\"가로로 돌려 주세요\" 안내가 뜨고 돌리면 사라져 화면이 이어진다. 안내 중에도 접속은 끊기지 않는다. 확인: 휴대폰 캡처 2장",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

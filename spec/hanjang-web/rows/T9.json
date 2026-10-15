@@ -1,0 +1,19 @@
+{
+  "id": "T9",
+  "kind": "task",
+  "title": "화면 키보드가 입력칸을 가리지 않는다",
+  "given": "닉네임 입력 화면이다.",
+  "when": "입력칸을 누른다.",
+  "then": "키보드가 뜨고 입력칸과 시작 버튼이 보인다. 8자를 치면 이름이 화면에 보인다. 확인: iOS Safari 캡처",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}
