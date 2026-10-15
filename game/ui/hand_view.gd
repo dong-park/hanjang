@@ -14,6 +14,7 @@ var interactive := false
 var views := {}          # 카드 id -> CardView
 var _playable := {}      # 카드 id -> true
 var _press := {}
+var selected := -1       # 손가락으로 올려 둔(한 번 누른) 카드 id. 한 번 더 누르면 낸다.
 
 
 func _init() -> void:
@@ -28,6 +29,7 @@ func set_hand(cards: Array, playable_ids: Array, active: bool) -> void:
 	views = {}
 	_playable = {}
 	_press = {}
+	selected = -1
 	interactive = active
 	for id in playable_ids:
 		_playable[id] = true
@@ -62,19 +64,61 @@ func flash_in() -> void:
 			tw.tween_property(cv, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
+## 손가락 터치는 엔진이 마우스로 바꿔 보낸다(device == DEVICE_ID_EMULATION). 마우스는 그대로 한 번 누르면 낸다.
+static func is_touch(ev: InputEvent) -> bool:
+	return ev.device == InputEvent.DEVICE_ID_EMULATION
+
+
 func _on_card_input(ev: InputEvent, card_id: int) -> void:
 	if ev is InputEventMouseButton and ev.button_index == MOUSE_BUTTON_LEFT:
 		if ev.pressed:
-			_press = {"id": card_id, "y": ev.global_position.y, "fired": false}
+			_press = {"id": card_id, "y": ev.global_position.y, "fired": false, "touch": is_touch(ev)}
 		else:
 			var fire: bool = _press.get("id", -1) == card_id and not _press.get("fired", true)
+			var touch: bool = _press.get("touch", false)
 			_press = {}
 			if fire:
-				choose(card_id)
+				if touch:
+					tap(card_id)
+				else:
+					choose(card_id)
 	elif ev is InputEventMouseMotion and _press.get("id", -1) == card_id and not _press.get("fired", true):
 		if float(_press.y) - ev.global_position.y > DRAG_UP_PX:
 			_press.fired = true
+			deselect()
 			choose(card_id)
+
+
+## 손가락 빈 곳 누르기는 올려 둔 카드를 내린다. 카드 위 누르기는 카드가 처리한다.
+func _input(ev: InputEvent) -> void:
+	if selected < 0 or not (ev is InputEventMouseButton) or not ev.pressed or not is_touch(ev):
+		return
+	for cv in views.values():
+		if cv.get_global_rect().has_point(ev.global_position):
+			return
+	deselect()
+
+
+## 손가락으로 카드를 한 번 누른다. 처음엔 올리기만 하고, 올라간 같은 카드를 또 누르면 낸다.
+## 다른 카드를 누르면 올린 카드가 내려간다. 낼 수 없는 카드는 올라가지 않는다.
+func tap(card_id: int) -> bool:
+	if selected == card_id:
+		deselect()
+		return choose(card_id)
+	deselect()
+	if not interactive or not _playable.has(card_id) or not views.has(card_id):
+		print("HAND ignored tap id=", card_id)
+		return false
+	selected = card_id
+	views[card_id].set_lift(CardViewScript.Lift.PICKED)
+	print("HAND picked card id=", card_id)
+	return true
+
+
+func deselect() -> void:
+	if selected >= 0 and views.has(selected):
+		views[selected].set_lift(CardViewScript.Lift.RAISED)
+	selected = -1
 
 
 ## 카드 하나를 내려고 한다. 어두운 카드는 아무 일도 없다.
@@ -85,3 +129,4 @@ func choose(card_id: int) -> bool:
 	print("HAND play card id=", card_id)
 	card_chosen.emit(card_id, views[card_id].get_global_rect().get_center())
 	return true
+

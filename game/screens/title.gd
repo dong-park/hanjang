@@ -8,6 +8,9 @@ var _create_btn: Button
 var _join_btn: Button
 var _hint: Label
 var _notice: Label
+var _decor: Array[Control] = []     # 휴대폰 배치에서 숨기는 장식(로고, 부제, 카드)
+var _name_label: Label
+var _avatar_label: Label
 
 
 func _ready() -> void:
@@ -17,29 +20,33 @@ func _ready() -> void:
 	logo.theme_type_variation = &"BoldLabel"
 	logo.add_theme_font_size_override("font_size", 88)
 	_place(logo, Vector2(0, 60), Vector2(1152, 110))
+	_decor.append(logo)
 	logo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var sub := Label.new()
 	sub.text = "4인 온라인 카드게임"
 	sub.add_theme_color_override("font_color", Color("8f9bd6"))
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(sub, Vector2(0, 176), Vector2(1152, 30))
+	_decor.append(sub)
 	var left := CardView.new()
 	_place(left, Vector2(330, 90))
 	left.show_card("red", "1")
 	left.rotation_degrees = -12
+	_decor.append(left)
 	var right := CardView.new()
 	_place(right, Vector2(740, 90))
 	right.show_card("blue", "7")
 	right.rotation_degrees = 12
+	_decor.append(right)
 
-	_label("닉네임", Vector2(396, 258))
+	_name_label = _label("닉네임", Vector2(396, 258))
 	_name_edit = LineEdit.new()
 	_name_edit.max_length = Room.MAX_NAME
 	_name_edit.text = Room.my_name
 	_name_edit.placeholder_text = "1~8자"
 	_place(_name_edit, Vector2(396, 284), Vector2(360, 54))
 	_name_edit.text_changed.connect(func(_t): _refresh())
-	_label("아바타", Vector2(396, 348))
+	_avatar_label = _label("아바타", Vector2(396, 348))
 	for i in 4:
 		var a := AvatarView.new()
 		_place(a, Vector2(396 + i * 96, 376))
@@ -64,7 +71,10 @@ func _ready() -> void:
 	_notice.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(_notice, Vector2(0, 14), Vector2(1152, 30))
 	_refresh()
-	_name_edit.grab_focus()
+	if _uses_touch_keyboard():
+		_phone_layout()   # 휴대폰은 첫 화면에서 키보드를 띄우지 않는다
+	else:
+		_name_edit.grab_focus()
 
 
 func set_notice(text: String) -> void:
@@ -79,12 +89,33 @@ func _place(c: Control, pos: Vector2, sz := Vector2.ZERO) -> void:
 	add_child(c)
 
 
-func _label(t: String, pos: Vector2) -> void:
+## 휴대폰 웹에서만 화면 키보드가 판의 아래쪽 절반을 가린다.
+func _uses_touch_keyboard() -> bool:
+	return OS.has_feature("web") and DisplayServer.is_touchscreen_available()
+
+
+## 화면 키보드가 아래쪽 절반을 가리므로 입력칸과 버튼을 위쪽에 모은다. 칸을 누를 때 배치가 바뀌면
+## 버튼이 손가락 밑에서 움직이므로, 처음부터 이 배치로 둔다. 아바타는 키보드를 닫으면 보인다.
+func _phone_layout() -> void:
+	for c in _decor:
+		c.visible = false
+	_name_label.position = Vector2(396, 18)
+	_name_edit.position = Vector2(396, 44)
+	_create_btn.position = Vector2(396, 116)
+	_join_btn.position = Vector2(584, 116)
+	_hint.position = Vector2(0, 186)
+	_avatar_label.position = Vector2(396, 270)
+	for i in _faces.size():
+		_faces[i].position = Vector2(396 + i * 96, 298)
+
+
+func _label(t: String, pos: Vector2) -> Label:
 	var l := Label.new()
 	l.text = t
 	l.add_theme_font_size_override("font_size", 18)
 	l.add_theme_color_override("font_color", Color("8f9bd6"))
 	_place(l, pos)
+	return l
 
 
 func _on_face_input(ev: InputEvent, i: int) -> void:
@@ -119,4 +150,3 @@ func _on_join() -> void:
 		return
 	_save_profile()
 	get_parent().show_join()
-
