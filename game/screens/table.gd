@@ -16,8 +16,15 @@ const HandViewScript := preload("res://ui/hand_view.gd")
 const CardMap := preload("res://ui/card_map.gd")
 const WildPickerScene := preload("res://ui/wild_picker.tscn")
 const DrawChoiceScene := preload("res://ui/draw_choice.tscn")
+const FxLayerScript := preload("res://ui/fx/table_fx.gd")
+const FxEvents := preload("res://ui/fx/fx_events.gd")
+const FxTiming := preload("res://ui/fx/fx_timing.gd")
+const HanjangScene := preload("res://ui/hanjang_button.tscn")
 
 signal action_requested(action: Dictionary)
+## 한장! 행동: {"type": "hanjang"}(낸 사람이 외치기)  {"type": "catch"}(잡았다!)
+## 연출(n6): 스냅샷 변화에서 공격·스킵·리버스를 스스로 고른다. 나눠 주기는 start_deal(), 한장! 결과는 show_event() 로 받는다.
+##   show_event({"type": "hanjang_called", "seat": 외친 자리})   show_event({"type": "caught", "by": 잡은 자리, "victim": 잡힌 자리})
 
 const COLOR_NAME := ["빨강", "노랑", "초록", "파랑"]
 const COLOR_RGB := [Color("e8343a"), Color("f2b51c"), Color("2fa84f"), Color("2f6fe0")]
@@ -43,6 +50,8 @@ var hand_view
 var wild_picker
 var draw_choice
 var btn_draw: Button
+var fx
+var hj_ui
 
 var _opps: Control
 var _me_box: Control
@@ -62,6 +71,10 @@ var _locked := false
 var _shown_color := 0
 var _last_from := Vector2.ZERO
 var _has_from := false
+var _dealing := false
+var _deal_wanted := false
+var _dealt: Array = []
+var _hj_key := ""
 
 
 func _ready() -> void:
@@ -156,6 +169,10 @@ func _ready() -> void:
 	_fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_fx)
 
+	hj_ui = HanjangScene.instantiate()
+	add_child(hj_ui)
+	hj_ui.pressed_action.connect(_on_hanjang_pressed)
+
 	wild_picker = WildPickerScene.instantiate()
 	wild_picker.visible = false
 	add_child(wild_picker)
@@ -165,6 +182,10 @@ func _ready() -> void:
 	add_child(draw_choice)
 	draw_choice.play_now.connect(func(): _emit({"type": "play", "id": int(snap.drawn_id), "color": -1}))
 	draw_choice.keep.connect(func(): _emit({"type": "keep"}))
+
+	fx = FxLayerScript.new()
+	fx.table = self
+	add_child(fx)
 
 	var glow := create_tween().set_loops()
 	glow.tween_property(btn_draw, "self_modulate", Color(1.5, 1.7, 1.8), 0.5)
@@ -211,20 +232,83 @@ func apply_snapshot(s: Dictionary) -> void:
 	_locked = false
 	if not is_inside_tree() or _ring == null:
 		return
+	if _deal_wanted and not _dealing:
+		_begin_deal()
 	_redraw(s)
-	if not prev.is_empty() and prev.top.id != s.top.id:
+	if _dealing or prev.is_empty():
+		return
+	if prev.top.id != s.top.id:
 		_fly_top(prev, s)
+	fx.play_all(FxEvents.derive(prev, s))
+
+
+## 한장! 결과처럼 스냅샷만으로 알 수 없는 연출을 보인다.
+func show_event(ev: Dictionary) -> void:
+	if fx != null and not snap.is_empty():
+		fx.play(ev)
+
+
+## 다음 스냅샷(이미 있으면 지금 것)으로 나눠 주기 연출을 한다. 방장부터 시계 방향으로 한 장씩 7장.
+func start_deal() -> void:
+	_deal_wanted = true
+	if is_inside_tree() and _ring != null and not snap.is_empty():
+		apply_snapshot(snap)
+
+
+func _begin_deal() -> void:
+	_deal_wanted = false
+	_dealing = true
+	_dealt = []
+	for i in snap.n:
+		_dealt.append(0)
+	var order: Array = []
+	for k in snap.n:
+		var seat := posmod(host_seat + k, snap.n)
+		if snap.alive[seat]:
+			order.append(seat)
+	var per: int = snap.counts.max() if not snap.counts.is_empty() else 7
+	fx.deal(order, per, _on_dealt, _finish_deal)
+
+
+func _on_dealt(seat: int) -> void:
+	if not _dealing:
+		return
+	_dealt[seat] += 1
+	_redraw(snap)
+
+
+func _finish_deal() -> void:
+	_dealing = false
+	_redraw(snap)
+	_discard_cv.pivot_offset = _discard_cv.card_pixel_size() / 2.0
+	_discard_cv.scale = Vector2(0.0, 1.0)
+	create_tween().tween_property(_discard_cv, "scale", Vector2.ONE, FxTiming.DEAL_FLIP)
+
+
+func seat_avatar_pos(seat: int) -> Vector2:
+	var rel := posmod(seat - snap.seat, snap.n)
+	if rel == 0:
+		return ME_AVATAR_POS
+	return SLOT[LAYOUT[snap.n][rel]].avatar
+
+
+## 카드가 날아가 닿는 곳: 내 패 가운데 또는 그 사람의 뒷면 줄 가운데.
+func seat_hand_point(seat: int) -> Vector2:
+	if seat == snap.seat:
+		return Vector2(575, 540)
+	return _opp_center.get(seat, Vector2(575, 300))
 
 
 func _redraw(s: Dictionary) -> void:
 	var me: int = s.seat
-	var my_turn: bool = s.turn == me and s.phase != "done"
+	var my_turn: bool = s.turn == me and s.phase != "done" and not _dealing
 	var pick: bool = my_turn and s.phase == "pick"
 
 	# 날아오는 중에는 이전 맨 위 카드와 색 테두리를 그대로 두고, 내려앉은 뒤 바꾼다.
 	if _flying == 0:
 		_show_discard(s.top, s.color)
-	_discard_cv.visible = true
+	_discard_cv.visible = not _dealing
+	_discard_border.visible = not _dealing
 	var bsb := StyleBoxFlat.new()
 	bsb.bg_color = Color(0, 0, 0, 0)
 	bsb.set_border_width_all(5)
@@ -248,7 +332,7 @@ func _redraw(s: Dictionary) -> void:
 		var st = AvatarViewScript.State.NORMAL
 		if not s.alive[seat]:
 			st = AvatarViewScript.State.GRAY
-		elif seat == s.turn and s.phase != "done":
+		elif seat == s.turn and s.phase != "done" and not _dealing:
 			st = AvatarViewScript.State.TURN
 		if rel == 0:
 			_me_box.add_child(av)
@@ -260,6 +344,8 @@ func _redraw(s: Dictionary) -> void:
 		av.position = slot.avatar
 		av.setup(faces[seat], names[seat], st, seat == host_seat)
 		var cnt: int = s.counts[seat]
+		if _dealing:
+			cnt = mini(cnt, _dealt[seat])
 		var shown := mini(cnt, BACK_MAX)
 		for i in shown:
 			var cv = CardViewScript.new()
@@ -289,11 +375,14 @@ func _redraw(s: Dictionary) -> void:
 
 	# 내 패: 내 차례의 고르는 중에만 솟거나 어두워진다. 그 밖에는 평평하다.
 	var ids: Array = []
+	var shown_hand: Array = s.hand
+	if _dealing:
+		shown_hand = s.hand.slice(0, _dealt[me])
 	if pick:
 		for card in s.hand:
 			if is_playable(card, s):
 				ids.append(card.id)
-	hand_view.set_hand(s.hand, ids, pick)
+	hand_view.set_hand(shown_hand, ids, pick)
 
 	_bar.visible = my_turn and s.phase != "hanjang"
 	_time_label.visible = _bar.visible
@@ -330,6 +419,28 @@ func _redraw(s: Dictionary) -> void:
 	_end_label.visible = s.phase == "done" and s.winner >= 0
 	if _end_label.visible:
 		_end_label.text = "%s 승리!" % names[s.winner]
+
+	_redraw_hanjang(s)
+
+
+func _redraw_hanjang(s: Dictionary) -> void:
+	if s.phase != "hanjang" or _dealing or not s.alive[s.seat]:
+		_hj_key = ""
+		hj_ui.hide_all()
+		return
+	var mode := "call" if s.hanjang_seat == s.seat else "catch"
+	var key := "%s:%d" % [mode, s.hanjang_seat]
+	var restart := key != _hj_key
+	_hj_key = key
+	var total: float = s.get("turn_time", FxTiming.HANJANG_WINDOW)
+	hj_ui.show_mode(mode, names[s.hanjang_seat], s.get("time_left", total), total, restart)
+
+
+func _on_hanjang_pressed(kind: String) -> void:
+	if _locked:
+		return
+	hj_ui.btn.disabled = true
+	_emit({"type": "hanjang" if kind == "call" else "catch"})
 
 
 func _show_discard(top: Dictionary, color: int) -> void:

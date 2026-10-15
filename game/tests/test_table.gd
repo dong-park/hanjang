@@ -234,6 +234,12 @@ func _init() -> void:
 	while rules.phase != "done" and steps < 4000:
 		steps += 1
 		await process_frame
+		if rules.phase == "hanjang":
+			if rules.hj_seat == 0:
+				table.hj_ui.btn.pressed.emit()
+			else:
+				drv.settle_hanjang()
+			continue
 		if rules.turn != 0:
 			drv.bot_step()
 			continue

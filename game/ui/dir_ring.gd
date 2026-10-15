@@ -9,6 +9,11 @@ var clockwise := true:
 const CENTER := Vector2(576, 298)
 const RADII := Vector2(132, 104)
 const COLOR := Color("4a64d8")
+
+var color := COLOR:
+	set(v):
+		color = v
+		queue_redraw()
 const DASHES := 36
 
 
@@ -28,7 +33,7 @@ func _draw() -> void:
 		var pts := PackedVector2Array()
 		for k in 5:
 			pts.append(_pt(a0 + step * 0.55 * k / 4.0))
-		draw_polyline(pts, COLOR, 5.0)
+		draw_polyline(pts, color, 5.0)
 	# 화살표 4개: 위·오른쪽·아래·왼쪽. 시계 방향이면 위는 오른쪽, 오른쪽은 아래를 가리킨다.
 	for q in 4:
 		var a := -PI / 2.0 + q * PI / 2.0 + step * 0.275
@@ -37,4 +42,4 @@ func _draw() -> void:
 		if not clockwise:
 			tan = -tan
 		var nrm := Vector2(-tan.y, tan.x)
-		draw_colored_polygon(PackedVector2Array([p + tan * 14.0, p - tan * 8.0 + nrm * 11.0, p - tan * 8.0 - nrm * 11.0]), COLOR)
+		draw_colored_polygon(PackedVector2Array([p + tan * 14.0, p - tan * 8.0 + nrm * 11.0, p - tan * 8.0 - nrm * 11.0]), color)
