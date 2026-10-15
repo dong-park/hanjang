@@ -18,7 +18,7 @@ static func next_alive(s: Dictionary, from: int, dir: int) -> int:
 
 static func derive(prev: Dictionary, s: Dictionary) -> Array:
 	var out: Array = []
-	if prev.is_empty() or s.is_empty() or prev.n != s.n:
+	if prev.is_empty() or s.is_empty() or prev.n != s.n or prev.phase == "done":
 		return out
 	var player: int = prev.turn
 	var top_changed: bool = prev.top.id != s.top.id

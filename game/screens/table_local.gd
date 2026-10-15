@@ -101,7 +101,7 @@ func _index_of(seat: int, card_id: int) -> int:
 
 
 func _process(delta: float) -> void:
-	if rules.phase == "done":
+	if rules.phase == "done" or table.is_dealing():
 		return
 	if rules.phase == "hanjang":
 		_hj_wait += delta

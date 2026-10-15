@@ -255,6 +255,10 @@ func start_deal() -> void:
 		apply_snapshot(snap)
 
 
+func is_dealing() -> bool:
+	return _dealing
+
+
 func _begin_deal() -> void:
 	_deal_wanted = false
 	_dealing = true
@@ -267,6 +271,9 @@ func _begin_deal() -> void:
 		if snap.alive[seat]:
 			order.append(seat)
 	var per: int = snap.counts.max() if not snap.counts.is_empty() else 7
+	if order.is_empty():
+		_finish_deal()
+		return
 	fx.deal(order, per, _on_dealt, _finish_deal)
 
 

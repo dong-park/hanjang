@@ -80,7 +80,6 @@ func show_mode(m: String, who: String, left: float, total: float, restart: bool)
 	label.visible = not is_call
 	label.text = "%s: 1장 남음!" % who
 	btn.visible = true
-	btn.disabled = false
 	bar.visible = true
 	btn.text = "한장!" if is_call else "잡았다!"
 	btn.add_theme_font_size_override("font_size", 40 if is_call else 30)
@@ -96,6 +95,7 @@ func show_mode(m: String, who: String, left: float, total: float, restart: bool)
 		bar.size = Vector2(192, 12)
 	if not restart:
 		return
+	btn.disabled = false
 	bar.max_value = total
 	bar.value = left
 	if _drain:
