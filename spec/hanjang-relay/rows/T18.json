@@ -1,0 +1,19 @@
+{
+  "id": "T18",
+  "kind": "task",
+  "title": "미니PC에 systemd로 배포한다",
+  "given": "T1에서 사양을 확인했고 D3 주소가 정해졌다.",
+  "when": "배포 스크립트를 한 번 실행한다.",
+  "then": "재부팅 뒤에도 서비스가 자동으로 뜨고 외부 주소로 대기실이 열린다. 스크립트를 다시 돌려도 같은 결과다. 확인: 재부팅 후 폰 접속",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

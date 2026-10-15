@@ -1,0 +1,19 @@
+{
+  "id": "T13",
+  "kind": "task",
+  "title": "끊긴 접속을 240초가 아니라 20초 안에 안다",
+  "given": "한 폰이 와이파이를 끈다(FIN 없는 끊김).",
+  "when": "20초를 센다.",
+  "then": "나머지 사람 화면에 끊김 문구가 뜬다. 확인: 서버 로그의 감지 시각",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

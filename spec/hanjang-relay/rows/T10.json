@@ -1,0 +1,19 @@
+{
+  "id": "T10",
+  "kind": "task",
+  "title": "접속 폭주가 서버를 못 죽인다",
+  "given": "한 주소가 짧은 시간에 연결을 반복한다.",
+  "when": "1초에 20번 연결한다.",
+  "then": "그 주소가 일정 시간 막히고 다른 주소의 방은 계속 돈다. 서버 프로세스는 살아 있다. 확인: 부하 스크립트와 프로세스 상태",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

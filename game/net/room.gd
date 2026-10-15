@@ -95,7 +95,11 @@ func join_room(p_name: String, p_face: int, p_addr: String) -> bool:
 
 func ws_url(p_addr: String, p_port: int) -> String:
 	## 방 주소 규칙: 입력은 "192.168.0.5"(포트 7777 기본) 또는 "192.168.0.5:7778". ws:// 로 붙는다.
-	var a := p_addr.strip_edges().trim_prefix("ws://")
+	## "wss://이름"은 터널 같은 https 주소용이라 그대로 쓴다.
+	var a := p_addr.strip_edges()
+	if a.begins_with("wss://"):
+		return a
+	a = a.trim_prefix("ws://")
 	if a.contains(":"):
 		return "ws://" + a
 	return "ws://%s:%d" % [a, p_port]
@@ -164,6 +168,9 @@ func lan_ips() -> PackedStringArray:
 func page_host() -> String:
 	if not OS.has_feature("web"):
 		return ""
+	var room = JavaScriptBridge.eval("new URLSearchParams(window.location.search).get('room')")
+	if room != null and str(room) != "":
+		return str(room)
 	var h = JavaScriptBridge.eval("window.location.hostname")
 	return str(h) if h != null else ""
 

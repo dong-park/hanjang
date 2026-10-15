@@ -1,0 +1,19 @@
+{
+  "id": "T16",
+  "kind": "task",
+  "title": "서버 로그에 개인정보가 없다",
+  "given": "로그 파일이 쌓였다.",
+  "when": "로그를 읽는다.",
+  "then": "방 코드, 이벤트, 오류만 있고 접속자 IP는 앞 두 칸만 있다. 닉네임은 없다. 확인: grep",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

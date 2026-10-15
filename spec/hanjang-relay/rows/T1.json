@@ -1,0 +1,21 @@
+{
+  "id": "T1",
+  "kind": "task",
+  "title": "미니PC 접근을 확인하고 사양을 적는다",
+  "given": "D2 호스트를 정했다.",
+  "when": "ssh로 들어가 uname, 메모리, CPU, node, python3, cloudflared, docker, tailscale 상태를 읽는다.",
+  "then": "미니PC 사양과 설치 목록이 구현 메모에 적힌다. 접속이 안 되면 어떤 오류인지와 확인한 호스트 이름이 적히고 노드는 막힘으로 간다. 확인: ssh 출력",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [
+    "T18"
+  ],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

@@ -1,0 +1,19 @@
+{
+  "id": "T4",
+  "kind": "task",
+  "title": "방 만들기가 코드를 돌려준다",
+  "given": "관리 서비스가 떠 있다.",
+  "when": "폰에서 방 만들기를 누른다.",
+  "then": "4자리 코드와 공유 링크가 화면에 보이고 링크를 열면 같은 방에 들어간다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

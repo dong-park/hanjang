@@ -1,0 +1,40 @@
+{
+  "id": "D2",
+  "kind": "decision",
+  "title": "서버를 어느 미니PC에 둘까",
+  "given": "~/.ssh/config의 Host dongpark(100.117.197.86)은 tailscale에서 offline이다. 사용자가 말한 연결된 미니PC가 이 호스트인지 아직 모른다.",
+  "when": "서버 호스트를 정한다.",
+  "then": "호스트에 따라 CPU와 메모리가 달라져 D1 C의 동시 방 수가 정해진다. 호스트를 못 쓰면 맥에서 먼저 개발한다(D8).",
+  "options": [
+    {
+      "key": "A",
+      "label": "dongpark이 켜지면 그 PC",
+      "why": "ssh 설정이 이미 있다. 지금은 닿지 않는다"
+    },
+    {
+      "key": "B",
+      "label": "사용자가 지금 연결 중이라고 한 다른 PC",
+      "why": "사용자가 호스트 이름을 알려 줘야 한다"
+    },
+    {
+      "key": "C",
+      "label": "당분간 이 맥",
+      "why": "확인 없이 바로 시험된다. 맥이 꺼지면 서버도 꺼진다"
+    }
+  ],
+  "recommend": "C",
+  "confidence": "high",
+  "reversible": true,
+  "status": "끝남",
+  "blocks": [
+    "T1",
+    "T18"
+  ],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": [
+    "2026-10-16 D2 → C (맥을 서버로(사용자, 채팅 지시))"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "T12",
+  "kind": "task",
+  "title": "방 주인 폰이 잠기면 판이 이어진다",
+  "given": "D6 답이 A다. 3명이 판 중이고 주인이 폰을 잠근다.",
+  "when": "30초 안에 돌아온다 / 안 돌아온다.",
+  "then": "돌아오면 자기 자리로 돌아가 판이 이어진다. 안 돌아오면 다음 사람이 주인이 되었다는 문구가 뜨고 판이 이어진다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

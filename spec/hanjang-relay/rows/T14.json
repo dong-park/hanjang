@@ -1,0 +1,19 @@
+{
+  "id": "T14",
+  "kind": "task",
+  "title": "맥 앱 LAN 방장이 그대로 돈다",
+  "given": "D7 답이 A다.",
+  "when": "맥 앱으로 방을 열고 폰과 다른 맥이 LAN 주소로 들어간다.",
+  "then": "한 판이 끝까지 돈다. 기존 헤드리스 시험 전부 종료 코드 0.",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

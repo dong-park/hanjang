@@ -1,0 +1,19 @@
+{
+  "id": "T6",
+  "kind": "task",
+  "title": "비공개 방은 목록에 안 뜨고 코드로만 들어간다",
+  "given": "비공개 방이 열려 있다.",
+  "when": "목록을 열고, 코드를 입력한다.",
+  "then": "목록에는 없고 코드를 넣으면 들어간다. 틀린 코드는 「방을 못 찾았어요」가 뜬다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

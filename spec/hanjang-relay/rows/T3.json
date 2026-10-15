@@ -1,0 +1,21 @@
+{
+  "id": "T3",
+  "kind": "task",
+  "title": "접속자만 있는 방이 한 판을 끝낸다",
+  "given": "D1 답이 C다. 방 프로세스에는 자리가 없다.",
+  "when": "접속자 2~4명이 붙어 한 판을 끝낸다.",
+  "then": "대기실, 판, 결과가 지금과 똑같이 돈다. 남의 패는 안 보인다. 확인: 4인 헤드리스 시험 종료 코드 0",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [
+    "T4"
+  ],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

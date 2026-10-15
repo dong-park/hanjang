@@ -1,0 +1,19 @@
+{
+  "id": "T7",
+  "kind": "task",
+  "title": "방 수 한도를 넘으면 만들기가 막힌다",
+  "given": "동시 방이 한도에 찼다.",
+  "when": "방 만들기를 누른다.",
+  "then": "「지금은 방이 가득 찼어요」가 뜨고 기존 방은 영향이 없다.",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}

@@ -1,0 +1,39 @@
+{
+  "id": "D3",
+  "kind": "decision",
+  "title": "서버를 인터넷에 어떻게 열까",
+  "given": "웹 페이지는 https라서 방 접속은 wss여야 한다. 임시 cloudflared 터널 시험은 진행 중이고 브라우저 접속은 미확인이다.",
+  "when": "공개 주소 방식을 정한다.",
+  "then": "주소가 공유되면 바꾸기 어렵다. 이미 돌린 링크와 북마크가 깨진다.",
+  "options": [
+    {
+      "key": "A",
+      "label": "cloudflared 이름 있는 터널과 내 도메인",
+      "why": "공유기 설정이 없고 wss 인증서를 Cloudflare가 대신 낸다. 도메인이 필요하다"
+    },
+    {
+      "key": "B",
+      "label": "공인 IP와 도메인과 Let's Encrypt",
+      "why": "외부 서비스가 없다. 공유기 포트 열기와 인증서 갱신을 직접 한다"
+    },
+    {
+      "key": "C",
+      "label": "cloudflared 임시 주소(trycloudflare)",
+      "why": "설정이 없다. 재시작할 때마다 주소가 바뀌어 공개 방에는 못 쓴다"
+    }
+  ],
+  "recommend": "C",
+  "confidence": "high",
+  "reversible": false,
+  "status": "끝남",
+  "blocks": [
+    "T18"
+  ],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": [
+    "2026-10-16 D3 → C (맥에서는 임시 주소로 먼저. 이름 있는 터널·도메인은 n7 배포 때 다시 정함(사용자 동의 + 추천 변형))"
+  ]
+}

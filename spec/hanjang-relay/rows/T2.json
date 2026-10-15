@@ -1,0 +1,19 @@
+{
+  "id": "T2",
+  "kind": "task",
+  "title": "맥에서 헤드리스 방을 열고 폰 브라우저가 wss로 들어간다",
+  "given": "터널 주소가 있다. 임시 터널로 시험해도 된다.",
+  "when": "헤드리스 Godot가 방을 열고 터널 주소를 폰 Safari에 입력한다.",
+  "then": "폰에서 닉네임 입력 뒤 방 대기실이 보이고 맥 쪽에서도 폰 닉네임이 보인다. 이 시험이 브라우저 wss 접속의 첫 확인이다. 확인: 폰 캡처",
+  "options": [],
+  "recommend": "",
+  "confidence": "mid",
+  "reversible": true,
+  "status": "아직 안 함",
+  "blocks": [],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": []
+}
