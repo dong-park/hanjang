@@ -15,4 +15,10 @@ const REVERSE_HOLD := 0.60     # 방향 고리가 노랗게 머무는 시간
 const REVERSE_BACK := 0.40     # 노랑에서 원래 색으로 돌아오는 시간
 const HANJANG_WINDOW := 3.0    # 한장! 창이 열려 있는 시간. 세션 스냅샷의 turn_time이 있으면 그 값을 쓴다
 const CALL_HOLD := 1.40        # "1장 남음!" 문구가 머무는 시간
+const LEAVE_HOLD := 2.20       # 나감 알림이 머무는 시간
 const CATCH_HOLD := 1.60       # "잡았다!" 문구가 머무는 시간
+
+
+## 나눠 주기 연출 전체 길이(초). 방장 세션이 이만큼 기다린 뒤 첫 차례 시간을 잰다.
+static func deal_total(players: int, per: int = 7) -> float:
+	return maxf(players * per - 1, 0) * DEAL_STEP + DEAL_FLY + DEAL_FLIP

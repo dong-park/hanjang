@@ -13,10 +13,13 @@ signal state_changed(snap: Dictionary)
 signal request_refused(rid: int, reason: String)
 signal player_left(seat: int, who: String)
 signal ended(ranks: Array)
+signal event(ev: Dictionary)  ## 한장! 외침·잡았다! 처럼 상태만으로 알 수 없는 사건 (판 상태 뒤에 도착)
 
 const Rules := preload("res://rules/rules.gd")
 const TURN_TIME := 20.0
 const HJ_TIME := 3.0
+const HJ_GRACE := 0.3  ## 한장! 창이 닫힌 뒤 네트워크로 늦게 닿는 요청을 받아 주는 여유
+const FxTiming := preload("res://ui/fx/fx_timing.gd")
 
 var engine: Rules
 var seats: Array = []
@@ -33,6 +36,7 @@ var _rid := 0
 var _last_req: Array = []
 var _seen := {}
 var _deadline := 0.0
+var _deal_until := 0.0
 var _running := false
 var _serial := 0
 var _end_reported := false
@@ -77,8 +81,15 @@ func _start_host() -> void:
 			engine.leave(i)
 	_running = true
 	print("SESSION_START n=", seats.size(), " seed=", _seed)
-	_mark_deadline()
+	_deadline = INF  ## 나눠 주기 연출이 끝난 뒤부터 첫 차례 시간을 잰다
+	var deal := FxTiming.deal_total(seats.size(), engine.HAND_SIZE)
+	_deal_until = Time.get_ticks_msec() / 1000.0 + deal
 	_push()
+	await get_tree().create_timer(deal).timeout
+	if engine == null or not _running or engine.phase == "done":
+		return
+	_mark_deadline()
+	_push()  ## 연출이 끝난 뒤 한 번 더 보내 시간 표시와 자동 플레이가 이때부터 시작한다
 
 
 func seat_of(peer: int) -> int:
@@ -96,7 +107,8 @@ func _process(_dt: float) -> void:
 
 
 func _mark_deadline() -> void:
-	_deadline = Time.get_ticks_msec() / 1000.0 + (hj_time if engine.phase == "hanjang" else turn_time)
+	var now := Time.get_ticks_msec() / 1000.0
+	_deadline = now + (hj_time + HJ_GRACE if engine.phase == "hanjang" else turn_time)
 
 
 func _on_timeout() -> void:
@@ -129,7 +141,9 @@ func _after_change() -> void:
 func _push() -> void:
 	if engine == null:
 		return
-	var left := maxf(0.0, _deadline - Time.get_ticks_msec() / 1000.0)
+	var left := 0.0 if _deadline == INF else maxf(0.0, _deadline - Time.get_ticks_msec() / 1000.0 - (HJ_GRACE if engine.phase == "hanjang" else 0.0))
+	if _deadline == INF:
+		left = turn_time
 	for i in seats.size():
 		if not engine.alive[i]:
 			continue
@@ -152,6 +166,10 @@ func _handle(peer: int, rid: int, kind: String, a: int, b: int) -> void:
 		print("IGNORED seat=", seat, " rid=", rid, " kind=", kind, " reason=같은 요청 두 번")
 		return
 	_seen[seat] = rid
+	if Time.get_ticks_msec() / 1000.0 < _deal_until:
+		print("IGNORED seat=", seat, " rid=", rid, " kind=", kind, " reason=나눠 주는 중")
+		_refuse(peer, rid, "나눠 주는 중이에요")
+		return
 	var r: Dictionary
 	match kind:
 		"play": r = engine.play(seat, a, b)
@@ -164,9 +182,24 @@ func _handle(peer: int, rid: int, kind: String, a: int, b: int) -> void:
 	if r.ok:
 		print("ACCEPT seat=", seat, " rid=", rid, " kind=", kind)
 		_after_change()
+		if kind == "hanjang":
+			_send_event({"type": "hanjang_called", "seat": seat})
+		elif kind == "catch":
+			_send_event({"type": "caught", "by": seat, "victim": r.victim})
 	else:
 		print("IGNORED seat=", seat, " rid=", rid, " kind=", kind, " reason=", r.reason)
 		_refuse(peer, rid, r.reason)
+
+
+func _send_event(ev: Dictionary) -> void:
+	for i in seats.size():
+		if not engine.alive[i]:
+			continue
+		var p: int = seats[i].peer
+		if p == multiplayer.get_unique_id():
+			event.emit(ev)
+		else:
+			_event.rpc_id(p, ev)
 
 
 func _refuse(peer: int, rid: int, reason: String) -> void:
@@ -223,6 +256,11 @@ func _state(snap: Dictionary) -> void:
 
 
 @rpc("authority", "call_remote", "reliable")
+func _event(ev: Dictionary) -> void:
+	event.emit(ev)
+
+
+@rpc("authority", "call_remote", "reliable")
 func _refused(rid: int, reason: String) -> void:
 	request_refused.emit(rid, reason)
 
@@ -249,7 +287,7 @@ func _receive(snap: Dictionary) -> void:
 			_end_reported = true
 			print("RESULT winner=", snap.winner, " ranks=", snap.ranks)
 			ended.emit(snap.ranks)
-			if _autoplay:
+			if _autoplay and not _opts.has("keep-open"):
 				get_tree().create_timer(1.5).timeout.connect(get_tree().quit)
 		return
 	if _autoplay:

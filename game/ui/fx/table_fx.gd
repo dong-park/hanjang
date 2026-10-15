@@ -262,3 +262,22 @@ func deal(order: Array, per: int, on_land: Callable, on_done: Callable) -> void:
 			if k == total - 1:
 				cap.queue_free()
 				on_done.call())
+
+
+## 장면 14: 접속자가 나갔다. 말풍선, 위쪽 알림, 카드가 더미로 돌아간다.
+func disconnect_fx(seat: int, cards: int, who: String) -> void:
+	var at: Vector2 = table.seat_avatar_pos(seat)
+	banner("연결 끊김", Color.WHITE, Color.WHITE, NAVY, at + Vector2(44, -22), FxTiming.LEAVE_HOLD, 20)
+	banner("%s%s 나갔어요 · 카드 %d장은 더미로" % [who, ga(who), cards], NAVY, RED, Color.WHITE, Vector2(576, 22), FxTiming.LEAVE_HOLD, 22)
+	var from: Vector2 = table.seat_hand_point(seat)
+	for i in mini(cards, 8):
+		var cv = _new_back()
+		var tw := create_tween()
+		_track(tw)
+		tw.tween_method(func(t: float):
+			cv.visible = true
+			var start: Vector2 = from - cv.card_pixel_size() * 0.25
+			cv.position = start.lerp(Vector2(table.DECK_POS), t)
+			var k := lerpf(0.5, 1.0, t)
+			cv.scale = Vector2(k, k), 0.0, 1.0, FxTiming.DRAW_FLY).set_delay(i * FxTiming.DRAW_STEP).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+		tw.tween_callback(cv.queue_free)

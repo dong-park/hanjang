@@ -517,6 +517,11 @@ func _on_draw_pressed() -> void:
 	_emit({"type": "draw"})
 
 
+## 방장이 요청을 거절하면 세션 연결이 입력 잠금을 푼다.
+func unlock() -> void:
+	_locked = false
+
+
 func _emit(a: Dictionary) -> void:
 	if _locked:
 		return

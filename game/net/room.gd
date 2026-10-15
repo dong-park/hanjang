@@ -16,6 +16,7 @@ signal game_started(seats: Array)
 signal peer_left(peer: int)
 signal left_to_title(reason: String)
 signal joined()
+signal lobby_returned()
 signal join_failed(reason: String)
 
 enum State { NONE, LOBBY, PLAYING }
@@ -113,7 +114,21 @@ func back_to_lobby() -> void:
 		for i in range(seats.size() - 1, -1, -1):
 			if seats[i].get("gone", false):
 				seats.remove_at(i)
-		_to_seated(_sync_seats, [seats])
+		_to_seated(_to_lobby, [seats])
+
+
+## 다시 하기: 같은 사람끼리 바로 다음 판. 나간 자리는 비우고, 둘 미만이면 대기실로 간다.
+func replay() -> void:
+	if not is_host() or state != State.PLAYING:
+		return
+	for i in range(seats.size() - 1, -1, -1):
+		if seats[i].get("gone", false):
+			seats.remove_at(i)
+	if seats.size() < MIN_PLAYERS:
+		back_to_lobby()
+		return
+	print("REPLAY seats=", seats.size())
+	_to_seated(_begin, [seats])
 
 
 func room_name() -> String:
@@ -254,6 +269,15 @@ func _sync_seats(p_seats: Array) -> void:
 	if not is_host() and state == State.LOBBY and seats.size() > 0:
 		_remember(room_name(), addr)
 	seats_changed.emit(seats)
+
+
+@rpc("authority", "call_local", "reliable")
+func _to_lobby(p_seats: Array) -> void:
+	state = State.LOBBY
+	seats = p_seats
+	print("BACK_TO_LOBBY seats=", seats.size())
+	seats_changed.emit(seats)
+	lobby_returned.emit()
 
 
 @rpc("authority", "call_local", "reliable")
