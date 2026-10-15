@@ -34,7 +34,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*a, directory=ROOT, **k)
 
     def end_headers(self):
-        self.send_header("Cache-Control", "no-store")
+        # no-cache: 매번 재검증해 새 빌드는 바로 받고, 그대로면 304로 39MB wasm을 다시 보내지 않는다.
+        self.send_header("Cache-Control", "no-cache")
         super().end_headers()
 
 

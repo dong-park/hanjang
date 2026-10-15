@@ -194,8 +194,10 @@ func _on_connection_failed() -> void:
 	join_failed.emit("접속하지 못했어요. 주소를 확인하세요")
 
 
-func _on_peer_connected(_id: int) -> void:
-	pass
+func _on_peer_connected(id: int) -> void:
+	# 웹소켓 서버는 접속 수 상한 인자가 없다. ENet 때와 같은 상한(MAX_PLAYERS + 3)을 넘는 접속은 바로 끊는다.
+	if is_host() and multiplayer.get_peers().size() > MAX_PLAYERS + 3:
+		multiplayer.multiplayer_peer.disconnect_peer(id, true)
 
 
 func _on_peer_disconnected(id: int) -> void:
