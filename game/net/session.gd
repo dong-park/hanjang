@@ -59,6 +59,7 @@ func _ready() -> void:
 	Room.game_started.connect(_on_game_started)
 	Room.peer_left.connect(_on_peer_left)
 	Room.peer_rejoined.connect(_on_peer_rejoined)
+	Room.can_rejoin = func(seat: int) -> bool: return engine != null and engine.can_rejoin(seat)
 
 
 func _on_game_started(p_seats: Array) -> void:
@@ -253,6 +254,7 @@ func _on_peer_left(peer: int) -> void:
 
 func _on_peer_rejoined(_peer: int, seat: int) -> void:
 	if engine == null or not engine.rejoin(seat).ok:
+		push_error("REJOIN_DESYNC seat=%d" % seat)  ## Room.can_rejoin을 통과했으면 일어나지 않아야 한다
 		return
 	_seen.erase(seat)
 	print("PLAYER_REJOINED seat=", seat)

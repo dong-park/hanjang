@@ -34,11 +34,13 @@ var hj_seat := -1
 var drawn_idx := -1
 var pending_wild: Dictionary = {}
 var winner := -1
+var left_size: Dictionary = {}  # 나간 자리 → 나갈 때 패 장수. 돌아오면 그만큼 받는다
 var rng := RandomNumberGenerator.new()
 var _next_id := 0
 
 func setup(count: int, seed_value: int = -1) -> void:
 	n = count
+	left_size = {}
 	if seed_value < 0:
 		rng.randomize()
 	else:
@@ -308,18 +310,20 @@ func _finish(win_seat: int) -> void:
 	hj_seat = -1
 	pending_wild = {}
 
-# 자리가 나갔다. 패는 덱에 넣고 섞는다. 차례였으면 넘기고, 1명 남으면 판이 끝난다.
-## 나갔던 자리가 같은 닉네임으로 돌아온다. 패는 처음 장수만큼 새로 받고, 판이 끝났으면 못 돌아온다.
+## 나갔던 자리가 돌아올 수 있는가. 판이 끝났으면 못 돌아온다.
+func can_rejoin(seat: int) -> bool:
+	return seat >= 0 and seat < n and not alive[seat] and phase != "done"
+
+## 나갔던 자리가 같은 닉네임으로 돌아온다. 나갈 때 들고 있던 장수만큼 새로 받는다(끊었다 들어와 패를 줄이지 못하게).
+## 장수만 보존한다 — 패 내용은 새로 뽑으므로 다시 뽑기는 막지 못한다.
 func rejoin(seat: int) -> Dictionary:
-	if seat < 0 or seat >= n or alive[seat] or phase == "done":
+	if not can_rejoin(seat):
 		return _fail("돌아올 수 없는 자리예요")
 	alive[seat] = true
-	for i in HAND_SIZE:
-		if deck.is_empty():
-			break
-		hands[seat].append(deck.pop_back())
+	_draw_many(seat, left_size.get(seat, HAND_SIZE))
 	return {"ok": true, "reason": ""}
 
+# 자리가 나갔다. 패는 덱에 넣고 섞는다. 차례였으면 넘기고, 1명 남으면 판이 끝난다.
 func leave(seat: int) -> Dictionary:
 	if seat < 0 or seat >= n or not alive[seat]:
 		return _fail("이미 없는 자리예요")
@@ -327,6 +331,8 @@ func leave(seat: int) -> Dictionary:
 		cur_color = auto_color(seat) # 색 고르던 사람이 나가면 시간 초과와 같은 색. 와일드+4 벌칙은 적용하지 않는다
 		pending_wild = {}
 	alive[seat] = false
+	# 한장! 창이 열린 채 나가면 잡힌 것과 같이 2장을 더해 기록한다(끊었다 들어와 벌칙을 피하지 못하게)
+	left_size[seat] = hands[seat].size() + (2 if phase == "hanjang" and hj_seat == seat else 0)
 	deck.append_array(hands[seat])
 	hands[seat] = []
 	shuffle(deck)

@@ -22,6 +22,9 @@ signal peer_rejoined(peer: int, seat: int)  ## 판 중 나갔던 자리가 같�
 
 enum State { NONE, LOBBY, PLAYING }
 
+## 판 중 끊긴 자리가 돌아와도 되는지 판정한다. Session이 규칙 엔진 판정으로 바꿔 끼운다.
+var can_rejoin: Callable = func(_seat: int) -> bool: return false
+
 const DEFAULT_PORT := 7777
 const MAX_PLAYERS := 4
 const MIN_PLAYERS := 2
@@ -251,7 +254,7 @@ func _hello(p_name: String, p_face: int) -> void:
 	var reason := ""
 	if state == State.PLAYING:
 		var back := _gone_seat_of(p_name)
-		if back >= 0:  ## 화면이 꺼져 끊겼던 같은 닉네임이 돌아온다 — 자리를 되찾는다
+		if back >= 0 and can_rejoin.call(back):  ## 화면이 꺼져 끊겼던 같은 닉네임이 돌아온다 — 자리를 되찾는다
 			seats[back].erase("gone")
 			seats[back]["peer"] = id
 			print("REJOINED ", id, " seat=", back, " ", p_name.strip_edges())
@@ -263,6 +266,8 @@ func _hello(p_name: String, p_face: int) -> void:
 		reason = "방이 꽉 찼어요"
 	elif not valid_name(p_name):
 		reason = "닉네임을 확인하세요"
+	elif seats.any(func(s): return s.name == p_name.strip_edges()):
+		reason = "같은 닉네임이 있어요"  ## 판 중 재접속이 닉네임으로 자리를 찾으므로 방 안에서 겹치지 않게 한다
 	if reason != "":
 		print("REJECT ", id, " ", reason)
 		_rejected.rpc_id(id, reason)

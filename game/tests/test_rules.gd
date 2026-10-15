@@ -46,6 +46,7 @@ func _init() -> void:
 	t6_ranking()
 	edge_cases()
 	snapshot_hides_hands()
+	rejoin_cases()
 	print("실패 ", fails, "개")
 	quit(1 if fails > 0 else 0)
 
@@ -243,3 +244,18 @@ func snapshot_hides_hands() -> void:
 	var r2 := fresh(2, 3)
 	var snap2 := r2.snapshot_for(1)
 	check(snap2.has("top") and snap2.has("color") and snap2.has("counts") and snap2.has("turn") and snap2.has("dir") and snap2.has("phase"), "snapshot_for 필수 칸")
+
+# 재접속: 나갈 때 장수만큼 돌려받고, 판이 끝났으면 못 돌아온다.
+func rejoin_cases() -> void:
+	var r := fresh(4, 5)
+	r.hands[2].append_array(filler(r, 8))
+	var before: int = r.hands[2].size()
+	r.leave(2)
+	check(r.can_rejoin(2) and r.rejoin(2).ok and r.hands[2].size() == before, "재접속 나갈 때 장수(%d)만큼 받음" % before)
+	check(not r.can_rejoin(2) and r.rejoin(2).ok == false, "재접속 살아 있는 자리는 못 돌아옴")
+	var r2 := fresh(2, 5)
+	r2.leave(1)
+	check(r2.phase == "done" and not r2.can_rejoin(1) and r2.rejoin(1).ok == false, "재접속 2명 판이 끝났으면 못 돌아옴")
+	var r3 := make_hanjang()
+	r3.leave(0)
+	check(r3.left_size.get(0, -1) == 3, "재접속 한장! 창 중에 나가면 잡힌 것처럼 1+2장 기록")
