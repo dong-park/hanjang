@@ -25,6 +25,8 @@ func _ready() -> void:
 	var recent := Room.recent_rooms()
 	if recent.size() > 0:
 		_addr_edit.text = recent[0].addr
+	if Room.page_host() != "":  ## 웹: 페이지 주소가 방장 주소
+		_addr_edit.text = Room.page_host()
 	_addr_edit.position = Vector2(376, 216)
 	_addr_edit.size = Vector2(400, 52)
 	_addr_edit.text_submitted.connect(func(_t): _connect())

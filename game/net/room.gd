@@ -18,6 +18,7 @@ signal left_to_title(reason: String)
 signal joined()
 signal lobby_returned()
 signal join_failed(reason: String)
+signal peer_rejoined(peer: int, seat: int)  ## 판 중 나갔던 자리가 같은 닉네임으로 돌아왔을 때 (방장만 받는다)
 
 enum State { NONE, LOBBY, PLAYING }
 
@@ -144,11 +145,24 @@ func room_name() -> String:
 
 
 func lan_ips() -> PackedStringArray:
+	## 집 와이파이 주소(192.168.)를 먼저, 그다음 10., 마지막에 172.(Docker 172.17. 같은 가상 망이 많다).
 	var out := PackedStringArray()
+	for prefix in ["192.168.", "10.", "172."]:
+		for a in IP.get_local_addresses():
+			if a.begins_with(prefix) and not a.begins_with("172.17.") and not out.has(a):
+				out.append(a)
 	for a in IP.get_local_addresses():
-		if a.begins_with("192.168.") or a.begins_with("10.") or a.begins_with("172."):
+		if a.begins_with("172.17.") and not out.has(a):
 			out.append(a)
 	return out
+
+
+## 웹 빌드: 페이지를 연 주소가 곧 방장 주소다(D7=A). 웹이 아니면 빈 문자열.
+func page_host() -> String:
+	if not OS.has_feature("web"):
+		return ""
+	var h = JavaScriptBridge.eval("window.location.hostname")
+	return str(h) if h != null else ""
 
 
 func recent_rooms() -> Array:
@@ -236,6 +250,14 @@ func _hello(p_name: String, p_face: int) -> void:
 			return
 	var reason := ""
 	if state == State.PLAYING:
+		var back := _gone_seat_of(p_name)
+		if back >= 0:  ## 화면이 꺼져 끊겼던 같은 닉네임이 돌아온다 — 자리를 되찾는다
+			seats[back].erase("gone")
+			seats[back]["peer"] = id
+			print("REJOINED ", id, " seat=", back, " ", p_name.strip_edges())
+			_rejoined.rpc_id(id, seats)
+			peer_rejoined.emit(id, back)
+			return
 		reason = "지금 게임 중이에요"
 	elif seats.size() >= MAX_PLAYERS:
 		reason = "방이 꽉 찼어요"
@@ -252,6 +274,20 @@ func _hello(p_name: String, p_face: int) -> void:
 	print("SEATED ", seats.size(), " ", p_name.strip_edges())
 	_accepted.rpc_id(id)
 	_to_seated(_sync_seats, [seats])
+
+
+func _gone_seat_of(p_name: String) -> int:
+	for i in seats.size():
+		if seats[i].get("gone", false) and seats[i].name == p_name.strip_edges():
+			return i
+	return -1
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rejoined(p_seats: Array) -> void:
+	_joining = false
+	print("REJOINED_OK")
+	_begin(p_seats)
 
 
 @rpc("authority", "call_remote", "reliable")

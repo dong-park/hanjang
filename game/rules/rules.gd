@@ -309,6 +309,17 @@ func _finish(win_seat: int) -> void:
 	pending_wild = {}
 
 # 자리가 나갔다. 패는 덱에 넣고 섞는다. 차례였으면 넘기고, 1명 남으면 판이 끝난다.
+## 나갔던 자리가 같은 닉네임으로 돌아온다. 패는 처음 장수만큼 새로 받고, 판이 끝났으면 못 돌아온다.
+func rejoin(seat: int) -> Dictionary:
+	if seat < 0 or seat >= n or alive[seat] or phase == "done":
+		return _fail("돌아올 수 없는 자리예요")
+	alive[seat] = true
+	for i in HAND_SIZE:
+		if deck.is_empty():
+			break
+		hands[seat].append(deck.pop_back())
+	return {"ok": true, "reason": ""}
+
 func leave(seat: int) -> Dictionary:
 	if seat < 0 or seat >= n or not alive[seat]:
 		return _fail("이미 없는 자리예요")

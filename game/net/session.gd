@@ -58,6 +58,7 @@ func _ready() -> void:
 	hj_time = float(_opts.get("hj-time", HJ_TIME))
 	Room.game_started.connect(_on_game_started)
 	Room.peer_left.connect(_on_peer_left)
+	Room.peer_rejoined.connect(_on_peer_rejoined)
 
 
 func _on_game_started(p_seats: Array) -> void:
@@ -248,6 +249,16 @@ func _on_peer_left(peer: int) -> void:
 		_push()  ## 차례가 그대로면 남은 시간을 새로 재지 않는다
 	else:
 		_after_change()
+
+
+func _on_peer_rejoined(_peer: int, seat: int) -> void:
+	if engine == null or not engine.rejoin(seat).ok:
+		return
+	_seen.erase(seat)
+	print("PLAYER_REJOINED seat=", seat)
+	await get_tree().create_timer(0.3).timeout  ## 돌아온 쪽이 시작 신호를 먼저 받아 판 화면을 연다
+	if engine != null:
+		_push()
 
 
 # ---------- 요청 보내기 (방장·접속자 공통) ----------
