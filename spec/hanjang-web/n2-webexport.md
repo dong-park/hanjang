@@ -38,7 +38,7 @@
 - 템플릿: 4.7.2 공식 템플릿(godot-builds 릴리스 tpz)에서 web_nothreads만 `engine/editor_data/export_templates/4.7.2.stable/`에 풀었다(engine/은 gitignore).
 - 프리셋 `game/export_presets.cfg`: Web, thread_support=false(D4=A), 출력 `build/web/index.html`(build/는 gitignore). 내보내기는 `tools/export_web.sh`, 성공(종료 0).
 - 서버(D3=C): `웹서버.command` → `tools/serve_web.py`(파이썬 http.server, 8060, 0.0.0.0). 시작하면 `http://<맥 IP>:8060/`을 터미널에 보인다. wasm MIME 확인, 같은 와이파이 IP로 응답 확인. 맥을 끄면 안 열리는 것은 서버가 맥 프로세스라는 구조로 갈음했고 따로 재지 않았다.
-- 근거: `evidence/n2-webexport/맥-크로미엄-첫화면-닉네임.png`(영문 abc 입력됨, 콘솔 error 0건, 경고는 WebGL 성능 메시지뿐), `웹킷-아이폰가로-첫화면.png`(Playwright WebKit iPhone 13 가로 에뮬레이션, 콘솔 error 0건).
+- 근거: `evidence/n2/맥-크로미엄-첫화면-닉네임.png`(영문 abc 입력됨, 콘솔 error 0건, 경고는 WebGL 성능 메시지뿐), `웹킷-아이폰가로-첫화면.png`(Playwright WebKit iPhone 13 가로 에뮬레이션, 콘솔 error 0건).
 - 못 한 것: 실제 휴대폰 캡처(기기 없음) → 그대로 `- [ ]`. 에뮬레이션은 iOS Safari 증거가 아니다. 한글 IME 입력과 화면 키보드도 미확인.
 - 내보내기 `tests/*.gd`가 pck에 같이 들어간다(제외 필터 안 둠). 용량은 wasm 39MB, 첫 로딩이 느릴 수 있다.
 - 헤드리스 잠금 폴더가 낡아 서로 기다리는 일이 있어(19:44 것) 내가 한 번 `rmdir`했다.
