@@ -85,15 +85,24 @@ func _start_host(gen: int) -> void:
 	engine = Rules.new()
 	engine.setup(seats.size(), _seed)
 	_seen = {}
+	var early_gone: Array = []
 	for i in seats.size():  ## 0.3초 사이에 나간 자리는 판이 시작될 때 바로 나간 처리
 		if seats[i].get("gone", false):
 			engine.leave(i)
+			early_gone.append(i)
 	_running = true
 	print("SESSION_START n=", seats.size(), " seed=", _seed)
 	_timing = false  ## 나눠 주기 연출이 끝난 뒤부터 첫 차례 시간을 잰다
 	var deal := FxTiming.deal_total(seats.size(), engine.HAND_SIZE)
 	_deal_until = Time.get_ticks_msec() / 1000.0 + deal
 	_push()
+	for seat in early_gone:  ## 나간 사실도 알린다 — 판 상태를 받은 뒤라 접속자 화면이 나감 연출을 낸다
+		var who: String = seats[seat].name
+		print("PLAYER_LEFT seat=", seat, " ", who)
+		for i in seats.size():
+			if engine.alive[i] and seats[i].peer != multiplayer.get_unique_id():
+				_left.rpc_id(seats[i].peer, seat, who)
+		player_left.emit(seat, who)
 	await get_tree().create_timer(deal).timeout
 	if gen != _gen or engine == null or not _running or engine.phase == "done":
 		return
