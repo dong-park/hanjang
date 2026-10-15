@@ -6,7 +6,7 @@
 **id**: HJ-7
 **상위**: spec/hanjang/spec.md
 **deps**: n4-session, n6-fx
-**상태**: 확인 대기
+**상태**: 끝남
 **담당 행**: T29, T30, T31
 **사람 확인**: 필요
 
