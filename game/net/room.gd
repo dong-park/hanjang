@@ -103,7 +103,7 @@ func start_game() -> bool:
 		return false
 	state = State.PLAYING
 	print("START_OK seats=", seats.size())
-	_begin.rpc(seats)
+	_to_seated(_begin, [seats])
 	return true
 
 
@@ -113,7 +113,7 @@ func back_to_lobby() -> void:
 		for i in range(seats.size() - 1, -1, -1):
 			if seats[i].get("gone", false):
 				seats.remove_at(i)
-		_sync_seats.rpc(seats)
+		_to_seated(_sync_seats, [seats])
 
 
 func room_name() -> String:
@@ -187,8 +187,18 @@ func _on_peer_disconnected(id: int) -> void:
 			else:
 				seats.remove_at(i)
 				print("SEAT_FREED ", id, " seats=", seats.size())
-				_sync_seats.rpc(seats)
+				_to_seated(_sync_seats, [seats])
 			return
+
+
+func _to_seated(fn: Callable, args: Array) -> void:
+	## 자리에 앉은 접속자에게만 보낸다 (방장 본인은 로컬 호출).
+	var me := multiplayer.get_unique_id()
+	for s in seats.duplicate():
+		if s.peer == me:
+			fn.callv(args)
+		else:
+			fn.rpc_id(s.peer, args[0])
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -196,6 +206,9 @@ func _hello(p_name: String, p_face: int) -> void:
 	if not is_host():
 		return
 	var id := multiplayer.get_remote_sender_id()
+	for s in seats:
+		if s.peer == id:
+			return
 	var reason := ""
 	if state == State.PLAYING:
 		reason = "지금 게임 중이에요"
@@ -213,7 +226,7 @@ func _hello(p_name: String, p_face: int) -> void:
 	seats.append({"peer": id, "name": p_name.strip_edges(), "face": posmod(p_face, 4)})
 	print("SEATED ", seats.size(), " ", p_name.strip_edges())
 	_accepted.rpc_id(id)
-	_sync_seats.rpc(seats)
+	_to_seated(_sync_seats, [seats])
 
 
 @rpc("authority", "call_remote", "reliable")
