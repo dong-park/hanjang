@@ -6,7 +6,7 @@
 **id**: HR-7
 **상위**: spec/hanjang-relay/spec.md
 **deps**: n3
-**상태**: 아직 안 함
+**상태**: 진행
 **담당 행**: T15, T18
 **사람 확인**: 필요
 
@@ -29,7 +29,7 @@
 ## 완료 기준
 
 - [ ] 스크립트 한 번으로 서비스와 터널이 뜨고 wss 주소로 대기실이 열린다
-- [ ] 재실행해도 같은 결과
+- [ ] 재실행해도 같은 결과 (스크립트는 bootout 뒤 bootstrap, 설치 전 미실행)
 - [ ] 재시작 시나리오 문구 확인
 - [ ] launchctl list에 서비스가 있다
 
@@ -42,3 +42,10 @@
 - 커밋은 파일을 지정해 add한다(git add -A·. 금지). push 하지 않는다.
 - 보드 댓글 첨부 spec/**/evidence/*/cm-* 파일은 지우지 않는다.
 - 결정 D1=C(방마다 헤드리스 Godot), D2=C(이 맥이 서버), D3=C(trycloudflare 임시 주소), D4~D8=A는 닫혔다.
+
+## 진행 메모 (runner)
+
+- 만든 것: relay/deploy/hanjang.sh (print/install/url/status/restart/uninstall), relay/deploy/README.md. LaunchAgent 2개(com.hanjang.relay, com.hanjang.tunnel), KeepAlive, caffeinate -i 로 잠자기 방지.
+- 확인한 것: bash -n, plist plutil -lint OK. 설치는 하지 않음(시스템 변경은 사람 확인). 관리 서비스(8071)+trycloudflare 임시 터널을 직접 띄워 https 주소로 GET /api/rooms 가 [] 로 응답함.
+- 설치 안 해서 launchctl list 확인, 재시작 시나리오, wss 대기실 열기는 미확인. 「서버가 다시 시작했어요」 문구는 game/ 클라이언트(n6) 쪽 몫이라 여기엔 없음.
+- 설치 명령: relay/deploy/hanjang.sh install  (이후 status, url)
