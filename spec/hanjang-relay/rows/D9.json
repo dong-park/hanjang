@@ -1,0 +1,35 @@
+{
+  "id": "D9",
+  "kind": "decision",
+  "title": "로컬 소켓 막힘으로 헤드리스 시험을 못 돌림",
+  "given": "sandbox가 로컬 소켓과 kill을 막는다",
+  "when": "시험을 실행하면",
+  "then": "방 프로세스가 HOST_FAILED로 끝난다",
+  "options": [
+    {
+      "key": "A",
+      "label": "소켓이 열리는 환경에서 test_dedicated.sh와 기존 시험 재실행",
+      "why": ""
+    },
+    {
+      "key": "B",
+      "label": "sandbox 권한을 풀어 이 스레드에서 재실행",
+      "why": ""
+    }
+  ],
+  "recommend": "A",
+  "confidence": "high",
+  "reversible": true,
+  "status": "끝남",
+  "blocks": [
+    "n2"
+  ],
+  "user": {
+    "answer": "",
+    "fix": ""
+  },
+  "log": [
+    "2026-10-16 D9 → A (사용자, 보드). 메인이 소켓이 열리는 환경에서 재실행 중",
+    "2026-10-16 user.answer 반영: A"
+  ]
+}
