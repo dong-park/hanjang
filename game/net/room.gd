@@ -64,10 +64,14 @@ var _last_ping := -1.0        ## 클라이언트: 서버 ping을 마지막으로
 var _ping_clock := 0.0
 var _tokens := {}             ## 서버만: 닉네임 -> 재접속 토큰. 자리 목록에는 싣지 않아 다른 접속자에게 가지 않는다
 var _joining := false
+var relay_base := ""          ## 관리 서비스 주소(http[s]://호스트[:포트]). 웹은 페이지를 연 주소, 시험은 --relay=. 비면 옛 LAN 흐름
+var via_relay := false        ## 관리 서비스(/ws/코드)로 들어간 연결인가
 
 
 func _ready() -> void:
 	if OS.has_feature("web"):
+		var o = JavaScriptBridge.eval("window.location.origin")
+		relay_base = str(o) if o != null else ""
 		var s = JavaScriptBridge.eval("new URLSearchParams(window.location.search).get('secret')")
 		if s != null:
 			my_secret = str(s)
@@ -75,7 +79,8 @@ func _ready() -> void:
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected)
 	multiplayer.connection_failed.connect(_on_connection_failed)
-	multiplayer.server_disconnected.connect(func(): _go_title("방장이 나갔어요"))
+	multiplayer.server_disconnected.connect(func():
+		_go_title("방이 닫혔어요. 서버가 다시 시작됐을 수 있어요" if via_relay else "방장이 나갔어요"))
 
 
 func _now() -> float:
@@ -214,6 +219,7 @@ func join_room(p_name: String, p_face: int, p_addr: String) -> bool:
 	my_name = p_name.strip_edges()
 	my_face = p_face
 	addr = p_addr.strip_edges()
+	via_relay = addr.contains("/ws/")
 	var peer := WebSocketMultiplayerPeer.new()
 	if peer.create_client(ws_url(addr, port)) != OK:
 		join_failed.emit("접속을 시작하지 못했어요")
@@ -230,9 +236,28 @@ func ws_url(p_addr: String, p_port: int) -> String:
 	if a.begins_with("wss://"):
 		return a
 	a = a.trim_prefix("ws://")
-	if a.contains(":"):
+	if a.contains(":") or a.contains("/"):
 		return "ws://" + a
 	return "ws://%s:%d" % [a, p_port]
+
+
+## 관리 서비스의 방 웹소켓 주소 (https 페이지면 wss://, 아니면 ws://)
+func relay_ws(code: String) -> String:
+	return relay_base.replace("https://", "wss://").replace("http://", "ws://") + "/ws/" + code
+
+
+## 웹 주소의 ?room=1234 (공유 링크). 4자리 숫자가 아니면 빈 문자열.
+func link_room() -> String:
+	if not OS.has_feature("web"):
+		return ""
+	var r = JavaScriptBridge.eval("new URLSearchParams(window.location.search).get('room')")
+	var c := str(r) if r != null else ""
+	return c if c.length() == 4 and c.is_valid_int() else ""
+
+
+## 대기실에 보일 방 표시: 관리 서비스 방은 코드, 그 밖은 접속 주소
+func room_label() -> String:
+	return "방 코드 " + addr.get_slice("/ws/", 1) if via_relay else "방 주소 " + addr
 
 
 func leave() -> void:
@@ -345,6 +370,9 @@ func _reset() -> void:
 	seats = []
 	owner_peer = 1
 	_joining = false
+	via_relay = false
+	if not dedicated:
+		room_name_override = ""  ## 관리 서비스 방에서 받아 둔 이름은 방을 나가면 버린다
 
 
 func _go_title(reason: String) -> void:

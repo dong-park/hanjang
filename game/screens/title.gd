@@ -104,6 +104,7 @@ func _phone_layout() -> void:
 	_create_btn.position = Vector2(396, 116)
 	_join_btn.position = Vector2(584, 116)
 	_hint.position = Vector2(0, 186)
+	_notice.position = Vector2(0, 190)  ## 이름칸 위 라벨과 겹치지 않게 입력칸 아래에 둔다
 	_avatar_label.position = Vector2(396, 270)
 	for i in _faces.size():
 		_faces[i].position = Vector2(396 + i * 96, 298)
@@ -141,6 +142,10 @@ func _save_profile() -> void:
 func _on_create() -> void:
 	if not Room.valid_name(_name_edit.text):
 		return
+	if Room.relay_base != "":
+		_save_profile()
+		get_parent().show_rooms(false)
+		return
 	if not Room.host_room(_name_edit.text, _face):
 		_notice.text = "방을 열지 못했어요. 이미 열린 방이 있나요?"
 
@@ -149,4 +154,7 @@ func _on_join() -> void:
 	if not Room.valid_name(_name_edit.text):
 		return
 	_save_profile()
-	get_parent().show_join()
+	if Room.relay_base != "":
+		get_parent().show_rooms(true)
+	else:
+		get_parent().show_join()

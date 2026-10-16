@@ -8,6 +8,7 @@ const THEME := preload("res://ui/theme.tres")
 const BG_TILE := preload("res://assets/ui/bg_tile.png")
 const TitleScreen := preload("res://screens/title.tscn")
 const JoinScreen := preload("res://screens/join.tscn")
+const RoomsScreen := preload("res://screens/rooms.tscn")
 const LobbyScreen := preload("res://screens/lobby.tscn")
 const TableNetScreen := preload("res://screens/table_net.tscn")
 const ResultScreen := preload("res://screens/result.tscn")
@@ -43,6 +44,8 @@ func _ready() -> void:
 		Room.port = int(_opts.port)
 	if _opts.has("token-file"):
 		Room.token_path = str(_opts["token-file"])
+	if _opts.has("relay"):
+		Room.relay_base = str(_opts.relay)
 	if _opts.has("secret"):
 		Room.my_secret = str(_opts.secret)
 	Room.skip_name_check = _opts.has("skip-name-check")
@@ -76,6 +79,12 @@ func show_title() -> void:
 
 func show_join() -> void:
 	show_screen(JoinScreen)
+
+
+## 방 고르기(관리 서비스). auto_link 면 웹 주소의 ?room= 코드로 바로 들어간다.
+func show_rooms(auto_link: bool) -> void:
+	show_screen(RoomsScreen)
+	_current.setup(auto_link)
 
 
 func _on_game_started(_seats: Array) -> void:

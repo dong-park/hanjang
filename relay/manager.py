@@ -5,12 +5,17 @@
   GET  /api/rooms        공개 방만: [{code, name, players, capacity, state, joinable}]
   GET  /api/rooms/CODE   코드로 입장 확인 (공개·비공개 모두). 없으면 404 「방을 못 찾았어요」
   GET  /ws/CODE          웹소켓 -> 그 방 프로세스로 중계 (터널은 이 한 포트만 열면 된다)
+  GET  /, /파일          build/web (웹 빌드)을 그대로 서빙한다. 터널 주소 하나로 게임 페이지와 위 API가 같이 열린다.
 
 표준 라이브러리만 쓴다. 서버가 꺼지면 방은 되살리지 않는다.
 """
-import asyncio, collections, json, os, random, re, secrets, shlex, signal, sys, time
+import asyncio, collections, json, os, random, re, secrets, shlex, signal, sys, time, urllib.parse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+WEB_DIR = os.environ.get("HANJANG_WEB_DIR", os.path.join(ROOT, "build", "web"))
+MIME = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".wasm": "application/wasm",
+        ".png": "image/png", ".pck": "application/octet-stream", ".json": "application/json; charset=utf-8",
+        ".css": "text/css; charset=utf-8", ".ico": "image/x-icon", ".svg": "image/svg+xml"}
 
 # 방 프로세스를 띄우는 명령 줄. 형식은 이 한 곳에만 둔다 ({port}가 방 포트로 바뀐다).
 # 환경변수 HANJANG_ROOM_CMD로 바꿀 수 있다(시험은 가짜 방을 쓴다).
@@ -215,6 +220,20 @@ def reply(status, body):
     return head + data
 
 
+def static_reply(path, head_only=False):
+    """build/web 파일 응답. 폴더 밖으로 나가는 주소와 없는 파일은 None(404)."""
+    rel = "index.html" if path == "/" else os.path.normpath(urllib.parse.unquote(path).lstrip("/"))
+    full = os.path.realpath(os.path.join(WEB_DIR, rel))
+    if not full.startswith(os.path.realpath(WEB_DIR) + os.sep) or not os.path.isfile(full):
+        return None
+    with open(full, "rb") as f:
+        data = f.read()
+    ctype = MIME.get(os.path.splitext(full)[1].lower(), "application/octet-stream")
+    head = (f"HTTP/1.1 200 OK\r\nContent-Type: {ctype}\r\nContent-Length: {len(data)}\r\n"
+            f"Cache-Control: no-cache\r\nConnection: close\r\n\r\n").encode()
+    return head if head_only else head + data
+
+
 async def read_head(reader):
     raw = await reader.readuntil(b"\r\n\r\n")
     lines = raw.decode("latin-1").split("\r\n")
@@ -297,12 +316,15 @@ async def handle(reader, writer):
                 if room is None:
                     writer.write(reply(503, {"error": MSG_FULL}))
                 else:
-                    base = os.environ.get("HANJANG_PUBLIC_BASE", "http://" + headers.get("host", "localhost"))
+                    scheme = headers.get("x-forwarded-proto", "http").split(",")[0].strip()  # 터널 뒤에서는 https
+                    base = os.environ.get("HANJANG_PUBLIC_BASE", f"{scheme}://" + headers.get("host", "localhost"))
                     writer.write(reply(201, {"code": room.code, "name": room.name, "public": room.public,
                                              "secret": room.secret, "path": f"/ws/{room.code}", "link": f"{base}/?room={room.code}"}))
         elif m := re.fullmatch(r"/api/rooms/(\d{4})", path):
             room = M.rooms.get(m.group(1))
             writer.write(reply(200, {**room.info(), "secret": room.secret}) if room else reply(404, {"error": MSG_NOT_FOUND}))
+        elif method in ("GET", "HEAD") and (page := static_reply(path, method == "HEAD")):
+            writer.write(page)
         else:
             writer.write(reply(404, {"error": "없는 주소예요"}))
         await writer.drain()
@@ -330,3 +352,4 @@ async def main(port):
 
 if __name__ == "__main__":
     asyncio.run(main(int(sys.argv[1]) if len(sys.argv) > 1 else 8070))
+

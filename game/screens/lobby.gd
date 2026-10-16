@@ -62,7 +62,7 @@ func _ready() -> void:
 
 func _refresh(seats: Array) -> void:
 	_title.text = Room.room_name()
-	_addr.text = "방 주소 %s" % Room.addr
+	_addr.text = Room.room_label()
 	for i in _slots.size():
 		var slot: Control = _slots[i]
 		for c in slot.get_children():

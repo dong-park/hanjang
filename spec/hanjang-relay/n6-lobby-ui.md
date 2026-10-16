@@ -6,7 +6,7 @@
 **id**: HR-6
 **상위**: spec/hanjang-relay/spec.md
 **deps**: n3, n4
-**상태**: 아직 안 함
+**상태**: 확인 대기
 **담당 행**: T4, T5, T6
 **사람 확인**: 필요
 
@@ -45,3 +45,20 @@
 - 결정 D1=C(방마다 헤드리스 Godot), D2=C(이 맥이 서버), D3=C(trycloudflare 임시 주소), D4~D8=A는 닫혔다.
 
 - (메인 추가, 사용자 확인 중 발견) 관리 서비스 루트(/)에 페이지가 없어 터널 주소를 열면 {"error":"없는 주소예요"}가 나온다. 이 노드에서 relay/manager.py가 build/web(웹 빌드)을 / 에서 정적으로 서빙하게 한다(index.html, wasm은 application/wasm, Cache-Control no-cache, 한 터널 주소로 게임 페이지와 /api/rooms, /ws가 같이 열리게). 게임 페이지가 같은 호스트의 /api/rooms를 부르고 wss://같은호스트/ws/코드로 접속하게 한다. build/web은 tools/export_web.sh(zsh)로 내보낸다. 방 비밀값은 GET /api/rooms/코드가 돌려주는 secret을 접속에 실어 낸다(웹 주소 ?secret= 또는 --secret). n4 재접속 토큰은 브라우저가 저장하는지 확인한다.
+
+## 진행 메모 (runner)
+
+- relay/manager.py 가 build/web 을 / 에서 서빙한다(wasm application/wasm, no-cache, 폴더 밖 주소 거절). 링크는 X-Forwarded-Proto 를 따라 https.
+- 새 화면 game/screens/rooms.gd: 코드로 입장, 방 만들기(이름·공개/비공개) → 코드·링크 카드, 공개 방 목록(이름, 인원, 대기/판 중, 판 중은 입장 단추 막힘). 관리 서비스가 없는 주소(LAN용 serve_web.py)는 옛 참가 화면으로 간다.
+- 입장은 GET /api/rooms/코드의 secret 을 내고 wss://같은호스트/ws/코드 로 붙는다. 실패 문구(방을 못 찾았어요, 이미 시작한 방이에요, 지금은 방이 가득 찼어요)는 이 화면에 뜨고, 접속 중 서버가 사라지면 첫 화면에 「방이 닫혔어요. 서버가 다시 시작됐을 수 있어요」가 뜬다.
+- 재접속 토큰은 user://tokens.json(IndexedDB /userfs)에 저장됨을 확인했다.
+- 근거: game/tests/test_rooms.sh(헤드리스, 관리 서비스+진짜 방, 12개 통과), tools/n6_flow.cjs(터널 경유 WebKit iPhone 13 가로 에뮬레이션 3대) 캡처 spec/hanjang-relay/evidence/n6/. 모두 에뮬레이션이다.
+- 알려진 한계: 가득 참(4명) 문구는 에뮬 캡처가 없다(헤드리스 입장 거절 문구는 기존 시험). 토큰으로 판 중 되돌아오기는 n4/n5 시험이 다룬다.
+
+## 확인할 것
+
+- 실제 폰(iOS Safari/Android Chrome)에서 터널 주소를 열어 첫 화면 → 방 만들기 → 코드·링크 카드가 가로 화면에서 잘리지 않는지.
+- 이름·코드 입력칸을 누르면 화면 키보드가 뜨고(숫자 키패드), 키보드가 입력칸과 만들기·입장 단추를 가리지 않는지.
+- 링크 복사 단추가 실제 폰에서 클립보드에 넣는지(브라우저 권한에 따라 다를 수 있음), 링크를 다른 폰에서 열면 같은 방으로 들어가는지.
+- 39MB wasm 이 이동통신망에서 열리는 시간이 견딜 만한지.
+
