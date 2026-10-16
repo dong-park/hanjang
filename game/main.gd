@@ -41,6 +41,11 @@ func _ready() -> void:
 		_opts[kv[0]] = kv[1] if kv.size() > 1 else "1"
 	if _opts.has("port"):
 		Room.port = int(_opts.port)
+	if _opts.has("token-file"):
+		Room.token_path = str(_opts["token-file"])
+	if _opts.has("secret"):
+		Room.my_secret = str(_opts.secret)
+	Room.skip_name_check = _opts.has("skip-name-check")
 	if _opts.has("shots"):
 		_shots = load("res://tests/scene_shots.gd").new()
 		add_child(_shots)
@@ -101,6 +106,7 @@ func _run_cmdline() -> void:
 	if _opts.has("dedicated"):
 		## 전용 방: --dedicated --port=N --code=방코드 --room-name=이름 --public=0|1 (자리 없이 판정만, 화면 전환 없음)
 		Room.room_name_override = str(_opts.get("room-name", ""))
+		Room.room_secret = str(_opts.get("secret", ""))
 		if not Room.host_dedicated(str(_opts.get("code", "")), str(_opts.get("public", "0")) == "1"):
 			print("HOST_FAILED port=", Room.port)
 			get_tree().quit(1)

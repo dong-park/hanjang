@@ -32,6 +32,10 @@ const MIN_PLAYERS := 2
 const MAX_NAME := 8
 const RECENT_PATH := "user://recent_rooms.json"
 const RECENT_MAX := 5
+const TOKEN_PATH := "user://tokens.json"
+const MAX_ROOM_NAME := 12
+## 이름에 쓸 수 없는 말 (닉네임·방 이름 공통). 소문자로 견준다.
+const BANNED := ["씨발", "시발", "병신", "개새끼", "좆", "fuck", "shit"]
 
 var port := DEFAULT_PORT
 var state: State = State.NONE
@@ -44,10 +48,19 @@ var owner_peer := 1          ## 방 주인 peer id. 맥 앱 LAN 방장은 1, 전
 var room_code := ""
 var room_name_override := ""  ## 전용 방 이름. 비면 방 주인 닉네임으로 '○○의 방'을 만든다
 var room_public := false
+var room_secret := ""         ## 전용 방 비밀값. 비어 있지 않으면 접속자가 같은 값을 내야 자리를 받는다
+var my_secret := ""           ## 접속할 때 내는 방 비밀값 (--secret 또는 웹 주소의 ?secret=)
+var token_path := TOKEN_PATH  ## 재접속 토큰 저장 파일. 시험은 --token-file 로 바꾼다
+var skip_name_check := false  ## 시험용(--skip-name-check): 클라이언트 이름 검사를 건너뛰어 서버 검사를 확인한다
+var _tokens := {}             ## 서버만: 닉네임 -> 재접속 토큰. 자리 목록에는 싣지 않아 다른 접속자에게 가지 않는다
 var _joining := false
 
 
 func _ready() -> void:
+	if OS.has_feature("web"):
+		var s = JavaScriptBridge.eval("new URLSearchParams(window.location.search).get('secret')")
+		if s != null:
+			my_secret = str(s)
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected)
@@ -60,8 +73,49 @@ func is_host() -> bool:
 
 
 func valid_name(n: String) -> bool:
+	return name_problem(n, MAX_NAME) == ""
+
+
+## 닉네임·방 이름 규칙. 어긋나면 사용자에게 보일 이유 문구, 괜찮으면 빈 문자열.
+func name_problem(n: String, max_len: int) -> String:
 	var t := n.strip_edges()
-	return t.length() >= 1 and t.length() <= MAX_NAME
+	if t.length() < 1:
+		return "이름을 적어 주세요"
+	if t.length() > max_len:
+		return "%d자까지 쓸 수 있어요" % max_len
+	for i in t.length():
+		var c := t.unicode_at(i)
+		if c >= 0x1F000 or (c >= 0x2600 and c <= 0x27BF) or c == 0xFE0F or c == 0x200D:
+			return "이모지는 쓸 수 없어요"
+	var low := t.to_lower()
+	for w in BANNED:
+		if low.contains(w):
+			return "쓸 수 없는 말이 들어 있어요"
+	return ""
+
+
+## 서버 로그에는 전용 방에서 닉네임을 남기지 않는다.
+func log_name(n: String) -> String:
+	return "" if dedicated else n
+
+
+func _load_tokens() -> Dictionary:
+	if not FileAccess.file_exists(token_path):
+		return {}
+	var d = JSON.parse_string(FileAccess.get_file_as_string(token_path))
+	return d if d is Dictionary else {}
+
+
+func _token_key() -> String:
+	return addr + "|" + my_name
+
+
+func _save_token(t: String) -> void:
+	var d := _load_tokens()
+	d[_token_key()] = t
+	var f := FileAccess.open(token_path, FileAccess.WRITE)
+	if f:
+		f.store_string(JSON.stringify(d))
 
 
 func host_room(p_name: String, p_face: int) -> bool:
@@ -87,7 +141,7 @@ func host_room(p_name: String, p_face: int) -> bool:
 ## 전용 방(헤드리스 서버): 자리 없이 연결만 받는다. 첫 접속자가 방 주인이 된다.
 func host_dedicated(p_code: String, p_public: bool) -> bool:
 	var peer := WebSocketMultiplayerPeer.new()
-	if peer.create_server(port) != OK:
+	if peer.create_server(port, "127.0.0.1") != OK:  ## 관리 서비스만 이 포트에 닿는다
 		return false
 	multiplayer.multiplayer_peer = peer
 	dedicated = true
@@ -106,7 +160,11 @@ func can_control() -> bool:
 
 
 func join_room(p_name: String, p_face: int, p_addr: String) -> bool:
-	if not valid_name(p_name) or p_addr.strip_edges() == "" or _joining:
+	var why := "" if skip_name_check else name_problem(p_name, MAX_NAME)
+	if why != "":
+		join_failed.emit(why)
+		return false
+	if p_addr.strip_edges() == "" or _joining:
 		return false
 	my_name = p_name.strip_edges()
 	my_face = p_face
@@ -253,7 +311,7 @@ func _go_title(reason: String) -> void:
 
 
 func _on_connected() -> void:
-	_hello.rpc_id(1, my_name, my_face)
+	_hello.rpc_id(1, my_name, my_face, str(_load_tokens().get(_token_key(), "")), my_secret)
 
 
 func _on_connection_failed() -> void:
@@ -342,63 +400,90 @@ func _set_owner(p_owner: int) -> void:
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func _hello(p_name: String, p_face: int) -> void:
+func _hello(p_name: String, p_face: int, p_token: String, p_secret: String) -> void:
 	if not is_host():
 		return
 	var id := multiplayer.get_remote_sender_id()
 	for s in seats:
 		if s.peer == id:
 			return
+	var nm := p_name.strip_edges()
+	for k in _tokens.keys():  ## 자리가 없어진 이름의 토큰은 버린다
+		if not seats.any(func(s): return s.name == k):
+			_tokens.erase(k)
+	var idx := -1
+	for i in seats.size():
+		if seats[i].name == nm:
+			idx = i
+			break
+	## 같은 닉네임이라도 토큰이 맞아야 그 자리의 주인이다. 호스트 자리(토큰 없음)는 누구도 되찾지 못한다.
+	var owns: bool = idx >= 0 and p_token != "" and _tokens.get(nm, "") == p_token
 	var reason := ""
-	if state == State.PLAYING:
-		var back := _gone_seat_of(p_name)
-		if back >= 0 and can_rejoin.call(back):  ## 화면이 꺼져 끊겼던 같은 닉네임이 돌아온다 — 자리를 되찾는다
-			seats[back].erase("gone")
-			seats[back]["peer"] = id
-			print("REJOINED ", id, " seat=", back, " ", p_name.strip_edges())
-			_recompute_owner()
-			_rejoined.rpc_id(id, seats)
-			if dedicated:
-				_set_owner.rpc_id(id, owner_peer)
-			peer_rejoined.emit(id, back)
+	if room_secret != "" and p_secret != room_secret:
+		reason = "방을 못 찾았어요"
+	elif idx >= 0 and not owns:
+		reason = "이미 쓰는 이름이에요"
+	elif owns:  ## 같은 브라우저가 돌아왔다. 아직 안 끊긴 옛 접속은 내보내고 자리를 넘겨받는다
+		var old: int = seats[idx].peer
+		if state == State.PLAYING:
+			if not seats[idx].get("gone", false):
+				seats[idx]["gone"] = true
+				peer_left.emit(old)
+			if can_rejoin.call(idx):
+				seats[idx].erase("gone")
+				seats[idx]["peer"] = id
+				print("REJOINED ", id, " seat=", idx, " ", log_name(nm))
+				_recompute_owner()
+				_rejoined.rpc_id(id, seats, p_token)
+				if dedicated:
+					_set_owner.rpc_id(id, owner_peer)
+				peer_rejoined.emit(id, idx)
+				if old != id and multiplayer.get_peers().has(old):
+					multiplayer.multiplayer_peer.disconnect_peer(old)
+				return
+			reason = "지금 게임 중이에요"
+		else:
+			seats[idx]["peer"] = id
+			seats[idx]["face"] = posmod(p_face, 4)
+			print("SEAT_TAKEN_BACK ", id, " ", log_name(nm))
+			if old != id and multiplayer.get_peers().has(old):
+				multiplayer.multiplayer_peer.disconnect_peer(old)
+			_accepted.rpc_id(id, p_token)
+			_to_seated(_sync_seats, [seats])
 			return
+	elif state == State.PLAYING:
 		reason = "지금 게임 중이에요"
 	elif seats.size() >= MAX_PLAYERS:
 		reason = "방이 꽉 찼어요"
-	elif not valid_name(p_name):
-		reason = "닉네임을 확인하세요"
-	elif seats.any(func(s): return s.name == p_name.strip_edges()):
-		reason = "같은 닉네임이 있어요"  ## 판 중 재접속이 닉네임으로 자리를 찾으므로 방 안에서 겹치지 않게 한다
+	else:
+		reason = name_problem(nm, MAX_NAME)
 	if reason != "":
 		print("REJECT ", id, " ", reason)
 		_rejected.rpc_id(id, reason)
 		await get_tree().create_timer(0.3).timeout
-		if multiplayer.multiplayer_peer != null:
+		if multiplayer.multiplayer_peer != null and multiplayer.get_peers().has(id):
 			multiplayer.multiplayer_peer.disconnect_peer(id)
 		return
-	seats.append({"peer": id, "name": p_name.strip_edges(), "face": posmod(p_face, 4)})
-	print("SEATED ", seats.size(), " ", p_name.strip_edges())
-	_accepted.rpc_id(id)
+	seats.append({"peer": id, "name": nm, "face": posmod(p_face, 4)})
+	var token := Crypto.new().generate_random_bytes(12).hex_encode()
+	_tokens[nm] = token
+	print("SEATED ", seats.size(), " ", log_name(nm))
+	_accepted.rpc_id(id, token)
 	_to_seated(_sync_seats, [seats])
 
 
-func _gone_seat_of(p_name: String) -> int:
-	for i in seats.size():
-		if seats[i].get("gone", false) and seats[i].name == p_name.strip_edges():
-			return i
-	return -1
-
-
 @rpc("authority", "call_remote", "reliable")
-func _rejoined(p_seats: Array) -> void:
+func _rejoined(p_seats: Array, p_token: String) -> void:
 	_joining = false
+	_save_token(p_token)
 	print("REJOINED_OK")
 	_begin(p_seats)
 
 
 @rpc("authority", "call_remote", "reliable")
-func _accepted() -> void:
+func _accepted(p_token: String) -> void:
 	_joining = false
+	_save_token(p_token)
 	state = State.LOBBY
 	print("JOINED ", addr)
 	joined.emit()

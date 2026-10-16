@@ -6,7 +6,7 @@
 **id**: HR-4
 **상위**: spec/hanjang-relay/spec.md
 **deps**: n2, n3
-**상태**: 아직 안 함
+**상태**: 진행
 **담당 행**: T9, T10, T11, T16
 **사람 확인**: 필요
 
@@ -30,10 +30,10 @@
 
 ## 완료 기준
 
-- [ ] 다른 브라우저의 같은 닉네임이 거절되고 원래 브라우저는 자리로 돌아간다
-- [ ] 폭주 20회/초에도 서버가 살아 있고 다른 주소의 방이 돈다
-- [ ] 규칙 위반 입력이 이유 문구와 함께 거절된다
-- [ ] grep으로 로그에 닉네임·전체 IP가 없다
+- [x] 다른 브라우저의 같은 닉네임이 거절되고 원래 브라우저는 자리로 돌아간다
+- [x] 폭주 20회/초에도 서버가 살아 있고 다른 주소의 방이 돈다
+- [x] 규칙 위반 입력이 이유 문구와 함께 거절된다
+- [x] grep으로 로그에 닉네임·전체 IP가 없다
 
 ## 구현 메모
 
@@ -43,3 +43,14 @@
 - 커밋은 파일을 지정해 add한다(git add -A·. 금지). push 하지 않는다.
 - 보드 댓글 첨부 spec/**/evidence/*/cm-* 파일은 지우지 않는다.
 - 결정 D1=C(방마다 헤드리스 Godot), D2=C(이 맥이 서버), D3=C(trycloudflare 임시 주소), D4~D8=A는 닫혔다.
+
+## 진행 메모 (n4, 2026-10-16)
+
+- 재접속 토큰(T9): 서버가 접속을 받으면 12바이트 무작위 토큰을 주고(room.gd _accepted/_rejoined), 클라이언트는 user://tokens.json(웹은 IndexedDB)에 주소|닉네임 키로 저장한다. 토큰은 서버 안 _tokens에만 있고 자리 목록(seats)에 싣지 않아 다른 접속자에게 가지 않는다. 같은 닉네임이 토큰 없이/다른 토큰으로 오면 「이미 쓰는 이름이에요」. 같은 토큰이면 아직 안 끊긴 옛 접속도 내보내고 자리를 넘겨받는다(대기실·판 중 모두). 맥 앱 LAN 방장 자리는 토큰이 없어 아무도 되찾지 못한다. 시험용 --token-file 로 프로세스마다 저장 파일을 나눈다.
+- 방 비밀값: 관리 서비스가 방마다 무작위 값을 만들어 방 프로세스에 --secret 으로 넘기고, 방 만들기 응답과 GET /api/rooms/코드 에만 싣는다(공개 목록에는 없음). 클라이언트는 --secret 또는 웹 주소 ?secret= 로 낸다(Room.my_secret). 다르면 「방을 못 찾았어요」. 전용 방은 127.0.0.1에만 바인딩해 관리 서비스를 거치지 않은 직접 접속도 막는다. n6 화면은 GET /api/rooms/코드 의 secret 을 접속에 실어야 한다.
+- 연결 폭주(T10): relay/manager.py Limiter. 한 주소(CF-Connecting-IP, 없으면 소켓 주소)가 1초에 20번 연결하면 60초 막고 429 「잠시 후에 다시 해 주세요」. 환경변수 HANJANG_RATE_MAX/WINDOW/BLOCK. 헤더 읽기에 10초 제한. 한 연결의 예외는 로그만 남기고 서비스는 계속.
+- 이름 규칙(T11): room.gd name_problem 과 manager.py name_problem 이 같은 규칙(빈 값, 길이, 이모지, 금지어 목록)을 쓴다. 닉네임 8자, 방 이름 12자. 클라이언트 검사를 건너뛰는 --skip-name-check 로 서버 쪽 거절도 시험한다.
+- 로그(T16): manager.py log() 는 방 코드·이벤트·오류 종류만 쓰고 IP는 앞 두 칸(a.b.x.x). HANJANG_LOG 로 파일 지정. 전용 방 프로세스는 닉네임을 로그에 찍지 않는다(Room.log_name).
+- 관리 서비스가 방 프로세스에 --code --secret --public --room-name 을 넘긴다(ROOM_CMD, shlex).
+- 시험: game/tests/test_trust.sh NET_TRUST_TEST_PASS(비밀값·도용 거절·원래 브라우저 복귀·옛 접속 넘겨받기·이름 규칙·로그 무닉네임), relay/test_manager.py 7건 OK(폭주·로그·이름 규칙 포함). 기존: test_dedicated, test_rejoin(닉네임 중복 문구와 토큰 파일 인자만 갱신), test_net_game, test_lobby PASS. test_wire.sh 는 부하(load 10 이상)에서 한 번은 판 3 의 try-start 타이밍으로 실패, 재실행 PASS.
+- 사람 눈 확인이 필요한 항목은 없다. 웹 빌드에서 IndexedDB 토큰 저장은 n8 실폰 시험에서 함께 보면 된다.

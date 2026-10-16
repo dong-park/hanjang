@@ -102,7 +102,7 @@ func _start_host(gen: int) -> void:
 	_push()
 	for seat in early_gone:  ## 나간 사실도 알린다 — 판 상태를 받은 뒤라 접속자 화면이 나감 연출을 낸다
 		var who: String = seats[seat].name
-		print("PLAYER_LEFT seat=", seat, " ", who)
+		print("PLAYER_LEFT seat=", seat, " ", Room.log_name(who))
 		for i in seats.size():
 			if engine.alive[i] and seats[i].peer != multiplayer.get_unique_id():
 				_left.rpc_id(seats[i].peer, seat, who)
@@ -253,7 +253,7 @@ func _on_peer_left(peer: int) -> void:
 	var who: String = seats[seat].name
 	var before := [engine.turn, engine.phase]
 	engine.leave(seat)
-	print("PLAYER_LEFT seat=", seat, " ", who)
+	print("PLAYER_LEFT seat=", seat, " ", Room.log_name(who))
 	for i in seats.size():
 		if engine.alive[i] and seats[i].peer != multiplayer.get_unique_id():
 			_left.rpc_id(seats[i].peer, seat, who)
