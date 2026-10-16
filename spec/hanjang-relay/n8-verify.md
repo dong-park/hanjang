@@ -6,7 +6,7 @@
 **id**: HR-8
 **상위**: spec/hanjang-relay/spec.md
 **deps**: n5, n6, n7
-**상태**: 아직 안 함
+**상태**: 확인 대기
 **담당 행**: T17
 **사람 확인**: 필요
 
@@ -40,3 +40,35 @@
 - 커밋은 파일을 지정해 add한다(git add -A·. 금지). push 하지 않는다.
 - 보드 댓글 첨부 spec/**/evidence/*/cm-* 파일은 지우지 않는다.
 - 결정 D1=C(방마다 헤드리스 Godot), D2=C(이 맥이 서버), D3=C(trycloudflare 임시 주소), D4~D8=A는 닫혔다.
+
+## 자동 시험 결과 (맥, 헤드리스 — 실폰 증거 아님)
+
+시험은 /tmp/hanjang-headless.lock으로 하나씩 차례로 돌렸다. test_rejoin.sh는 잠금+240초 제한 실행기(headless_lock.py)로 스스로 다시 실행하도록 고쳤다.
+
+| 시험 | 종료 코드 |
+|---|---|
+| test_dedicated.sh | 0 |
+| test_drops.sh | 0 |
+| test_lobby.sh | 0 |
+| test_net_game.sh | 0 |
+| test_rejoin.sh | 1 → 재시도 0 (간헐) |
+| test_rooms.sh | 0 |
+| test_trust.sh | 1 → 재시도 0 (간헐) |
+| test_wire.sh | 0 |
+| test_fx.gd / test_rules.gd / test_session_edge.gd / test_table.gd / test_touch.gd | 0 |
+| test_rooms.gd 단독 | 방 서버가 있어야 돌아서 단독 실행은 멈춤(직접 종료, 143). 같은 시험이 test_rooms.sh로 0 |
+| relay/test_manager.py | 0 |
+
+- 간헐 실패: test_rejoin(판 결과 RESULT 없음), test_trust(복귀 seat 로그 없음)가 첫 시도에 한 번씩 실패, 재시도에서 통과. 원인은 미확정(부하 타이밍 추정).
+- 서버: LaunchAgent com.hanjang.relay·com.hanjang.tunnel 실행 중. 터널 루트 HTTP 200, POST /api/rooms로 공개 방 생성과 GET /api/rooms 목록 확인.
+
+## 확인할 것 (사람, 실폰)
+
+헤드리스·에뮬레이션 결과는 실제 폰 증거가 아니다. 아래는 모두 확인 대기.
+
+- [ ] 터널 주소 확인: `relay/deploy/hanjang.sh url` 출력 (지금: https://thoughts-bag-handled-runtime.trycloudflare.com — 재시작하면 바뀜)
+- [ ] 폰 A가 이 주소를 열어 공개 방을 만든다
+- [ ] 폰 B와 맥 브라우저가 목록에서 그 방을 보고 입장한다
+- [ ] 세 명이 한 판을 끝까지 한다(결과 화면까지)
+- [ ] 폰 A 화면을 잠갔다 켜서 같은 자리로 복귀한다
+- [ ] 막힌 곳이 있으면 화면·시각을 적는다

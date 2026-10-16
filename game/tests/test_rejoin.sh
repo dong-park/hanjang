@@ -1,6 +1,8 @@
 #!/bin/sh
 # 재접속 헤드리스 시험: 판 중에 나간 사람이 같은 닉네임으로 돌아와 자리를 되찾고 끝까지 한다. 다른 닉네임은 계속 "게임 중"으로 거절한다.
 cd "$(dirname "$0")/../.." || exit 1
+# 시간 제한: 멈춰도 끝나도록 잠금+제한(240초) 실행기로 다시 실행한다(부하에서 60초는 불안정했음).
+if [ -z "$HJ_REJOIN_WRAPPED" ]; then HJ_REJOIN_WRAPPED=1 exec python3 game/tests/headless_lock.py 240 sh game/tests/test_rejoin.sh "$@"; fi
 GODOT=engine/Godot.app/Contents/MacOS/Godot
 P=${1:-7797}
 L=$(mktemp -d)
