@@ -112,6 +112,9 @@ func _run_cmdline() -> void:
 	if _opts.has("try-start"):
 		for sec in str(_opts["try-start"]).split(","):
 			get_tree().create_timer(float(sec)).timeout.connect(Room.start_game)
+	if _opts.has("force-ask"):  ## 시험용: 방 주인 확인(can_control)을 건너뛰고 서버에 시작 요청을 직접 보낸다
+		for sec in str(_opts["force-ask"]).split(","):
+			get_tree().create_timer(float(sec)).timeout.connect(func(): Room._ask.rpc_id(1, "start"))
 	if _opts.has("leave-after"):
 		get_tree().create_timer(float(_opts["leave-after"])).timeout.connect(func():
 			Room.leave()

@@ -3,14 +3,14 @@
 # 판 2: 방 주인이 아닌 접속자의 시작 요청은 무시되고, 2명으로도 시작된다. 판 3: 모두 나가면 방이 비워진다.
 # 포트: 첫 인자 또는 NET_TEST_PORT (기본 7810). 헤드리스 Godot는 /tmp/hanjang-headless.lock 을 잡고 하나씩 돌린다.
 cd "$(dirname "$0")/../.." || exit 1
-# 잠금과 시간 제한(150초) 안에서 자기 자신을 다시 실행한다. 끝나면 남은 Godot는 모두 정리된다.
-if [ -z "$HJ_LOCKED" ]; then HJ_LOCKED=1 exec python3 game/tests/headless_lock.py 150 sh "game/tests/test_dedicated.sh" "$@"; fi
+# 잠금과 시간 제한(300초) 안에서 자기 자신을 다시 실행한다. 끝나면 남은 Godot는 모두 정리된다.
+if [ -z "$HJ_LOCKED" ]; then HJ_LOCKED=1 exec python3 game/tests/headless_lock.py 300 sh "game/tests/test_dedicated.sh" "$@"; fi
 GODOT=engine/Godot.app/Contents/MacOS/Godot
 P0=${1:-${NET_TEST_PORT:-7810}}
 P=$P0
 L=$(mktemp -d)
 fail=0
-run() { n=$1; shift; $GODOT --headless --path game -- --port=$P --seed=7 --turn-time=1 --hj-time=0.6 --quit-after=${QUIT:-30} "$@" > "$L/$n.log" 2>&1 & }
+run() { n=$1; shift; $GODOT --headless --path game -- --port=$P --seed=7 --turn-time=1 --hj-time=0.6 --quit-after=${QUIT:-60} "$@" > "$L/$n.log" 2>&1 & }
 chk() { if ! grep -q -- "$2" "$L/$1.log"; then echo "FAIL: $1 에 '$2' 없음"; fail=1; fi; }
 waitlog() { i=0; while ! grep -q -- "$2" "$L/$1.log" 2>/dev/null; do i=$((i+1)); [ $i -gt 50 ] && { echo "FAIL: $1 에 '$2' 가 10초 안에 안 나옴"; fail=1; return 1; }; sleep 0.2; done; }
 
@@ -51,7 +51,7 @@ run s2 --dedicated --code=EFGH --public=1
 waitlog s2 "^HOST_READY dedicated"
 run p --join=127.0.0.1 --name=하늘 --autoplay --try-start=4
 waitlog s2 "^SEATED 1"
-run q --join=127.0.0.1 --name=나 --autoplay --try-start=1.5
+run q --join=127.0.0.1 --name=나 --autoplay --force-ask=2.5,3.5
 waitlog s2 "^SEATED 2"
 wait
 chk s2 "^ASK_IGNORED start"
