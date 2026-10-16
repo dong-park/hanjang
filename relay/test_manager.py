@@ -14,10 +14,22 @@ def api(method, path, body=None):
         return e.code, json.loads(e.read())
 
 
+class Conn:
+    def __init__(self, s):
+        self.s, self.f = s, s.makefile("rb")
+
+    def sendall(self, b):
+        self.s.sendall(b)
+
+    def close(self):
+        self.f.close()
+        self.s.close()
+
+
 def ws_connect(code):
     s = socket.create_connection(("127.0.0.1", PORT), timeout=5)
     s.sendall(f"GET /ws/{code} HTTP/1.1\r\nHost: x\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n\r\n".encode())
-    s.f = s.makefile("rb")
+    s = Conn(s)
     assert s.f.readline().startswith(b"GET /ws/")  # 가짜 방이 첫 줄(요청 줄)을 되돌린다 = 중계됨
     return s
 
