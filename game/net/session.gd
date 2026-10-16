@@ -59,6 +59,7 @@ func _ready() -> void:
 	Room.game_started.connect(_on_game_started)
 	Room.peer_left.connect(_on_peer_left)
 	Room.peer_rejoined.connect(_on_peer_rejoined)
+	Room.room_emptied.connect(_on_room_emptied)
 	Room.can_rejoin = func(seat: int) -> bool: return engine != null and engine.can_rejoin(seat)
 
 
@@ -111,6 +112,14 @@ func _start_host(gen: int) -> void:
 		return
 	_mark_deadline()
 	_push()  ## 연출이 끝난 뒤 한 번 더 보내 시간 표시와 자동 플레이가 이때부터 시작한다
+
+
+func _on_room_emptied() -> void:
+	_gen += 1  ## 모두 나간 전용 방은 판을 버리고 다음 접속자를 기다린다
+	engine = null
+	_running = false
+	_timing = false
+	print("SESSION_RESET")
 
 
 func seat_of(peer: int) -> int:
@@ -168,6 +177,9 @@ func _after_change() -> void:
 func _push() -> void:
 	if engine == null:
 		return
+	if Room.dedicated and engine.phase == "done" and not _end_reported:
+		_end_reported = true  ## 방 프로세스는 자기 상태를 받지 않으므로 끝난 판을 여기서 기록한다
+		print("RESULT_SERVER winner=", engine.winner, " ranks=", engine.ranking())
 	var left := maxf(0.0, _deadline - Time.get_ticks_msec() / 1000.0) if _timing else turn_time
 	for i in seats.size():
 		if not engine.alive[i]:

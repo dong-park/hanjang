@@ -101,7 +101,7 @@ func _refresh(seats: Array) -> void:
 			w.position = Vector2(0, 176)
 			w.size = Vector2(SLOT.x, 28)
 			slot.add_child(w)
-	var host := Room.is_host()
+	var host := Room.can_control()
 	_start.visible = true
 	_start.disabled = not (host and seats.size() >= Room.MIN_PLAYERS)
 	if not host:

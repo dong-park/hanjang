@@ -30,7 +30,7 @@ func _ready() -> void:
 		return ka < kb if ka != kb else a.seat < b.seat)
 	for k in rows.size():
 		_row(rows[k], k, snap)
-	if _room.is_host():
+	if _room.can_control():
 		_button("다시 하기", Vector2(300, 520), func(): _room.replay())
 		_button("대기실로", Vector2(650, 520), func(): _room.back_to_lobby())
 	else:

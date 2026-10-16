@@ -72,6 +72,8 @@ func show_join() -> void:
 
 
 func _on_game_started(_seats: Array) -> void:
+	if Room.dedicated:
+		return  ## 전용 방 프로세스는 화면 없이 판정만 한다
 	show_screen(TableNetScreen)
 	_current.finished.connect(_show_result)
 	_games += 1
@@ -84,7 +86,7 @@ func _on_game_started(_seats: Array) -> void:
 func _show_result() -> void:
 	show_screen(ResultScreen)
 	var pick: String = _opts.get("result-pick", "")
-	if pick != "" and Room.is_host():  ## 시험용: 방장이 1초 뒤 replay 또는 lobby 를 고른다
+	if pick != "" and Room.can_control():  ## 시험용: 방장이 1초 뒤 replay 또는 lobby 를 고른다
 		get_tree().create_timer(1.0).timeout.connect(func():
 			if pick == "replay":
 				Room.replay()
@@ -96,7 +98,13 @@ func _run_cmdline() -> void:
 	## 명령줄 실행용: -- --host 또는 -- --join=IP (닉네임은 --name, 아바타는 --face)
 	var nick: String = _opts.get("name", "")
 	var face := int(_opts.get("face", 0))
-	if _opts.has("host"):
+	if _opts.has("dedicated"):
+		## 전용 방: --dedicated --port=N --code=방코드 --room-name=이름 --public=0|1 (자리 없이 판정만, 화면 전환 없음)
+		Room.room_name_override = str(_opts.get("room-name", ""))
+		if not Room.host_dedicated(str(_opts.get("code", "")), str(_opts.get("public", "0")) == "1"):
+			print("HOST_FAILED port=", Room.port)
+			get_tree().quit(1)
+	elif _opts.has("host"):
 		Room.host_room(nick, face)
 	elif _opts.has("join"):
 		show_screen(JoinScreen)

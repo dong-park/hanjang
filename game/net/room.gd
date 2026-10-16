@@ -18,6 +18,7 @@ signal left_to_title(reason: String)
 signal joined()
 signal lobby_returned()
 signal join_failed(reason: String)
+signal room_emptied()  ## 전용 방에서 판 중 모두 나가 대기실로 되돌아갔을 때 (방 프로세스만 받는다)
 signal peer_rejoined(peer: int, seat: int)  ## 판 중 나갔던 자리가 같은 닉네임으로 돌아왔을 때 (방장만 받는다)
 
 enum State { NONE, LOBBY, PLAYING }
@@ -38,6 +39,11 @@ var seats: Array = []
 var my_name := ""
 var my_face := 0
 var addr := ""          ## 대기실에 보여 줄 방 주소
+var dedicated := false  ## 전용 방 모드: 방 프로세스는 자리를 갖지 않고 판정만 한다. 시작·다시 하기는 '방 주인'이 요청한다
+var owner_peer := 1          ## 방 주인 peer id. 맥 앱 LAN 방장은 1, 전용 방은 맨 앞 자리의 접속자
+var room_code := ""
+var room_name_override := ""  ## 전용 방 이름. 비면 방 주인 닉네임으로 '○○의 방'을 만든다
+var room_public := false
 var _joining := false
 
 
@@ -78,6 +84,27 @@ func host_room(p_name: String, p_face: int) -> bool:
 	return true
 
 
+## 전용 방(헤드리스 서버): 자리 없이 연결만 받는다. 첫 접속자가 방 주인이 된다.
+func host_dedicated(p_code: String, p_public: bool) -> bool:
+	var peer := WebSocketMultiplayerPeer.new()
+	if peer.create_server(port) != OK:
+		return false
+	multiplayer.multiplayer_peer = peer
+	dedicated = true
+	room_code = p_code
+	room_public = p_public
+	state = State.LOBBY
+	seats = []
+	owner_peer = 0
+	print("HOST_READY dedicated port=", port, " code=", p_code, " public=", p_public)
+	return true
+
+
+## 지금 내가 시작·다시 하기·대기실로를 누를 수 있는 사람인가 (LAN 방장 또는 전용 방의 방 주인).
+func can_control() -> bool:
+	return multiplayer.multiplayer_peer != null and multiplayer.get_unique_id() == owner_peer
+
+
 func join_room(p_name: String, p_face: int, p_addr: String) -> bool:
 	if not valid_name(p_name) or p_addr.strip_edges() == "" or _joining:
 		return false
@@ -115,7 +142,15 @@ func leave() -> void:
 
 func start_game() -> bool:
 	## 방장만, 2명 이상일 때만 된다.
-	if not is_host() or state != State.LOBBY or seats.size() < MIN_PLAYERS:
+	if not is_host():
+		if can_control():
+			_ask.rpc_id(1, "start")
+		return false
+	return _do_start()
+
+
+func _do_start() -> bool:
+	if state != State.LOBBY or seats.size() < MIN_PLAYERS:
 		print("START_BLOCKED seats=", seats.size())
 		return false
 	state = State.PLAYING
@@ -125,17 +160,24 @@ func start_game() -> bool:
 
 
 func back_to_lobby() -> void:
-	if is_host():
-		state = State.LOBBY
-		for i in range(seats.size() - 1, -1, -1):
-			if seats[i].get("gone", false):
-				seats.remove_at(i)
-		_to_seated(_to_lobby, [seats])
+	if not is_host():
+		if can_control():
+			_ask.rpc_id(1, "lobby")
+		return
+	state = State.LOBBY
+	for i in range(seats.size() - 1, -1, -1):
+		if seats[i].get("gone", false):
+			seats.remove_at(i)
+	_to_seated(_to_lobby, [seats])
 
 
 ## 다시 하기: 같은 사람끼리 바로 다음 판. 나간 자리는 비우고, 둘 미만이면 대기실로 간다.
 func replay() -> void:
-	if not is_host() or state != State.PLAYING:
+	if not is_host():
+		if can_control():
+			_ask.rpc_id(1, "replay")
+		return
+	if state != State.PLAYING:
 		return
 	for i in range(seats.size() - 1, -1, -1):
 		if seats[i].get("gone", false):
@@ -148,6 +190,8 @@ func replay() -> void:
 
 
 func room_name() -> String:
+	if room_name_override != "":
+		return room_name_override
 	return "%s의 방" % seats[0].name if seats.size() > 0 else ""
 
 
@@ -195,6 +239,7 @@ func _remember(p_name: String, p_addr: String) -> void:
 func _reset() -> void:
 	state = State.NONE
 	seats = []
+	owner_peer = 1
 	_joining = false
 
 
@@ -233,21 +278,67 @@ func _on_peer_disconnected(id: int) -> void:
 				seats[i]["gone"] = true
 				print("PEER_LEFT_IN_GAME ", id)
 				peer_left.emit(id)
+				_recompute_owner()
+				if dedicated and seats.all(func(x): return x.get("gone", false)):
+					print("ROOM_EMPTY")
+					seats = []
+					state = State.LOBBY
+					owner_peer = 0
+					room_emptied.emit()
 			else:
 				seats.remove_at(i)
 				print("SEAT_FREED ", id, " seats=", seats.size())
 				_to_seated(_sync_seats, [seats])
+				if dedicated and seats.is_empty():
+					owner_peer = 0
 			return
 
 
 func _to_seated(fn: Callable, args: Array) -> void:
 	## 자리에 앉은 접속자에게만 보낸다 (방장 본인은 로컬 호출).
 	var me := multiplayer.get_unique_id()
+	_recompute_owner()
 	for s in seats.duplicate():
 		if s.peer == me:
 			fn.callv(args)
 		else:
 			fn.rpc_id(s.peer, args[0])
+	if dedicated:  ## 방 프로세스는 자리가 없어도 상태를 따라가야 Session이 판을 연다
+		fn.callv(args)
+
+
+## 방 주인 = 판 중 나가지 않은 맨 앞 자리. 전용 방에서만 바뀐다. 접속자에게는 _set_owner로 알린다.
+func _recompute_owner() -> void:
+	if not dedicated:
+		return
+	var o := 0
+	for s in seats:
+		if not s.get("gone", false):
+			o = s.peer
+			break
+	if o == owner_peer:
+		return
+	owner_peer = o
+	for s in seats:
+		if not s.get("gone", false):
+			_set_owner.rpc_id(s.peer, o)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _ask(what: String) -> void:
+	## 전용 방: 방 주인이 보낸 요청만 받는다. 자리는 보낸 peer id로만 정한다.
+	if not is_host() or not dedicated or multiplayer.get_remote_sender_id() != owner_peer:
+		print("ASK_IGNORED ", what, " from=", multiplayer.get_remote_sender_id())
+		return
+	match what:
+		"start": _do_start()
+		"replay": replay()
+		"lobby": back_to_lobby()
+
+
+@rpc("authority", "call_remote", "reliable")
+func _set_owner(p_owner: int) -> void:
+	owner_peer = p_owner
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -265,7 +356,10 @@ func _hello(p_name: String, p_face: int) -> void:
 			seats[back].erase("gone")
 			seats[back]["peer"] = id
 			print("REJOINED ", id, " seat=", back, " ", p_name.strip_edges())
+			_recompute_owner()
 			_rejoined.rpc_id(id, seats)
+			if dedicated:
+				_set_owner.rpc_id(id, owner_peer)
 			peer_rejoined.emit(id, back)
 			return
 		reason = "지금 게임 중이에요"
