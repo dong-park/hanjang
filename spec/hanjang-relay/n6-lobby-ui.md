@@ -43,3 +43,5 @@
 - 커밋은 파일을 지정해 add한다(git add -A·. 금지). push 하지 않는다.
 - 보드 댓글 첨부 spec/**/evidence/*/cm-* 파일은 지우지 않는다.
 - 결정 D1=C(방마다 헤드리스 Godot), D2=C(이 맥이 서버), D3=C(trycloudflare 임시 주소), D4~D8=A는 닫혔다.
+
+- (메인 추가, 사용자 확인 중 발견) 관리 서비스 루트(/)에 페이지가 없어 터널 주소를 열면 {"error":"없는 주소예요"}가 나온다. 이 노드에서 relay/manager.py가 build/web(웹 빌드)을 / 에서 정적으로 서빙하게 한다(index.html, wasm은 application/wasm, Cache-Control no-cache, 한 터널 주소로 게임 페이지와 /api/rooms, /ws가 같이 열리게). 게임 페이지가 같은 호스트의 /api/rooms를 부르고 wss://같은호스트/ws/코드로 접속하게 한다. build/web은 tools/export_web.sh(zsh)로 내보낸다. 방 비밀값은 GET /api/rooms/코드가 돌려주는 secret을 접속에 실어 낸다(웹 주소 ?secret= 또는 --secret). n4 재접속 토큰은 브라우저가 저장하는지 확인한다.
