@@ -8,7 +8,7 @@
 
 표준 라이브러리만 쓴다. 서버가 꺼지면 방은 되살리지 않는다.
 """
-import asyncio, json, os, random, re, signal, sys, time
+import asyncio, collections, json, os, random, re, secrets, shlex, signal, sys, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -16,11 +16,16 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # 환경변수 HANJANG_ROOM_CMD로 바꿀 수 있다(시험은 가짜 방을 쓴다).
 ROOM_CMD = os.environ.get(
     "HANJANG_ROOM_CMD",
-    "engine/Godot.app/Contents/MacOS/Godot --headless --path game -- --host --dedicated --port={port}",
+    "engine/Godot.app/Contents/MacOS/Godot --headless --path game -- --host --dedicated --port={port} "
+    "--code={code} --secret={secret} --public={public} --room-name={name}",
 )
 MAX_ROOMS = int(os.environ.get("HANJANG_MAX_ROOMS", "6"))
 IDLE_SECONDS = float(os.environ.get("HANJANG_IDLE_SECONDS", "60"))
 PORT_BASE = int(os.environ.get("HANJANG_ROOM_PORT_BASE", "7800"))
+RATE_MAX = int(os.environ.get("HANJANG_RATE_MAX", "20"))  # 한 주소가 RATE_WINDOW초 안에 이만큼 연결하면 막는다
+RATE_WINDOW = float(os.environ.get("HANJANG_RATE_WINDOW", "1"))
+RATE_BLOCK = float(os.environ.get("HANJANG_RATE_BLOCK", "60"))
+LOG_PATH = os.environ.get("HANJANG_LOG", "")  # 비우면 표준 오류
 CAPACITY = 4
 NAME_MAX = 12
 # 방 프로세스 출력 줄로 방 상태를 안다 (game/net/room.gd)
@@ -30,11 +35,83 @@ WAITING_MARKS = ("BACK_TO_LOBBY",)
 MSG_FULL = "지금은 방이 가득 찼어요"
 MSG_NOT_FOUND = "방을 못 찾았어요"
 MSG_NAME = "방 이름은 1~12자로 적어 주세요"
+MSG_EMPTY = "이름을 적어 주세요"
+MSG_EMOJI = "이모지는 쓸 수 없어요"
+MSG_BANNED = "쓸 수 없는 말이 들어 있어요"
+MSG_RATE = "잠시 후에 다시 해 주세요"
+BANNED = ("씨발", "시발", "병신", "개새끼", "좆", "fuck", "shit")  # game/net/room.gd BANNED 와 같은 목록
+
+
+def name_problem(name):
+    """방 이름 규칙(game/net/room.gd name_problem 과 같다). 괜찮으면 빈 문자열."""
+    if not name:
+        return MSG_EMPTY
+    if len(name) > NAME_MAX:
+        return MSG_NAME
+    if any(ord(c) >= 0x1F000 or 0x2600 <= ord(c) <= 0x27BF or ord(c) in (0xFE0F, 0x200D) for c in name):
+        return MSG_EMOJI
+    if any(w in name.lower() for w in BANNED):
+        return MSG_BANNED
+    return ""
+
+
+def mask_ip(ip):
+    """로그에는 주소 앞 두 칸만 남긴다 (IPv4 a.b.x.x, IPv6 앞 두 묶음)."""
+    if ":" in ip:
+        return ":".join(ip.split(":")[:2]) + ":x"
+    return ".".join(ip.split(".")[:2]) + ".x.x"
+
+
+def log(event, code="", ip="", err=""):
+    """방 코드, 이벤트, 오류 종류만 적는다. 닉네임·방 이름·전체 주소는 쓰지 않는다."""
+    line = time.strftime("%Y-%m-%dT%H:%M:%S") + " " + event
+    for k, v in (("code", code), ("ip", mask_ip(ip) if ip else ""), ("err", err)):
+        if v:
+            line += f" {k}={v}"
+    if LOG_PATH:
+        with open(LOG_PATH, "a", encoding="utf-8") as f:
+            f.write(line + "\n")
+    else:
+        print(line, file=sys.stderr, flush=True)
+
+
+class Limiter:
+    """주소별 연결 제한. 터널 뒤에서는 CF-Connecting-IP 로 주소를 안다."""
+
+    def __init__(self):
+        self.hits = collections.defaultdict(collections.deque)
+        self.blocked = {}
+
+    def allow(self, ip):
+        now = time.monotonic()
+        until = self.blocked.get(ip)
+        if until is not None:
+            if now < until:
+                return False
+            del self.blocked[ip]
+        q = self.hits[ip]
+        q.append(now)
+        while q and now - q[0] > RATE_WINDOW:
+            q.popleft()
+        if len(q) >= RATE_MAX:
+            self.blocked[ip] = now + RATE_BLOCK
+            del self.hits[ip]
+            log("RATE_BLOCK", ip=ip)
+            return False
+        if len(self.hits) > 5000:  # 오래된 주소 기록을 비운다
+            for k in [k for k, v in self.hits.items() if not v or now - v[-1] > RATE_WINDOW]:
+                del self.hits[k]
+        return True
+
+
+LIMITER = Limiter()
+
 
 
 class Room:
     def __init__(self, code, name, public, port):
         self.code, self.name, self.public, self.port = code, name, public, port
+        self.secret = secrets.token_hex(8)
         self.state = "waiting"
         self.players = 0
         self.proc = None
@@ -67,7 +144,9 @@ class Manager:
             return None
         room = Room(self.new_code(), name, public, self.free_port())
         self.rooms[room.code] = room  # 띄우는 동안 자리를 먼저 잡아 한도를 넘지 않게 한다
-        argv = ROOM_CMD.format(port=room.port).split()
+        q = shlex.quote
+        argv = shlex.split(ROOM_CMD.format(port=room.port, code=room.code, secret=room.secret,
+                                           public=int(public), name=q(name)))
         try:
             room.proc = await asyncio.create_subprocess_exec(
                 *argv, cwd=ROOT, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT,
@@ -75,6 +154,7 @@ class Manager:
         except OSError:
             del self.rooms[room.code]
             raise
+        log("ROOM_OPEN", room.code)
         asyncio.create_task(self.watch_output(room))
         asyncio.create_task(self.reap_idle(room))
         return room
@@ -104,6 +184,8 @@ class Manager:
                 await self.close(room)
 
     def drop(self, room):
+        if not room.closed:
+            log("ROOM_CLOSE", room.code)
         room.closed = True
         self.rooms.pop(room.code, None)
 
@@ -125,7 +207,7 @@ M = Manager()
 
 
 def reply(status, body):
-    reason = {200: "OK", 201: "Created", 400: "Bad Request", 404: "Not Found", 503: "Service Unavailable"}[status]
+    reason = {200: "OK", 201: "Created", 400: "Bad Request", 404: "Not Found", 429: "Too Many Requests", 503: "Service Unavailable"}[status]
     data = json.dumps(body, ensure_ascii=False).encode()
     head = (f"HTTP/1.1 {status} {reason}\r\nContent-Type: application/json; charset=utf-8\r\n"
             f"Content-Length: {len(data)}\r\nAccess-Control-Allow-Origin: *\r\n"
@@ -159,7 +241,16 @@ async def pipe(src, dst):
             pass
 
 
-async def proxy(room, raw, reader, writer):
+def ws_head(raw):
+    """웹소켓 요청 머리를 방 서버가 받는 형태로 맞춘다. HTTP/2로 들어온 요청은 Cloudflare가 Upgrade 줄을 떼고
+    Connection: keep-alive로 넘기므로, Godot가 받도록 Upgrade/Connection 줄을 다시 붙인다."""
+    lines = raw.split(b"\r\n")
+    keep = [ln for ln in lines[:-2] if not ln.lower().startswith((b"connection:", b"upgrade:"))]
+    return b"\r\n".join(keep + [b"Upgrade: websocket", b"Connection: Upgrade", b"", b""])
+
+
+async def proxy(room, raw, reader, writer, ip):
+    raw = ws_head(raw)
     up = None
     for _ in range(50):  # 방 프로세스가 포트를 여는 동안 최대 5초 기다린다
         try:
@@ -171,31 +262,36 @@ async def proxy(room, raw, reader, writer):
         writer.write(reply(503, {"error": MSG_NOT_FOUND}))
         return
     room.players += 1
+    log("WS_OPEN", room.code, ip)
     try:
         upw.write(raw)
         await asyncio.gather(pipe(reader, upw), pipe(up, writer))
     finally:
         room.players = max(0, room.players - 1)
+        log("WS_CLOSE", room.code, ip)
 
 
 async def handle(reader, writer):
     try:
-        raw, method, path, headers = await read_head(reader)
-        if method == "OPTIONS":
+        raw, method, path, headers = await asyncio.wait_for(read_head(reader), 10)
+        ip = headers.get("cf-connecting-ip") or (writer.get_extra_info("peername") or ("?",))[0]
+        if not LIMITER.allow(ip):
+            writer.write(reply(429, {"error": MSG_RATE}))
+        elif method == "OPTIONS":
             writer.write(reply(200, {}))
         elif m := re.fullmatch(r"/ws/(\d{4})", path):
             room = M.rooms.get(m.group(1))
             if room is None:
                 writer.write(reply(404, {"error": MSG_NOT_FOUND}))
             else:
-                await proxy(room, raw, reader, writer)
+                await proxy(room, raw, reader, writer, ip)
         elif path == "/api/rooms" and method == "GET":
             writer.write(reply(200, [r.info() for r in M.rooms.values() if r.public]))
         elif path == "/api/rooms" and method == "POST":
             body = json.loads(await reader.readexactly(int(headers.get("content-length", "0"))) or b"{}")
             name = str(body.get("name", "")).strip()
-            if not 1 <= len(name) <= NAME_MAX:
-                writer.write(reply(400, {"error": MSG_NAME}))
+            if problem := name_problem(name):
+                writer.write(reply(400, {"error": problem}))
             else:
                 room = await M.create(name, bool(body.get("public", True)))
                 if room is None:
@@ -203,15 +299,17 @@ async def handle(reader, writer):
                 else:
                     base = os.environ.get("HANJANG_PUBLIC_BASE", "http://" + headers.get("host", "localhost"))
                     writer.write(reply(201, {"code": room.code, "name": room.name, "public": room.public,
-                                             "path": f"/ws/{room.code}", "link": f"{base}/?room={room.code}"}))
+                                             "secret": room.secret, "path": f"/ws/{room.code}", "link": f"{base}/?room={room.code}"}))
         elif m := re.fullmatch(r"/api/rooms/(\d{4})", path):
             room = M.rooms.get(m.group(1))
-            writer.write(reply(200, room.info()) if room else reply(404, {"error": MSG_NOT_FOUND}))
+            writer.write(reply(200, {**room.info(), "secret": room.secret}) if room else reply(404, {"error": MSG_NOT_FOUND}))
         else:
             writer.write(reply(404, {"error": "없는 주소예요"}))
         await writer.drain()
     except (asyncio.IncompleteReadError, ConnectionError, ValueError, json.JSONDecodeError):
         pass
+    except Exception as e:  # 한 연결의 오류가 서비스를 멈추지 않게 한다
+        log("ERROR", err=type(e).__name__)
     finally:
         try:
             writer.close()
