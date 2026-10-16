@@ -265,6 +265,11 @@ func deal(order: Array, per: int, on_land: Callable, on_done: Callable) -> void:
 
 
 ## 장면 14: 접속자가 나갔다. 말풍선, 위쪽 알림, 카드가 더미로 돌아간다.
+## 방 주인이 나가서 다음 사람에게 넘어갔을 때 위쪽 알림.
+func owner_fx(who: String) -> void:
+	banner("%s님이 방 주인이 됐어요" % who, NAVY, RED, Color.WHITE, Vector2(576, 70), FxTiming.LEAVE_HOLD + 1.0, 22)
+
+
 func disconnect_fx(seat: int, cards: int, who: String) -> void:
 	var at: Vector2 = table.seat_avatar_pos(seat)
 	banner("연결 끊김", Color.WHITE, Color.WHITE, NAVY, at + Vector2(44, -22), FxTiming.LEAVE_HOLD, 20)

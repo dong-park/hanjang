@@ -46,6 +46,8 @@ func _ready() -> void:
 	if _opts.has("secret"):
 		Room.my_secret = str(_opts.secret)
 	Room.skip_name_check = _opts.has("skip-name-check")
+	if _opts.has("owner-grace"):
+		Room.owner_grace = float(_opts["owner-grace"])
 	if _opts.has("shots"):
 		_shots = load("res://tests/scene_shots.gd").new()
 		add_child(_shots)

@@ -37,11 +37,14 @@ func _ready() -> void:
 	_session.player_left.connect(_on_player_left)
 	_session.event.connect(table.show_event)
 	_session.ended.connect(_on_ended)
+	Room.owner_changed.connect(table.fx.owner_fx)
 	if not _session.last_snap.is_empty():
 		_on_state(_session.last_snap)
 
 
 func _exit_tree() -> void:
+	if Room.owner_changed.is_connected(table.fx.owner_fx):
+		Room.owner_changed.disconnect(table.fx.owner_fx)
 	for pair in [[_session.state_changed, _on_state], [_session.request_refused, _on_refused],
 			[_session.player_left, _on_player_left], [_session.event, table.show_event], [_session.ended, _on_ended]]:
 		if pair[0].is_connected(pair[1]):

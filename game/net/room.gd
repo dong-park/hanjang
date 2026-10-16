@@ -19,6 +19,7 @@ signal joined()
 signal lobby_returned()
 signal join_failed(reason: String)
 signal room_emptied()  ## 전용 방에서 판 중 모두 나가 대기실로 되돌아갔을 때 (방 프로세스만 받는다)
+signal owner_changed(who: String)  ## 방 주인이 바뀌었을 때 (전용 방 접속자가 받는다). 나머지 사람 화면에 문구를 띄운다
 signal peer_rejoined(peer: int, seat: int)  ## 판 중 나갔던 자리가 같은 닉네임으로 돌아왔을 때 (방장만 받는다)
 
 enum State { NONE, LOBBY, PLAYING }
@@ -34,6 +35,10 @@ const RECENT_PATH := "user://recent_rooms.json"
 const RECENT_MAX := 5
 const TOKEN_PATH := "user://tokens.json"
 const MAX_ROOM_NAME := 12
+## 끊김 감지: 서버가 PING_EVERY 초마다 ping을 보내고, DEAD_AFTER 초 동안 응답이 없으면 끊긴 것으로 본다.
+## 클라이언트도 서버 ping이 DEAD_AFTER 초 안 오면 끊긴 것으로 본다. 와이파이만 꺼진 FIN 없는 끊김도 20초 안에 잡는다.
+const PING_EVERY := 3.0
+const DEAD_AFTER := 12.0
 ## 이름에 쓸 수 없는 말 (닉네임·방 이름 공통). 소문자로 견준다.
 const BANNED := ["씨발", "시발", "병신", "개새끼", "좆", "fuck", "shit"]
 
@@ -52,6 +57,11 @@ var room_secret := ""         ## 전용 방 비밀값. 비어 있지 않으면 �
 var my_secret := ""           ## 접속할 때 내는 방 비밀값 (--secret 또는 웹 주소의 ?secret=)
 var token_path := TOKEN_PATH  ## 재접속 토큰 저장 파일. 시험은 --token-file 로 바꾼다
 var skip_name_check := false  ## 시험용(--skip-name-check): 클라이언트 이름 검사를 건너뛰어 서버 검사를 확인한다
+var owner_grace := 30.0       ## 방 주인이 끊기면 이만큼 기다렸다가 다음 사람에게 넘긴다 (시험은 --owner-grace)
+var _grace_peer := 0          ## 끊겨서 기다리는 중인 옛 주인의 peer id
+var _last_seen := {}          ## 서버: peer -> 마지막으로 응답한 시각(초)
+var _last_ping := -1.0        ## 클라이언트: 서버 ping을 마지막으로 받은 시각(초). 음수면 아직 접속 전
+var _ping_clock := 0.0
 var _tokens := {}             ## 서버만: 닉네임 -> 재접속 토큰. 자리 목록에는 싣지 않아 다른 접속자에게 가지 않는다
 var _joining := false
 
@@ -66,6 +76,41 @@ func _ready() -> void:
 	multiplayer.connected_to_server.connect(_on_connected)
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(func(): _go_title("방장이 나갔어요"))
+
+
+func _now() -> float:
+	return Time.get_ticks_msec() / 1000.0
+
+
+func _process(dt: float) -> void:
+	if multiplayer.multiplayer_peer == null:
+		return
+	if is_host():
+		_ping_clock += dt
+		if _ping_clock < PING_EVERY:
+			return
+		_ping_clock = 0.0
+		for p in multiplayer.get_peers():
+			if _now() - _last_seen.get(p, _now()) > DEAD_AFTER:
+				print("DROP_DETECTED t=%.3f" % Time.get_unix_time_from_system())
+				multiplayer.multiplayer_peer.disconnect_peer(p)
+			else:
+				_ping.rpc_id(p)
+	elif _last_ping >= 0.0 and _now() - _last_ping > DEAD_AFTER:
+		print("DROP_DETECTED t=%.3f" % Time.get_unix_time_from_system())
+		_last_ping = -1.0
+		_go_title("연결이 끊겼어요")
+
+
+@rpc("authority", "call_remote", "reliable")
+func _ping() -> void:
+	_last_ping = _now()
+	_pong.rpc_id(1)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _pong() -> void:
+	_last_seen[multiplayer.get_remote_sender_id()] = _now()
 
 
 func is_host() -> bool:
@@ -295,6 +340,7 @@ func _remember(p_name: String, p_addr: String) -> void:
 
 
 func _reset() -> void:
+	_last_ping = -1.0
 	state = State.NONE
 	seats = []
 	owner_peer = 1
@@ -311,6 +357,7 @@ func _go_title(reason: String) -> void:
 
 
 func _on_connected() -> void:
+	_last_ping = _now()
 	_hello.rpc_id(1, my_name, my_face, str(_load_tokens().get(_token_key(), "")), my_secret)
 
 
@@ -322,6 +369,7 @@ func _on_connection_failed() -> void:
 
 
 func _on_peer_connected(id: int) -> void:
+	_last_seen[id] = _now()
 	# 웹소켓 서버는 접속 수 상한 인자가 없다. ENet 때와 같은 상한(MAX_PLAYERS + 3)을 넘는 접속은 바로 끊는다.
 	if is_host() and multiplayer.get_peers().size() > MAX_PLAYERS + 3:
 		multiplayer.multiplayer_peer.disconnect_peer(id, true)
@@ -330,15 +378,20 @@ func _on_peer_connected(id: int) -> void:
 func _on_peer_disconnected(id: int) -> void:
 	if not is_host():
 		return
+	_last_seen.erase(id)
 	for i in seats.size():
 		if seats[i].peer == id:
 			if state == State.PLAYING:
 				seats[i]["gone"] = true
 				print("PEER_LEFT_IN_GAME ", id)
 				peer_left.emit(id)
-				_recompute_owner()
+				if dedicated and id == owner_peer and owner_grace > 0.0:
+					_start_grace(id)  ## 주인 폰이 잠겼을 수 있다. 돌아올 때까지 기다린다
+				else:
+					_recompute_owner()
 				if dedicated and seats.all(func(x): return x.get("gone", false)):
 					print("ROOM_EMPTY")
+					_grace_peer = 0
 					seats = []
 					state = State.LOBBY
 					owner_peer = 0
@@ -365,21 +418,47 @@ func _to_seated(fn: Callable, args: Array) -> void:
 		fn.callv(args)
 
 
-## 방 주인 = 판 중 나가지 않은 맨 앞 자리. 전용 방에서만 바뀐다. 접속자에게는 _set_owner로 알린다.
+## 방 주인은 자리를 지키는 동안 그대로다. 나가면 판 중 나가지 않은 맨 앞 자리로 넘어간다. 전용 방에서만 바뀐다.
+## 주인이 끊겨 기다리는 30초 동안은 넘기지 않는다. 접속자에게는 _set_owner로 알리고, 넘어가면 문구를 보낸다.
 func _recompute_owner() -> void:
-	if not dedicated:
+	if not dedicated or (_grace_peer != 0 and _grace_peer == owner_peer):
+		return
+	if seats.any(func(s): return s.peer == owner_peer and not s.get("gone", false)):
 		return
 	var o := 0
+	var who := ""
 	for s in seats:
 		if not s.get("gone", false):
 			o = s.peer
+			who = s.name
 			break
 	if o == owner_peer:
 		return
+	var had_owner := owner_peer != 0
 	owner_peer = o
+	if had_owner and o != 0:
+		print("OWNER_TRANSFER t=%.3f" % Time.get_unix_time_from_system())
 	for s in seats:
 		if not s.get("gone", false):
 			_set_owner.rpc_id(s.peer, o)
+			if had_owner and o != 0:
+				_owner_changed.rpc_id(s.peer, who)
+
+
+func _start_grace(old: int) -> void:
+	_grace_peer = old
+	print("OWNER_GRACE_START t=%.3f" % Time.get_unix_time_from_system())
+	await get_tree().create_timer(owner_grace).timeout
+	if _grace_peer != old:
+		return  ## 그 사이 돌아왔거나 방이 비었다
+	_grace_peer = 0
+	_recompute_owner()
+
+
+@rpc("authority", "call_remote", "reliable")
+func _owner_changed(who: String) -> void:
+	print("OWNER_CHANGED ", who)
+	owner_changed.emit(who)
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -397,6 +476,8 @@ func _ask(what: String) -> void:
 @rpc("authority", "call_remote", "reliable")
 func _set_owner(p_owner: int) -> void:
 	owner_peer = p_owner
+	if p_owner == multiplayer.get_unique_id():
+		print("OWNER_IS_ME")
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -433,6 +514,9 @@ func _hello(p_name: String, p_face: int, p_token: String, p_secret: String) -> v
 				seats[idx].erase("gone")
 				seats[idx]["peer"] = id
 				print("REJOINED ", id, " seat=", idx, " ", log_name(nm))
+				if old == owner_peer:  ## 기다리던 주인이 돌아왔다
+					owner_peer = id
+					_grace_peer = 0
 				_recompute_owner()
 				_rejoined.rpc_id(id, seats, p_token)
 				if dedicated:
